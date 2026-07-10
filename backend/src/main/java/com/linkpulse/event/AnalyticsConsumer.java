@@ -1,0 +1,58 @@
+package com.linkpulse.event;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.linkpulse.entity.ClickAnalytics;
+import com.linkpulse.entity.ShortLink;
+import com.linkpulse.repository.ClickAnalyticsRepository;
+import com.linkpulse.repository.ShortLinkRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import nl.basjes.parse.useragent.UserAgent;
+import nl.basjes.parse.useragent.UserAgentAnalyzer;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.util.Map;
+
+@Component
+@RequiredArgsConstructor
+@Slf4j
+public class AnalyticsConsumer {
+
+    private final ClickAnalyticsRepository clickAnalyticsRepository;
+    private final ShortLinkRepository shortLinkRepository;
+    private final ObjectMapper objectMapper;
+    private final UserAgentAnalyzer uaa = UserAgentAnalyzer.newBuilder().hideMatcherLoadStats().withCache(10000).build();
+
+    @KafkaListener(topics = "link-click-events", groupId = "linkpulse-group")
+    public void consume(String message) {
+        try {
+            Map<String, Object> event = objectMapper.readValue(message, new TypeReference<>() {});
+            Long linkId = ((Number) event.get("linkId")).longValue();
+            String userAgentStr = (String) event.get("userAgent");
+
+            ShortLink link = shortLinkRepository.findById(linkId).orElse(null);
+            if (link == null) return;
+
+            UserAgent userAgent = uaa.parse(userAgentStr);
+
+            ClickAnalytics analytics = ClickAnalytics.builder()
+                    .shortLink(link)
+                    .ipAddress((String) event.get("ipAddress"))
+                    .browser(userAgent.getValue(UserAgent.AGENT_NAME))
+                    .operatingSystem(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME))
+                    .deviceType(userAgent.getValue(UserAgent.DEVICE_CLASS))
+                    .referrer((String) event.get("referrer"))
+                    .clickedAt(LocalDateTime.parse((String) event.get("clickedAt")))
+                    .build();
+
+            clickAnalyticsRepository.save(analytics);
+            shortLinkRepository.incrementClickCount(linkId);
+
+        } catch (Exception e) {
+            log.error("Error processing click event", e);
+        }
+    }
+}
