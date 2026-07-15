@@ -3,9 +3,9 @@ version: '3.8'
 services:
   mysql:
     image: mysql:8.0
-    container_name: linkpulse-mysql
+    container_name: dragolink-mysql
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-linkpulse}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-dragolink}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
       MYSQL_USER: ${MYSQL_USER:-root}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-root}
@@ -14,7 +14,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
-      - linkpulse-network
+      - dragolink-network
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 20s
@@ -22,28 +22,28 @@ services:
 
   redis:
     image: redis:7.0-alpine
-    container_name: linkpulse-redis
+    container_name: dragolink-redis
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
     networks:
-      - linkpulse-network
+      - dragolink-network
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
-    container_name: linkpulse-zookeeper
+    container_name: dragolink-zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
     networks:
-      - linkpulse-network
+      - dragolink-network
 
   kafka:
     image: confluentinc/cp-kafka:7.4.0
-    container_name: linkpulse-kafka
+    container_name: dragolink-kafka
     depends_on:
       - zookeeper
     ports:
@@ -56,13 +56,13 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
-      - linkpulse-network
+      - dragolink-network
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: linkpulse-backend
+    container_name: dragolink-backend
     ports:
       - "8080:8080"
     depends_on:
@@ -73,7 +73,7 @@ services:
       kafka:
         condition: service_started
     environment:
-      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:mysql://mysql:3306/linkpulse?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true}
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:mysql://mysql:3306/dragolink?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true}
       - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME:-root}
       - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD:-root}
       - SPRING_DATA_REDIS_HOST=${SPRING_DATA_REDIS_HOST:-redis}
@@ -82,22 +82,22 @@ services:
       - APP_JWT_EXPIRATIONMS=${JWT_EXPIRATION_MS:-86400000}
       - APP_BASE_URL=${APP_BASE_URL:-http://localhost:8080/}
     networks:
-      - linkpulse-network
+      - dragolink-network
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: linkpulse-frontend
+    container_name: dragolink-frontend
     ports:
       - "5173:80"
     networks:
-      - linkpulse-network
+      - dragolink-network
 
 volumes:
   mysql_data:
   redis_data:
 
 networks:
-  linkpulse-network:
+  dragolink-network:
     driver: bridge

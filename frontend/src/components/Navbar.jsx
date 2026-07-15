@@ -17,11 +17,9 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-2">
-              <div className="bg-primary p-2 rounded-lg">
-                <LinkIcon className="h-6 w-6 text-white" />
-              </div>
+              <img src="/dragolink.svg" alt="Dragolink Logo" className="h-8 w-auto" />
               <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-                LinkPulse
+                Dragolink
               </span>
             </Link>
           </div>

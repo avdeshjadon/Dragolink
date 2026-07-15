@@ -1,6 +1,6 @@
-# LinkPulse – URL Shortener & Analytics Platform
+# Dragolink – URL Shortener & Analytics Platform
 
-LinkPulse is a powerful, full-stack URL shortener and analytics platform built with Spring Boot and React.
+Dragolink is a powerful, full-stack URL shortener and analytics platform built with Spring Boot and React.
 
 ## Features
 

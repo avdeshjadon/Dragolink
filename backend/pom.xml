@@ -11,10 +11,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>com.linkpulse</groupId>
+    <groupId>com.dragolink</groupId>
     <artifactId>backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>LinkPulse Backend</name>
+    <name>Dragolink Backend</name>
     <description>URL Shortener and Analytics Platform</description>
 
     <properties>

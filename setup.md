@@ -1,6 +1,6 @@
-# LinkPulse Setup Guide
+# Dragolink Setup Guide
 
-Welcome to the LinkPulse URL Shortener & Analytics Platform setup guide. This document will walk you through the process of setting up and running the project locally.
+Welcome to the Dragolink URL Shortener & Analytics Platform setup guide. This document will walk you through the process of setting up and running the project locally.
 
 ## Prerequisites
 
@@ -20,7 +20,7 @@ Before you begin, ensure you have the following installed on your system:
 
 ## Step 2: Running with Docker Compose (Recommended)
 
-The easiest way to run LinkPulse is using Docker Compose, which will automatically build and start the backend, frontend, MySQL database, Redis, Zookeeper, and Kafka.
+The easiest way to run Dragolink is using Docker Compose, which will automatically build and start the backend, frontend, MySQL database, Redis, Zookeeper, and Kafka.
 
 1. Open a terminal in the root directory of the project.
 2. Run the following command:
@@ -81,5 +81,5 @@ npm run dev
 Currently, users register via the UI with the `USER` role by default. If you need an `ADMIN` role to access the Blocked Domains page, you can manually update the user role in the MySQL database:
 
 ```bash
-docker exec -it linkpulse-mysql mysql -u root -proot linkpulse -e "UPDATE users SET role='ADMIN' WHERE email='your@email.com';"
+docker exec -it dragolink-mysql mysql -u root -proot dragolink -e "UPDATE users SET role='ADMIN' WHERE email='your@email.com';"
 ```
