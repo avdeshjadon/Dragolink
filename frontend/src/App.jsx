@@ -21,10 +21,15 @@ import QRCodes from './pages/QRCodes';
 import Campaigns from './pages/Campaigns';
 import Team from './pages/Team';
 import APIKeys from './pages/APIKeys';
+import PublicQRCodes from './pages/PublicQRCodes';
+import PublicIntegrations from './pages/PublicIntegrations';
+import PublicAPI from './pages/PublicAPI';
+
 import DashboardLayout from './components/DashboardLayout';
 import SettingsLayout from './components/SettingsLayout';
 import PublicNavbar from './components/PublicNavbar';
 import PublicFooter from './components/PublicFooter';
+import ScrollToTop from './components/ScrollToTop';
 
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const { user } = useAuth();
@@ -51,6 +56,7 @@ const PublicLayout = () => {
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Landing />} />
@@ -58,6 +64,10 @@ function App() {
           <Route path="/features" element={<Features />} />
           <Route path="/public-analytics" element={<PublicAnalytics />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/qr-codes" element={<PublicQRCodes />} />
+          <Route path="/integrations" element={<PublicIntegrations />} />
+          <Route path="/api" element={<PublicAPI />} />
+
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Route>

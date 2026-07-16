@@ -12,7 +12,7 @@ export default function PublicNavbar() {
         <div className="flex items-center">
           <Link to="/" className="flex items-center gap-2">
             <img src="/dragolink.svg" alt="Dragolink Logo" className="h-8 w-8" />
-            <span className="text-xl font-bold text-brand-dark tracking-tight">Dragolink</span>
+            <span className="text-xl font-bold text-[#16803C] tracking-tight">Dragolink</span>
           </Link>
         </div>
         <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-6 text-sm font-medium">

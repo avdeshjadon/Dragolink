@@ -73,8 +73,7 @@ export default function Features() {
 
         {/* Hero */}
         <div className="relative text-center max-w-5xl mx-auto mb-20 pt-10">
-          {/* Background Glows */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-emerald/15 blur-[120px] rounded-full pointer-events-none -z-10" />
+
           
           <motion.h1
             initial={{ opacity: 0, y: 20 }}

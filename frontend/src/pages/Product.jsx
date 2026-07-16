@@ -28,9 +28,7 @@ export default function Product() {
     <div className="bg-bg-light min-h-screen font-sans">
       {/* Hero Section */}
       <section className="relative pt-32 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center overflow-hidden">
-        {/* Background Glows */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-brand-emerald/20 blur-[120px] rounded-full pointer-events-none -z-10 opacity-70" />
-        <div className="absolute top-0 right-1/4 w-[400px] h-[300px] bg-brand/10 blur-[100px] rounded-full pointer-events-none -z-10" />
+
 
         <motion.h1
           initial={{ opacity: 0, y: 20 }}

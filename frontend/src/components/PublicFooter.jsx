@@ -36,20 +36,14 @@ export default function PublicFooter() {
           <div className="col-span-1 lg:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4">
               <img src="/dragolink.svg" alt="Dragolink Logo" className="h-8 w-8" />
-              <span className="text-2xl font-bold text-brand-dark tracking-tight">Dragolink</span>
+              <span className="text-2xl font-bold text-[#16803C] tracking-tight">Dragolink</span>
             </Link>
             <p className="text-text-secondary text-sm mb-6 max-w-sm">
               The professional URL shortener and analytics platform built for modern teams, creators, and enterprises. 
               Optimize your links, track engagement, and scale your brand.
             </p>
             
-            <div className="mb-6">
-              <h4 className="text-sm font-semibold text-text-primary mb-2">Subscribe to our newsletter</h4>
-              <div className="flex gap-2 max-w-sm">
-                <Input type="email" placeholder="Enter your email" className="h-10 text-sm" />
-                <Button size="sm" className="h-10 px-4">Subscribe</Button>
-              </div>
-            </div>
+
             
             <div className="flex items-center gap-4 text-text-secondary">
               <a href="#" className="hover:text-brand transition-colors"><TwitterIcon className="w-5 h-5" /></a>
@@ -64,11 +58,11 @@ export default function PublicFooter() {
             <ul className="space-y-3 text-sm text-text-secondary">
               <li><Link to="/features" className="hover:text-brand transition-colors">Features</Link></li>
               <li><Link to="/pricing" className="hover:text-brand transition-colors">Pricing</Link></li>
-              <li><Link to="/analytics" className="hover:text-brand transition-colors">Analytics Engine</Link></li>
+              <li><Link to="/public-analytics" className="hover:text-brand transition-colors">Analytics Engine</Link></li>
               <li><Link to="/qr-codes" className="hover:text-brand transition-colors">QR Codes</Link></li>
               <li><Link to="/integrations" className="hover:text-brand transition-colors">Integrations</Link></li>
               <li><Link to="/api" className="hover:text-brand transition-colors">Developer API</Link></li>
-              <li><Link to="/changelog" className="hover:text-brand transition-colors">Changelog</Link></li>
+
             </ul>
           </div>
 
