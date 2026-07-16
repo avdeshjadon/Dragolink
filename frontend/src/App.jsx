@@ -8,8 +8,13 @@ import CreateLink from './pages/CreateLink';
 import MyLinks from './pages/MyLinks';
 import Analytics from './pages/Analytics';
 import AdminDomains from './pages/AdminDomains';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+import Product from './pages/Product';
+import Features from './pages/Features';
+import Pricing from './pages/Pricing';
+import PublicAnalytics from './pages/PublicAnalytics';
+import DashboardLayout from './components/DashboardLayout';
+import PublicNavbar from './components/PublicNavbar';
+import PublicFooter from './components/PublicFooter';
 
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const { user } = useAuth();
@@ -20,23 +25,15 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
   return children;
 };
 
-const MainLayout = () => {
+// Layout for Auth & Landing pages (No global Navbar, they have their own)
+const PublicLayout = () => {
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
-      <Navbar />
-      <main className="flex-1 w-full flex flex-col">
+    <div className="min-h-screen bg-bg-light flex flex-col">
+      <PublicNavbar />
+      <main className="flex-1">
         <Outlet />
       </main>
-      <Footer />
-    </div>
-  );
-};
-
-// Layout for Auth pages (No Navbar)
-const AuthLayout = () => {
-  return (
-    <div className="min-h-screen bg-white">
-      <Outlet />
+      <PublicFooter />
     </div>
   );
 };
@@ -45,41 +42,30 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<AuthLayout />}>
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Landing />} />
+          <Route path="/product" element={<Product />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/analytics" element={<PublicAnalytics />} />
+          <Route path="/pricing" element={<Pricing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Route>
         
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<Landing />} />
+        <Route element={
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/create" element={<CreateLink />} />
+          <Route path="/links" element={<MyLinks />} />
+          <Route path="/analytics/:id" element={<Analytics />} />
           
-          <Route path="/dashboard" element={
-            <ProtectedRoute>
-              <div className="max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8"><Dashboard /></div>
-            </ProtectedRoute>
-          } />
-          
-          <Route path="/create" element={
-            <ProtectedRoute>
-              <div className="max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8"><CreateLink /></div>
-            </ProtectedRoute>
-          } />
-          
-          <Route path="/links" element={
-            <ProtectedRoute>
-              <div className="max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8"><MyLinks /></div>
-            </ProtectedRoute>
-          } />
-          
-          <Route path="/analytics/:id" element={
-            <ProtectedRoute>
-              <div className="max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8"><Analytics /></div>
-            </ProtectedRoute>
-          } />
-          
+          {/* Add admin check in the element for specific routes */}
           <Route path="/admin/domains" element={
             <ProtectedRoute adminOnly={true}>
-              <div className="max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8"><AdminDomains /></div>
+              <AdminDomains />
             </ProtectedRoute>
           } />
         </Route>
@@ -89,3 +75,4 @@ function App() {
 }
 
 export default App;
+

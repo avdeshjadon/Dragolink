@@ -1,0 +1,55 @@
+import { Link, useLocation } from 'react-router-dom';
+import { Button } from './ui/Button';
+
+export default function PublicNavbar() {
+  const location = useLocation();
+
+  const isCurrent = (path) => location.pathname === path;
+
+  return (
+    <nav className="sticky top-0 z-50 w-full border-b border-border-light bg-surface-light/80 backdrop-blur-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="flex items-center gap-8">
+          <Link to="/" className="flex items-center gap-2">
+            <img src="/dragolink.svg" alt="LinkPulse Logo" className="h-8 w-8" />
+            <span className="text-xl font-bold text-brand-dark tracking-tight">LinkPulse</span>
+          </Link>
+          <div className="hidden md:flex gap-6 text-sm font-medium">
+            <Link 
+              to="/product" 
+              className={`transition-colors ${isCurrent('/product') ? 'text-brand' : 'text-text-secondary hover:text-brand'}`}
+            >
+              Product
+            </Link>
+            <Link 
+              to="/features" 
+              className={`transition-colors ${isCurrent('/features') ? 'text-brand' : 'text-text-secondary hover:text-brand'}`}
+            >
+              Features
+            </Link>
+            <Link 
+              to="/analytics" 
+              className={`transition-colors ${isCurrent('/analytics') ? 'text-brand' : 'text-text-secondary hover:text-brand'}`}
+            >
+              Analytics
+            </Link>
+            <Link 
+              to="/pricing" 
+              className={`transition-colors ${isCurrent('/pricing') ? 'text-brand' : 'text-text-secondary hover:text-brand'}`}
+            >
+              Pricing
+            </Link>
+          </div>
+        </div>
+        <div className="flex items-center gap-4">
+          <Link to="/login" className="text-sm font-medium text-text-secondary hover:text-brand transition-colors">
+            Log in
+          </Link>
+          <Link to="/register">
+            <Button size="sm">Get Started</Button>
+          </Link>
+        </div>
+      </div>
+    </nav>
+  );
+}

@@ -1,149 +1,170 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Link as LinkIcon, ArrowRight } from 'lucide-react';
+import { motion } from 'motion/react';
+import { User, Lock, Mail, ShieldCheck, BarChart3 } from 'lucide-react';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
 
 export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  
+  const [isLoading, setIsLoading] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     setError('');
-    setLoading(true);
     
     try {
       await register({ name, email, password });
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to register');
+      setError(err.response?.data?.message || 'Failed to create account');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen bg-white">
-      {/* Left Pane - Branding/Visual */}
-      <div className="hidden lg:flex lg:w-1/2 bg-slate-50 flex-col justify-between p-12 border-r border-slate-100 relative overflow-hidden">
-        {/* Abstract background shapes */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
-          <div className="absolute -top-[10%] -left-[10%] w-[50%] h-[50%] rounded-full bg-primary/10 blur-3xl" />
-          <div className="absolute top-[60%] -right-[10%] w-[60%] h-[60%] rounded-full bg-secondary/10 blur-3xl" />
-        </div>
-        
-        <div className="relative z-10">
-          <Link to="/" className="flex items-center gap-3 w-fit">
-            <img src="/dragolink.svg?v=2" alt="Dragolink Logo" className="h-10 w-auto" />
-            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-              Dragolink
-            </span>
-          </Link>
-        </div>
-        
-        <div className="relative z-10 max-w-md">
-          <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
-            Join the link revolution.
-          </h1>
-          <p className="text-lg text-slate-600">
-            Create branded links, track real-time analytics, and build trust with your audience.
-          </p>
-        </div>
-        
-        <div className="relative z-10">
-          <p className="text-sm text-slate-500 font-medium">© {new Date().getFullYear()} Dragolink. All rights reserved.</p>
-        </div>
-      </div>
-
-      {/* Right Pane - Form */}
-      <div className="flex flex-1 flex-col justify-center px-4 sm:px-6 lg:px-20 xl:px-24">
-        <div className="mx-auto w-full max-w-sm lg:max-w-md">
-          <div className="lg:hidden flex justify-center mb-8">
-            <Link to="/" className="flex items-center gap-2">
-              <img src="/dragolink.svg?v=2" alt="Dragolink Logo" className="h-8 w-auto" />
-              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-                Dragolink
-              </span>
-            </Link>
-          </div>
+    <div className="min-h-screen bg-bg-light flex font-sans">
+      
+      {/* Left Form Section */}
+      <div className="flex-1 flex flex-col justify-center px-4 sm:px-6 lg:px-20 xl:px-24 border-r border-border-light relative z-10 bg-surface-light">
+        <div className="mx-auto w-full max-w-sm">
           
-          <div>
-            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Create an account</h2>
-            <p className="mt-2 text-sm text-slate-600">
-              Already have an account?{' '}
-              <Link to="/login" className="font-medium text-primary hover:text-primary-hover transition-colors">
-                Sign in
-              </Link>
-            </p>
+          <div className="mb-10 text-center">
+            <Link to="/" className="inline-flex items-center gap-2 mb-6">
+              <img src="/dragolink.svg" alt="LinkPulse Logo" className="h-10 w-10" />
+            </Link>
+            <h2 className="text-3xl font-extrabold text-brand-dark tracking-tight">Create an account</h2>
+            <p className="mt-2 text-sm text-text-secondary">Join LinkPulse to master your links</p>
           </div>
 
-          <div className="mt-8">
-            <form className="space-y-6" onSubmit={handleSubmit}>
-              {error && (
-                <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm border border-red-100 flex items-center shadow-sm animate-in fade-in slide-in-from-top-2 duration-300">
-                  {error}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }} 
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-red-50 text-red-600 p-3 rounded-lg text-sm font-medium border border-red-100 flex items-center gap-2"
+              >
+                <div className="w-1.5 h-1.5 rounded-full bg-red-600"></div>
+                {error}
+              </motion.div>
+            )}
+
+            <div className="space-y-1">
+              <label className="block text-sm font-semibold text-text-primary">Full Name</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <User className="h-4 w-4 text-text-secondary" />
                 </div>
-              )}
-              
-              <div className="space-y-1">
-                <label className="block text-sm font-medium text-slate-700">Full Name</label>
-                <input
+                <Input
                   type="text"
                   required
+                  className="pl-9"
+                  placeholder="John Doe"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="appearance-none block w-full px-4 py-3 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary sm:text-sm transition-all duration-200"
-                  placeholder="John Doe"
                 />
               </div>
-
-              <div className="space-y-1">
-                <label className="block text-sm font-medium text-slate-700">Email address</label>
-                <input
+            </div>
+            
+            <div className="space-y-1">
+              <label className="block text-sm font-semibold text-text-primary">Email address</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className="h-4 w-4 text-text-secondary" />
+                </div>
+                <Input
                   type="email"
                   required
+                  className="pl-9"
+                  placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full px-4 py-3 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary sm:text-sm transition-all duration-200"
-                  placeholder="you@example.com"
                 />
               </div>
+            </div>
 
-              <div className="space-y-1">
-                <label className="block text-sm font-medium text-slate-700">Password</label>
-                <input
+            <div className="space-y-1">
+              <label className="block text-sm font-semibold text-text-primary">Password</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-4 w-4 text-text-secondary" />
+                </div>
+                <Input
                   type="password"
                   required
                   minLength="6"
+                  className="pl-9"
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full px-4 py-3 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary sm:text-sm transition-all duration-200"
-                  placeholder="••••••••"
                 />
               </div>
+            </div>
 
-              <div>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 transition-all duration-200"
-                >
-                  {loading ? (
-                    'Creating account...'
-                  ) : (
-                    <span className="flex items-center gap-2">
-                      Create account <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </span>
-                  )}
-                </button>
+            <Button type="submit" className="w-full h-11 text-base mt-2" isLoading={isLoading}>
+              Create account
+            </Button>
+            
+          </form>
+
+          <p className="mt-8 text-center text-sm text-text-secondary">
+            Already have an account?{' '}
+            <Link to="/login" className="font-semibold text-brand hover:text-brand-dark transition-colors">
+              Sign in
+            </Link>
+          </p>
+        </div>
+      </div>
+
+      {/* Right Product Section */}
+      <div className="hidden lg:flex flex-1 flex-col justify-center items-center relative overflow-hidden bg-brand-dark text-surface-light">
+        <div className="absolute inset-0 bg-[radial-gradient(#15803D_1px,transparent_1px)] [background-size:24px_24px] opacity-10"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-brand-emerald/20 blur-[120px] rounded-full pointer-events-none z-0"></div>
+        
+        <div className="relative z-10 max-w-lg px-8">
+          <div className="mb-12">
+            <h3 className="text-3xl font-bold mb-4">Start optimizing today</h3>
+            <p className="text-lg text-border-light/80">Join thousands of teams who trust LinkPulse for their link management and analytics.</p>
+          </div>
+          
+          <div className="space-y-6">
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex gap-4 items-start bg-surface-dark p-6 rounded-2xl border border-brand/20"
+            >
+              <div className="bg-brand-emerald p-3 rounded-xl">
+                <BarChart3 className="w-6 h-6 text-white" />
               </div>
-            </form>
+              <div>
+                <h4 className="font-semibold text-lg">Actionable Insights</h4>
+                <p className="text-border-light/70 text-sm mt-1">Make data-driven decisions with detailed click analytics and reports.</p>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="flex gap-4 items-start bg-surface-dark p-6 rounded-2xl border border-brand/20"
+            >
+              <div className="bg-brand p-3 rounded-xl">
+                <ShieldCheck className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h4 className="font-semibold text-lg">Built for Scale</h4>
+                <p className="text-border-light/70 text-sm mt-1">From small projects to enterprise infrastructure, LinkPulse scales with you.</p>
+              </div>
+            </motion.div>
           </div>
         </div>
       </div>
