@@ -1,0 +1,133 @@
+import React, { useState } from 'react';
+
+export default function SettingsProfile() {
+  const [formData, setFormData] = useState({
+    firstName: 'Jane',
+    lastName: 'Doe',
+    email: 'jane.doe@dragolink.io',
+    company: 'Dragolink Analytics',
+    timezone: 'est'
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  return (
+    <div className="bg-surface-container-low rounded-xl border border-outline-variant/10 shadow-sm p-6 lg:p-10 flex flex-col gap-10">
+      <header>
+        <h3 className="font-headline-lg text-headline-lg text-on-surface mb-1">Profile Details</h3>
+        <p className="font-body-md text-body-md text-on-surface-variant">Update your personal information and how others see you on the platform.</p>
+      </header>
+      
+      <div className="h-[1px] w-full bg-outline-variant/10"></div>
+      
+      {/* Avatar Section */}
+      <div className="flex items-start md:items-center gap-6 flex-col md:flex-row">
+        <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-surface-variant bg-surface-container-highest group cursor-pointer">
+          <img alt="Current Avatar" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAibvZv4rjuo5SMEcpykMaFeFMADy-kPqzbujLCMYDPdneARqSczxGHzzPFpVudtMfKjKAUIYGiGM4wAmRNi3c6NIVQOgEnnYWqNCtx4MczaIhJl5xD8346qgM2MVMzwZXYzJOIIR6m66pq4pUYXM2ZXqwhvHqu75MpWDJhE4Ri0gcrc4YedNmM6t6c8rGcE2qUO88ypXyYXk7LyVqqswoTYBkCWiHZgTYol35ygJqg29TzVAWPO0QsJKqBr0xM2fQtklzO8IU6sYyg"/>
+          <div className="absolute inset-0 bg-background/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <span className="material-symbols-outlined text-primary">upload</span>
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-4">
+            <button className="bg-surface-container-highest border border-outline-variant/30 text-on-surface font-label-md text-label-md px-4 py-2 rounded-md hover:bg-surface-variant transition-colors duration-200">
+              Upload new
+            </button>
+            <button className="text-error hover:text-error-container font-label-md text-label-md transition-colors duration-200">
+              Remove
+            </button>
+          </div>
+          <p className="font-label-sm text-label-sm text-on-surface-variant">Recommended size: 256x256px. Max file size: 5MB.</p>
+        </div>
+      </div>
+      
+      {/* Form Fields */}
+      <form className="flex flex-col gap-6 max-w-2xl" onSubmit={(e) => e.preventDefault()}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-2">
+            <label className="font-label-md text-label-md text-on-surface" htmlFor="firstName">First Name</label>
+            <input 
+              id="firstName" 
+              type="text" 
+              value={formData.firstName}
+              onChange={handleChange}
+              className="bg-surface-dim border border-outline-variant/30 rounded-md px-4 py-2 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all w-full" 
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="font-label-md text-label-md text-on-surface" htmlFor="lastName">Last Name</label>
+            <input 
+              id="lastName" 
+              type="text" 
+              value={formData.lastName}
+              onChange={handleChange}
+              className="bg-surface-dim border border-outline-variant/30 rounded-md px-4 py-2 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all w-full" 
+            />
+          </div>
+        </div>
+        
+        <div className="flex flex-col gap-2">
+          <label className="font-label-md text-label-md text-on-surface" htmlFor="email">Email Address</label>
+          <div className="relative w-full">
+            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-[18px]">mail</span>
+            <input 
+              id="email" 
+              type="email" 
+              value={formData.email}
+              onChange={handleChange}
+              className="bg-surface-dim border border-outline-variant/30 rounded-md pl-[42px] pr-4 py-2 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all w-full" 
+            />
+          </div>
+        </div>
+        
+        <div className="flex flex-col gap-2">
+          <label className="font-label-md text-label-md text-on-surface" htmlFor="company">Company</label>
+          <div className="relative w-full">
+            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-[18px]">domain</span>
+            <input 
+              id="company" 
+              type="text" 
+              value={formData.company}
+              onChange={handleChange}
+              className="bg-surface-dim border border-outline-variant/30 rounded-md pl-[42px] pr-4 py-2 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all w-full" 
+            />
+          </div>
+        </div>
+        
+        <div className="flex flex-col gap-2">
+          <label className="font-label-md text-label-md text-on-surface" htmlFor="timezone">Time Zone</label>
+          <div className="relative w-full">
+            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/50 text-[18px]">language</span>
+            <select 
+              id="timezone"
+              value={formData.timezone}
+              onChange={handleChange}
+              className="appearance-none bg-surface-dim border border-outline-variant/30 rounded-md pl-[42px] pr-10 py-2 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all w-full cursor-pointer"
+            >
+              <option value="pst">Pacific Standard Time (PST)</option>
+              <option value="est">Eastern Standard Time (EST)</option>
+              <option value="utc">Coordinated Universal Time (UTC)</option>
+              <option value="cet">Central European Time (CET)</option>
+            </select>
+            <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/50 pointer-events-none">expand_more</span>
+          </div>
+          <p className="font-label-sm text-label-sm text-on-surface-variant mt-1">This timezone will be used across all your analytics dashboards.</p>
+        </div>
+        
+        <div className="h-[1px] w-full bg-outline-variant/10 my-4"></div>
+        
+        {/* Actions */}
+        <div className="flex justify-end gap-4">
+          <button type="button" className="bg-transparent text-on-surface-variant font-label-md text-label-md px-6 py-2 rounded-md hover:bg-surface-container-highest hover:text-on-surface transition-colors duration-200">
+            Cancel
+          </button>
+          <button type="submit" className="bg-primary-container text-on-primary-container font-label-md text-label-md px-6 py-2 rounded-md hover:bg-primary hover:text-white transition-colors duration-200 shadow-sm border border-primary-fixed/20 active:scale-95">
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}

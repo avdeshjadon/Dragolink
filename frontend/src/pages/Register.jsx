@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 import { User, Lock, Mail, ShieldCheck, BarChart3 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
+import AuthVisual from '../components/AuthVisual';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -33,16 +34,22 @@ export default function Register() {
   return (
     <div className="min-h-screen bg-bg-light flex font-sans">
       
-      {/* Left Form Section */}
-      <div className="flex-1 flex flex-col justify-center px-4 sm:px-6 lg:px-20 xl:px-24 border-r border-border-light relative z-10 bg-surface-light">
+      {/* Left Visual Section */}
+      <AuthVisual 
+        title="Start optimizing today." 
+        subtitle="Join thousands of teams who trust Dragolink for their link management and analytics." 
+      />
+
+      {/* Right Form Section */}
+      <div className="flex-1 flex flex-col justify-center px-4 sm:px-6 lg:px-20 xl:px-24 relative z-10 bg-surface-light border-l border-outline-variant/10">
         <div className="mx-auto w-full max-w-sm">
           
           <div className="mb-10 text-center">
             <Link to="/" className="inline-flex items-center gap-2 mb-6">
-              <img src="/dragolink.svg" alt="LinkPulse Logo" className="h-10 w-10" />
+              <img src="/dragolink.svg" alt="Dragolink Logo" className="h-10 w-10" />
             </Link>
             <h2 className="text-3xl font-extrabold text-brand-dark tracking-tight">Create an account</h2>
-            <p className="mt-2 text-sm text-text-secondary">Join LinkPulse to master your links</p>
+            <p className="mt-2 text-sm text-text-secondary">Join Dragolink to master your links</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -121,51 +128,6 @@ export default function Register() {
               Sign in
             </Link>
           </p>
-        </div>
-      </div>
-
-      {/* Right Product Section */}
-      <div className="hidden lg:flex flex-1 flex-col justify-center items-center relative overflow-hidden bg-brand-dark text-surface-light">
-        <div className="absolute inset-0 bg-[radial-gradient(#15803D_1px,transparent_1px)] [background-size:24px_24px] opacity-10"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-brand-emerald/20 blur-[120px] rounded-full pointer-events-none z-0"></div>
-        
-        <div className="relative z-10 max-w-lg px-8">
-          <div className="mb-12">
-            <h3 className="text-3xl font-bold mb-4">Start optimizing today</h3>
-            <p className="text-lg text-border-light/80">Join thousands of teams who trust LinkPulse for their link management and analytics.</p>
-          </div>
-          
-          <div className="space-y-6">
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="flex gap-4 items-start bg-surface-dark p-6 rounded-2xl border border-brand/20"
-            >
-              <div className="bg-brand-emerald p-3 rounded-xl">
-                <BarChart3 className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h4 className="font-semibold text-lg">Actionable Insights</h4>
-                <p className="text-border-light/70 text-sm mt-1">Make data-driven decisions with detailed click analytics and reports.</p>
-              </div>
-            </motion.div>
-
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
-              className="flex gap-4 items-start bg-surface-dark p-6 rounded-2xl border border-brand/20"
-            >
-              <div className="bg-brand p-3 rounded-xl">
-                <ShieldCheck className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h4 className="font-semibold text-lg">Built for Scale</h4>
-                <p className="text-border-light/70 text-sm mt-1">From small projects to enterprise infrastructure, LinkPulse scales with you.</p>
-              </div>
-            </motion.div>
-          </div>
         </div>
       </div>
     </div>

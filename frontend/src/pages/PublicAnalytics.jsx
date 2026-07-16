@@ -12,7 +12,7 @@ export default function PublicAnalytics() {
           animate={{ opacity: 1, y: 0 }}
           className="inline-flex items-center gap-2 bg-brand/10 text-brand px-4 py-2 rounded-full font-semibold text-sm mb-8"
         >
-          <BarChart3 className="w-4 h-4" /> LinkPulse Analytics Engine
+          <BarChart3 className="w-4 h-4" /> Dragolink Analytics Engine
         </motion.div>
         
         <motion.h1 

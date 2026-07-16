@@ -35,8 +35,8 @@ export default function PublicFooter() {
           {/* Brand & Newsletter */}
           <div className="col-span-1 lg:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <img src="/dragolink.svg" alt="LinkPulse Logo" className="h-8 w-8" />
-              <span className="text-2xl font-bold text-brand-dark tracking-tight">LinkPulse</span>
+              <img src="/dragolink.svg" alt="Dragolink Logo" className="h-8 w-8" />
+              <span className="text-2xl font-bold text-brand-dark tracking-tight">Dragolink</span>
             </Link>
             <p className="text-text-secondary text-sm mb-6 max-w-sm">
               The professional URL shortener and analytics platform built for modern teams, creators, and enterprises. 
@@ -102,7 +102,7 @@ export default function PublicFooter() {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-border-light flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-text-secondary">
-          <p>© {new Date().getFullYear()} LinkPulse Inc. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Dragolink Inc. All rights reserved.</p>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5"><Shield className="w-4 h-4 text-brand-emerald" /> Enterprise Secure</span>
             <span className="flex items-center gap-1.5"><Zap className="w-4 h-4 text-brand-accent" /> 99.99% Uptime</span>

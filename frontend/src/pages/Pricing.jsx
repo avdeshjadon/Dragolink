@@ -15,7 +15,7 @@ export default function Pricing() {
         'Up to 500 links/month',
         'Basic click analytics',
         'Standard support',
-        'LinkPulse branding on QR codes',
+        'Dragolink branding on QR codes',
         '30-day data retention',
       ],
       notIncluded: [

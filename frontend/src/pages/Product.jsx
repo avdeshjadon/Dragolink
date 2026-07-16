@@ -21,7 +21,7 @@ export default function Product() {
           transition={{ delay: 0.1 }}
           className="text-xl text-text-secondary max-w-3xl mx-auto mb-10"
         >
-          LinkPulse is the complete link management infrastructure for modern teams. Shorten, brand, and track every click with enterprise-grade reliability.
+          Dragolink is the complete link management infrastructure for modern teams. Shorten, brand, and track every click with enterprise-grade reliability.
         </motion.p>
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -56,7 +56,7 @@ export default function Product() {
             </div>
             <div className="bg-bg-light rounded-3xl border border-border-light p-8 shadow-xl">
               <div className="bg-surface-light border border-border-light rounded-xl p-4 shadow-sm flex items-center gap-4 mb-4">
-                <div className="bg-brand/10 text-brand font-mono font-bold px-3 py-1 rounded">linkpulse.io/demo</div>
+                <div className="bg-brand/10 text-brand font-mono font-bold px-3 py-1 rounded">dragolink.io/demo</div>
                 <ArrowRight className="text-text-secondary w-5 h-5" />
                 <div className="text-text-secondary truncate text-sm">https://example.com/very-long-url-path</div>
               </div>
@@ -72,7 +72,7 @@ export default function Product() {
 
       {/* CTA */}
       <section className="py-24 text-center px-4">
-        <h2 className="text-3xl font-bold text-brand-dark mb-6">Experience the LinkPulse difference</h2>
+        <h2 className="text-3xl font-bold text-brand-dark mb-6">Experience the Dragolink difference</h2>
         <Link to="/register">
           <Button size="lg">Get Started</Button>
         </Link>

@@ -11,8 +11,8 @@ export default function PublicNavbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Link to="/" className="flex items-center gap-2">
-            <img src="/dragolink.svg" alt="LinkPulse Logo" className="h-8 w-8" />
-            <span className="text-xl font-bold text-brand-dark tracking-tight">LinkPulse</span>
+            <img src="/dragolink.svg" alt="Dragolink Logo" className="h-8 w-8" />
+            <span className="text-xl font-bold text-brand-dark tracking-tight">Dragolink</span>
           </Link>
           <div className="hidden md:flex gap-6 text-sm font-medium">
             <Link 

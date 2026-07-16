@@ -1,138 +1,218 @@
-import { useState, useEffect } from 'react';
-import { api } from '../lib/axios';
-import { Link } from 'react-router-dom';
-import { BarChart2, Edit, Trash2, ExternalLink, Copy, Check, Power, PowerOff } from 'lucide-react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function MyLinks() {
-  const [links, setLinks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [copiedId, setCopiedId] = useState(null);
+  const navigate = useNavigate();
+  const [selectedLinks, setSelectedLinks] = useState([]);
+  const [activeFilter, setActiveFilter] = useState('Active');
 
-  useEffect(() => {
-    fetchLinks();
-  }, []);
+  const links = [
+    {
+      id: 1,
+      title: 'Product Launch Q3',
+      longUrl: 'https://marketing.acme.com/q3-launch-page',
+      shortUrl: 'lp.io/q3-launch',
+      clicks: '12,405',
+      status: 'Active',
+      icon: 'link'
+    },
+    {
+      id: 2,
+      title: 'Blog: Remote Work 2024',
+      longUrl: 'https://blog.acme.com/remote-work-trends',
+      shortUrl: 'lp.io/remote-blog',
+      clicks: '3,291',
+      status: 'Active',
+      icon: 'article'
+    },
+    {
+      id: 3,
+      title: 'Webinar Registration (Past)',
+      longUrl: 'https://events.acme.com/q1-webinar',
+      shortUrl: 'lp.io/q1-webinar',
+      clicks: '842',
+      status: 'Expired',
+      icon: 'event'
+    }
+  ];
 
-  const fetchLinks = async () => {
-    try {
-      const res = await api.get('/links');
-      setLinks(res.data);
-    } catch (err) {
-      setError('Failed to load links');
-    } finally {
-      setLoading(false);
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedLinks(links.map(l => l.id));
+    } else {
+      setSelectedLinks([]);
     }
   };
 
-  const copyToClipboard = (id, text) => {
-    navigator.clipboard.writeText(text);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 2000);
-  };
-
-  const toggleStatus = async (id) => {
-    try {
-      const res = await api.patch(`/links/${id}/toggle`);
-      setLinks(links.map(l => l.id === id ? res.data : l));
-    } catch (err) {
-      alert('Failed to toggle status');
+  const handleSelect = (id) => {
+    if (selectedLinks.includes(id)) {
+      setSelectedLinks(selectedLinks.filter(linkId => linkId !== id));
+    } else {
+      setSelectedLinks([...selectedLinks, id]);
     }
   };
-
-  const deleteLink = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this link?')) return;
-    try {
-      await api.delete(`/links/${id}`);
-      setLinks(links.filter(l => l.id !== id));
-    } catch (err) {
-      alert('Failed to delete link');
-    }
-  };
-
-  if (loading) return <div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>;
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-slate-900">My Links</h1>
-        <Link to="/create" className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-hover transition-colors">
-          Create New
-        </Link>
+    <div className="flex flex-col h-full bg-background font-sans">
+      
+      {/* Header Context for Desktop */}
+      <div className="hidden md:flex flex-col mb-6">
+        <h2 className="text-headline-lg font-headline-lg text-on-surface">My Links</h2>
+        <span className="text-label-md font-label-md text-on-surface-variant mt-1">42 Total Links</span>
       </div>
 
-      {error && <div className="bg-red-50 text-red-600 p-4 rounded-lg">{error}</div>}
-
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        {links.length === 0 ? (
-          <div className="p-12 text-center">
-            <h3 className="text-lg font-medium text-slate-900 mb-2">No links found</h3>
-            <p className="text-slate-500 mb-6">You haven't created any short links yet.</p>
-            <Link to="/create" className="bg-primary text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-primary-hover transition-colors">
-              Create your first link
-            </Link>
+      <div className="space-y-6">
+        {/* Toolbar & Filters */}
+        {selectedLinks.length > 0 ? (
+          <div className="flex items-center justify-between bg-secondary-container/40 border border-secondary-fixed/20 rounded-lg p-2 px-4 animate-fade-in">
+            <span className="text-label-sm font-label-sm text-secondary-fixed">{selectedLinks.length} items selected</span>
+            <div className="flex gap-2">
+              <button className="text-label-sm font-label-sm text-on-surface hover:text-primary transition-colors flex items-center gap-1">
+                <span className="material-symbols-outlined text-[16px]">label</span> Tag
+              </button>
+              <button className="text-label-sm font-label-sm text-error hover:text-error/80 transition-colors flex items-center gap-1 ml-2">
+                <span className="material-symbols-outlined text-[16px]">delete</span> Delete
+              </button>
+            </div>
           </div>
         ) : (
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 glass-panel p-4 rounded-xl">
+            <div className="flex items-center gap-2">
+              <button className="bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface text-label-md font-label-md py-1.5 px-3 rounded-lg flex items-center gap-2 transition-colors">
+                <span className="material-symbols-outlined text-[16px]">filter_list</span>
+                Filter
+              </button>
+              <div className="flex bg-surface-container-lowest border border-outline-variant/20 rounded-lg p-1">
+                {['Active', 'Expired', 'Scheduled'].map(filter => (
+                  <button 
+                    key={filter}
+                    onClick={() => setActiveFilter(filter)}
+                    className={`px-3 py-1 text-label-sm font-label-sm rounded-md transition-colors ${
+                      activeFilter === filter 
+                        ? 'bg-secondary-container text-on-secondary-container' 
+                        : 'text-on-surface-variant hover:text-on-surface'
+                    }`}
+                  >
+                    {filter}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <button className="hidden sm:flex bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface text-label-md font-label-md py-1.5 px-3 rounded-lg items-center gap-2 transition-colors">
+                <span className="material-symbols-outlined text-[16px]">download</span>
+                Export
+              </button>
+              <button 
+                onClick={() => navigate('/create')}
+                className="flex-1 sm:flex-none bg-primary-container hover:bg-primary-container/90 text-white text-label-md font-label-md py-1.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-[0_0_15px_rgba(21,128,61,0.3)]"
+              >
+                <span className="material-symbols-outlined text-[18px]">add_link</span>
+                Create Link
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Data Table */}
+        <div className="glass-panel rounded-xl overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Link Info</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Clicks</th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Date</th>
-                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Actions</th>
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-outline-variant/20 bg-surface-container-lowest/50">
+                  <th className="p-4 w-12 text-center">
+                    <input 
+                      type="checkbox" 
+                      className="lp-checkbox"
+                      checked={selectedLinks.length === links.length}
+                      onChange={handleSelectAll}
+                    />
+                  </th>
+                  <th className="p-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Link Details</th>
+                  <th className="p-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider hidden sm:table-cell">Short URL</th>
+                  <th className="p-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider text-right">Clicks</th>
+                  <th className="p-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider text-center">Status</th>
+                  <th className="p-4 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-slate-200">
-                {links.map((link) => {
-                  const shortUrl = `http://localhost:8080/${link.customAlias || link.shortCode}`;
-                  return (
-                    <tr key={link.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex flex-col">
-                          <span className="font-medium text-slate-900">{link.title || link.customAlias || link.shortCode}</span>
-                          <div className="flex items-center gap-2 mt-1">
-                            <a href={shortUrl} target="_blank" rel="noreferrer" className="text-sm text-primary hover:underline flex items-center gap-1">
-                              {link.customAlias || link.shortCode} <ExternalLink className="h-3 w-3" />
-                            </a>
-                            <button onClick={() => copyToClipboard(link.id, shortUrl)} className="text-slate-400 hover:text-slate-700">
-                              {copiedId === link.id ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-                            </button>
-                          </div>
-                          <span className="text-xs text-slate-500 mt-1 truncate max-w-xs" title={link.longUrl}>{link.longUrl}</span>
+              <tbody className="divide-y divide-outline-variant/10">
+                {links.map(link => (
+                  <tr key={link.id} className={`hover:bg-surface-container-low transition-colors duration-150 group ${link.status === 'Expired' ? 'opacity-75' : ''}`}>
+                    <td className="p-4 text-center">
+                      <input 
+                        type="checkbox" 
+                        className="lp-checkbox row-checkbox" 
+                        checked={selectedLinks.includes(link.id)}
+                        onChange={() => handleSelect(link.id)}
+                      />
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded bg-surface-container flex items-center justify-center border border-outline-variant/20 shrink-0">
+                          <span className="material-symbols-outlined text-on-surface-variant text-[18px]">{link.icon}</span>
                         </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${link.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                          {link.active ? 'Active' : 'Disabled'}
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-label-md font-label-md text-on-surface truncate">{link.title}</span>
+                          <span className="text-code-sm font-code-sm text-on-surface-variant/70 truncate hidden sm:block">{link.longUrl}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="p-4 hidden sm:table-cell">
+                      <div className="flex items-center gap-2 group/copy cursor-pointer">
+                        <span className="text-body-md font-body-md text-primary hover:underline">{link.shortUrl}</span>
+                        <span className="material-symbols-outlined text-[14px] text-on-surface-variant opacity-0 group-hover/copy:opacity-100 transition-opacity">content_copy</span>
+                      </div>
+                    </td>
+                    <td className="p-4 text-right">
+                      <span className="text-code-sm font-code-sm text-on-surface">{link.clicks}</span>
+                    </td>
+                    <td className="p-4 text-center">
+                      {link.status === 'Active' ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-tertiary-container/20 text-tertiary-fixed border border-tertiary-container/50 text-label-sm font-label-sm">
+                          <span className="w-1.5 h-1.5 rounded-full bg-tertiary-fixed"></span> Active
                         </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                        {link.clickCount}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                        {new Date(link.createdAt).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex items-center justify-end gap-3">
-                          <Link to={`/analytics/${link.id}`} className="text-blue-600 hover:text-blue-900 bg-blue-50 p-2 rounded-lg" title="Analytics">
-                            <BarChart2 className="h-4 w-4" />
-                          </Link>
-                          <button onClick={() => toggleStatus(link.id)} className={`${link.active ? 'text-amber-600 bg-amber-50 hover:text-amber-900' : 'text-green-600 bg-green-50 hover:text-green-900'} p-2 rounded-lg`} title={link.active ? 'Disable' : 'Enable'}>
-                            {link.active ? <PowerOff className="h-4 w-4" /> : <Power className="h-4 w-4" />}
-                          </button>
-                          <button onClick={() => deleteLink(link.id)} className="text-red-600 hover:text-red-900 bg-red-50 p-2 rounded-lg" title="Delete">
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant/30 text-label-sm font-label-sm">
+                          Expired
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-4 text-right">
+                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onClick={() => navigate(`/analytics/${link.id}`)} className="p-1.5 text-on-surface-variant hover:text-primary rounded-md hover:bg-surface-container-high transition-colors" title="Analytics">
+                          <span className="material-symbols-outlined text-[18px]">bar_chart</span>
+                        </button>
+                        <button className="p-1.5 text-on-surface-variant hover:text-primary rounded-md hover:bg-surface-container-high transition-colors" title="Edit">
+                          <span className="material-symbols-outlined text-[18px]">edit</span>
+                        </button>
+                        <button className="p-1.5 text-on-surface-variant hover:text-error rounded-md hover:bg-error-container/30 transition-colors" title="Delete">
+                          <span className="material-symbols-outlined text-[18px]">delete</span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
-        )}
+          
+          {/* Pagination */}
+          <div className="px-4 py-2 border-t border-outline-variant/20 flex items-center justify-between bg-surface-container-lowest/30">
+            <span className="text-label-sm font-label-sm text-on-surface-variant">Showing 1 to 3 of 42 results</span>
+            <div className="flex items-center gap-1">
+              <button className="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container disabled:opacity-50" disabled>
+                <span className="material-symbols-outlined text-[20px]">chevron_left</span>
+              </button>
+              <button className="w-8 h-8 rounded flex items-center justify-center text-label-sm font-label-sm bg-primary-container text-white">1</button>
+              <button className="w-8 h-8 rounded flex items-center justify-center text-label-sm font-label-sm text-on-surface hover:bg-surface-container transition-colors">2</button>
+              <button className="w-8 h-8 rounded flex items-center justify-center text-label-sm font-label-sm text-on-surface hover:bg-surface-container transition-colors">3</button>
+              <span className="text-on-surface-variant px-1">...</span>
+              <button className="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors">
+                <span className="material-symbols-outlined text-[20px]">chevron_right</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -105,7 +105,7 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-brand-dark mb-4">Everything you need to scale</h2>
-            <p className="text-lg text-text-secondary max-w-2xl mx-auto">LinkPulse provides a comprehensive suite of tools designed for modern teams and creators.</p>
+            <p className="text-lg text-text-secondary max-w-2xl mx-auto">Dragolink provides a comprehensive suite of tools designed for modern teams and creators.</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -135,7 +135,7 @@ export default function Landing() {
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <h2 className="text-4xl font-bold text-surface-light mb-6">Ready to optimize your links?</h2>
           <p className="text-xl text-border-light mb-10 max-w-2xl mx-auto">
-            Join thousands of teams who trust LinkPulse for their link management and analytics.
+            Join thousands of teams who trust Dragolink for their link management and analytics.
           </p>
           <Link to="/register">
             <Button size="lg" className="bg-brand-accent text-brand-dark hover:bg-brand-lime text-lg font-bold">
