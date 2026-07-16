@@ -7,20 +7,21 @@ export default function TopNavbar() {
 
   return (
     <header className="flex-none border-b border-outline-variant/10 bg-surface/80 backdrop-blur-md sticky top-0 z-50">
-      <div className="flex justify-between items-center w-full px-4 md:px-6 py-4">
+      <div className="flex justify-between items-center w-full px-4 md:px-6 py-4 relative">
         {/* Logo & Navigation */}
-        <div className="flex items-center gap-10">
+        <div className="flex items-center">
           <Link to="/dashboard" className="flex items-center gap-2 text-headline-md font-display-lg font-bold text-primary tracking-tight">
             <img src="/dragolink.svg" alt="Dragolink Logo" className="h-8 w-8" />
             DRAGOLINK
           </Link>
-          <nav className="hidden lg:flex items-center gap-4">
-            <Link to="#" className="text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary transition-colors duration-200">Product</Link>
-            <Link to="#" className="text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary transition-colors duration-200">Pricing</Link>
-            <Link to="#" className="text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary transition-colors duration-200">Solutions</Link>
-            <Link to="#" className="text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary transition-colors duration-200">Docs</Link>
-          </nav>
         </div>
+        
+        <nav className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-4">
+          <Link to="#" className="text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary transition-colors duration-200">Product</Link>
+          <Link to="#" className="text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary transition-colors duration-200">Pricing</Link>
+          <Link to="#" className="text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary transition-colors duration-200">Solutions</Link>
+          <Link to="#" className="text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary transition-colors duration-200">Docs</Link>
+        </nav>
         
         {/* Trailing Actions */}
         <div className="flex items-center gap-4">

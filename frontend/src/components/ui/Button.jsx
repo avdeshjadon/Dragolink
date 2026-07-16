@@ -25,7 +25,7 @@ const Button = React.forwardRef(
         ref={ref}
         whileTap={{ scale: 0.98 }}
         className={cn(
-          "inline-flex items-center justify-center rounded-lg text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:pointer-events-none disabled:opacity-50",
+          "inline-flex items-center justify-center rounded-lg text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:pointer-events-none disabled:opacity-50 cursor-pointer",
           buttonVariants[variant],
           sizeVariants[size],
           className
