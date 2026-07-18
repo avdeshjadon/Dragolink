@@ -34,6 +34,12 @@ export default function PublicNavbar() {
             >
               Pricing
             </Link>
+            <Link 
+              to="/about" 
+              className={`transition-colors ${isCurrent('/about') ? 'text-brand' : 'text-text-secondary hover:text-brand'}`}
+            >
+              About Us
+            </Link>
           </div>
         <div className="flex items-center justify-end gap-4">
           <Link to="/login" className="text-sm font-medium text-text-secondary hover:text-brand transition-colors">
