@@ -2,7 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Share2, MessageCircle, Mail, Copy } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { api } from '../lib/axios';
 
 export default function BlogPost() {
   const { id } = useParams();
@@ -12,7 +12,7 @@ export default function BlogPost() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/api/cms/posts/${id}`);
+        const res = await api.get(`/cms/posts/${id}`);
         setPost(res.data);
       } catch (err) {
         console.error("Failed to fetch post", err);

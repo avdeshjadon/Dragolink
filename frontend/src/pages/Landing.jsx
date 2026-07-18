@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { api } from "../lib/axios";
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import {
@@ -91,7 +91,7 @@ export default function Landing() {
   useEffect(() => {
     const fetchPageData = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/public/pages/home");
+        const res = await api.get("/public/pages/home");
         if (res.data && res.data.htmlContent) {
           setPageData(JSON.parse(res.data.htmlContent));
         }

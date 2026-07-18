@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { api } from '../lib/axios';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import {
@@ -74,7 +74,7 @@ export default function Product() {
   useEffect(() => {
     const fetchPageData = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/public/pages/product");
+        const res = await api.get("/public/pages/product");
         if (res.data && res.data.htmlContent) {
           setPageData(JSON.parse(res.data.htmlContent));
         }

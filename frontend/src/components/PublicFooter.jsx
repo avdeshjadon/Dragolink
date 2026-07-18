@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { api } from '../lib/axios';
 import { Shield, Zap } from 'lucide-react';
 
 const TwitterIcon = ({ className }) => (
@@ -29,7 +29,7 @@ export default function PublicFooter() {
 
   useEffect(() => {
     // Fetch dynamic footer links from Spring Boot Backend
-    axios.get('http://localhost:8080/api/public/navigation')
+    api.get('/public/navigation')
       .then(res => {
         // Group by category
         const grouped = res.data.reduce((acc, link) => {
