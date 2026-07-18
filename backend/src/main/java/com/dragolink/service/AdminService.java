@@ -7,6 +7,8 @@ import com.dragolink.exception.BadRequestException;
 import com.dragolink.exception.ResourceNotFoundException;
 import com.dragolink.repository.BlockedDomainRepository;
 import lombok.RequiredArgsConstructor;
+import com.dragolink.repository.UserRepository;
+import com.dragolink.entity.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 public class AdminService {
 
     private final BlockedDomainRepository blockedDomainRepository;
+    private final UserRepository userRepository;
 
     public BlockedDomainResponse addBlockedDomain(BlockedDomainRequest request) {
         if (blockedDomainRepository.existsByDomain(request.getDomain())) {
@@ -42,6 +45,13 @@ public class AdminService {
             throw new ResourceNotFoundException("Blocked domain not found");
         }
         blockedDomainRepository.deleteById(id);
+    }
+
+    public void toggleUserStatus(Long id) {
+        User user = userRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        user.setActive(!user.isActive());
+        userRepository.save(user);
     }
 
     private BlockedDomainResponse mapToResponse(BlockedDomain domain) {

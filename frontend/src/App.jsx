@@ -1,4 +1,6 @@
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'motion/react';
+import SmoothScroll from './components/SmoothScroll';
 import { useAuth } from './context/AuthContext';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
@@ -24,13 +26,25 @@ import APIKeys from './pages/APIKeys';
 import PublicQRCodes from './pages/PublicQRCodes';
 import PublicIntegrations from './pages/PublicIntegrations';
 import PublicAPI from './pages/PublicAPI';
+import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
+import HelpCenter from './pages/HelpCenter';
+import Guides from './pages/Guides';
+import CaseStudies from './pages/CaseStudies';
+import SystemStatus from './pages/SystemStatus';
+import Docs from './pages/Docs';
+import About from './pages/About';
+import Careers from './pages/Careers';
+import Contact from './pages/Contact';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
+import Security from './pages/Security';
 
 import DashboardLayout from './components/DashboardLayout';
 import SettingsLayout from './components/SettingsLayout';
 import PublicNavbar from './components/PublicNavbar';
 import PublicFooter from './components/PublicFooter';
 import ScrollToTop from './components/ScrollToTop';
-
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const { user } = useAuth();
   
@@ -42,12 +56,22 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
 
 // Layout for Auth & Landing pages (No global Navbar, they have their own)
 const PublicLayout = () => {
+  const location = useLocation();
   return (
     <div className="min-h-screen bg-bg-light flex flex-col">
       <PublicNavbar />
-      <main className="flex-1">
-        <Outlet />
-      </main>
+      <AnimatePresence mode="wait">
+        <motion.main 
+          key={location.pathname}
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -15 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="flex-1"
+        >
+          <Outlet />
+        </motion.main>
+      </AnimatePresence>
       <PublicFooter />
     </div>
   );
@@ -55,9 +79,10 @@ const PublicLayout = () => {
 
 function App() {
   return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <Routes>
+    <SmoothScroll>
+      <BrowserRouter>
+        <ScrollToTop />
+        <Routes>
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Landing />} />
           <Route path="/product" element={<Product />} />
@@ -67,6 +92,19 @@ function App() {
           <Route path="/qr-codes" element={<PublicQRCodes />} />
           <Route path="/integrations" element={<PublicIntegrations />} />
           <Route path="/api" element={<PublicAPI />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:id" element={<BlogPost />} />
+          <Route path="/help" element={<HelpCenter />} />
+          <Route path="/guides" element={<Guides />} />
+          <Route path="/case-studies" element={<CaseStudies />} />
+          <Route path="/status" element={<SystemStatus />} />
+          <Route path="/docs" element={<Docs />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/security" element={<Security />} />
 
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -92,7 +130,6 @@ function App() {
           <Route path="/admin/domains" element={<ProtectedRoute adminOnly={true}><AdminDomains /></ProtectedRoute>} />
           <Route path="/admin/billing" element={<ProtectedRoute adminOnly={true}><AdminBilling /></ProtectedRoute>} />
         </Route>
-        
         {/* Settings Routes wrapped in SettingsLayout */}
         <Route element={
           <ProtectedRoute>
@@ -104,6 +141,7 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
+    </SmoothScroll>
   );
 }
 

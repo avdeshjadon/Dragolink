@@ -1,7 +1,15 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { QrCode, ScanLine, PaintBucket, BarChart3, Globe, RefreshCcw, Lock, Download, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { QrCode, ScanLine, PaintBucket, BarChart3, Globe, RefreshCcw, Lock, Download, ArrowRight, CheckCircle2, ShieldCheck, Settings2, Users, Zap, Cpu, Server, LinkIcon, Smartphone, MousePointerClick, Clock, TrendingUp, Filter } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
+import { api } from '../lib/axios';
+
+const iconMap = {
+  PaintBucket, RefreshCcw, BarChart3, Globe, Lock, Download, ScanLine, QrCode,
+  Smartphone, MousePointerClick, Clock, TrendingUp, Filter,
+  ShieldCheck, Settings2, Users, Zap, Cpu, Server, LinkIcon
+};
 
 // Full 21×21 QR Code matrix (1=dark, 0=light) — standard structure with proper finder patterns
 const QR_MATRIX = [
@@ -166,47 +174,33 @@ function AnimatedQR() {
 }
 
 
-const features = [
-  {
-    icon: <PaintBucket className="w-8 h-8 text-brand mb-5" />,
-    title: 'Custom Branding',
-    description: 'Add your logo, select custom colors, and create QR codes that are unmistakably yours. Your brand stays consistent from digital to print.',
-  },
-  {
-    icon: <RefreshCcw className="w-8 h-8 text-brand mb-5" />,
-    title: 'Dynamic Destinations',
-    description: 'Change where your QR code points any time — even after printing. Update campaigns, fix broken links, and A/B test destinations without reprinting a single flyer.',
-  },
-  {
-    icon: <BarChart3 className="w-8 h-8 text-brand mb-5" />,
-    title: 'Scan Analytics',
-    description: 'Track every scan by country, city, device type, and time of day. Know exactly which campaign drove the most engagement and optimize accordingly.',
-  },
-  {
-    icon: <Globe className="w-8 h-8 text-brand mb-5" />,
-    title: 'Geo-targeted Redirects',
-    description: 'Automatically route users to different URLs based on their country or language. One QR code, infinite local experiences.',
-  },
-  {
-    icon: <Lock className="w-8 h-8 text-brand mb-5" />,
-    title: 'Password Protection',
-    description: 'Lock your QR codes behind a password for exclusive access, internal campaigns, or gated content distribution.',
-  },
-  {
-    icon: <Download className="w-8 h-8 text-brand mb-5" />,
-    title: 'High-Res Download',
-    description: 'Download QR codes in SVG, PNG, and PDF formats at any resolution — perfect for billboards, business cards, and packaging.',
-  },
-];
-
-const useCases = [
-  { label: 'Restaurants & Menus', desc: 'Link physical menus to live digital versions. Update daily specials instantly.' },
-  { label: 'Events & Conferences', desc: 'Track attendee check-ins and share session agendas in real time.' },
-  { label: 'Product Packaging', desc: 'Connect physical packaging to landing pages, tutorials, and product registrations.' },
-  { label: 'Marketing Campaigns', desc: 'Measure exactly how your offline print is driving online conversions.' },
-];
 
 export default function PublicQRCodes() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.get('/public/pages/qr-codes')
+      .then(res => {
+        setData(JSON.parse(res.data.htmlContent));
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center bg-bg-light text-text-secondary">Loading QR Codes...</div>;
+  }
+
+  if (!data || !data.hero) {
+    return <div className="min-h-screen flex items-center justify-center bg-bg-light text-text-secondary">QR Codes data not available.</div>;
+  }
+
+  const { hero, stats, featuresInfo, features, useCasesInfo, useCases } = data;
+
   return (
     <div className="bg-bg-light min-h-screen font-sans">
 
@@ -215,14 +209,14 @@ export default function PublicQRCodes() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
             <h1 className="text-5xl lg:text-6xl font-extrabold text-brand-dark mb-6 tracking-tight leading-[1.1]">
-              Bridge the offline and <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-emerald">online worlds</span>
+              {hero.title1} <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-emerald">{hero.title2}</span>
             </h1>
             <p className="text-xl text-text-secondary mb-6 leading-relaxed max-w-lg">
-              Create fully customizable, trackable QR codes that convert every real-world touchpoint into measurable digital growth. Update destinations anytime — no reprinting ever needed.
+              {hero.subtitle}
             </p>
             <ul className="space-y-2 mb-10">
-              {['No reprinting when URLs change', 'Real-time scan analytics dashboard', 'Custom colors, logo & shapes'].map((item, i) => (
+              {hero.bulletPoints.map((item, i) => (
                 <li key={i} className="flex items-center gap-2 text-text-secondary text-sm">
                   <CheckCircle2 className="w-4 h-4 text-brand shrink-0" /> {item}
                 </li>
@@ -257,12 +251,7 @@ export default function PublicQRCodes() {
       {/* Stats Bar */}
       <section className="bg-surface-light border-y border-border-light py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          {[
-            { value: '10M+', label: 'QR codes generated' },
-            { value: '99.99%', label: 'Scan uptime SLA' },
-            { value: '<50ms', label: 'Redirect latency' },
-            { value: '190+', label: 'Countries reached' },
-          ].map((stat, i) => (
+          {stats.map((stat, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
               <div className="text-3xl font-extrabold text-brand-dark">{stat.value}</div>
               <div className="text-sm text-text-secondary mt-1">{stat.label}</div>
@@ -274,24 +263,27 @@ export default function PublicQRCodes() {
       {/* Features Grid */}
       <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-brand-dark mb-6">Everything a modern QR code should be</h2>
-          <p className="text-lg text-text-secondary">Built for marketers, product teams, and enterprises who treat offline as a first-class channel.</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-brand-dark mb-6">{featuresInfo.title}</h2>
+          <p className="text-lg text-text-secondary">{featuresInfo.subtitle}</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
-              className="bg-surface-light rounded-2xl p-8 border border-border-light hover:border-brand/30 hover:shadow-lg transition-all"
-            >
-              {feature.icon}
-              <h3 className="text-xl font-bold text-brand-dark mb-3">{feature.title}</h3>
-              <p className="text-text-secondary leading-relaxed">{feature.description}</p>
-            </motion.div>
-          ))}
+          {features.map((feature, idx) => {
+            const Icon = iconMap[feature.icon] || QrCode;
+            return (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className="bg-surface-light rounded-2xl p-8 border border-border-light hover:border-brand/30 hover:shadow-lg transition-all"
+              >
+                <Icon className="w-8 h-8 text-brand mb-5" />
+                <h3 className="text-xl font-bold text-brand-dark mb-3">{feature.title}</h3>
+                <p className="text-text-secondary leading-relaxed">{feature.description}</p>
+              </motion.div>
+            );
+          })}
         </div>
       </section>
 
@@ -299,8 +291,8 @@ export default function PublicQRCodes() {
       <section className="py-24 bg-surface-light border-y border-border-light px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-brand-dark mb-4">Built for every industry</h2>
-            <p className="text-lg text-text-secondary max-w-2xl mx-auto">From restaurants to global enterprises, QR codes power real-world experiences across every sector.</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-brand-dark mb-4">{useCasesInfo.title}</h2>
+            <p className="text-lg text-text-secondary max-w-2xl mx-auto">{useCasesInfo.subtitle}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {useCases.map((useCase, idx) => (

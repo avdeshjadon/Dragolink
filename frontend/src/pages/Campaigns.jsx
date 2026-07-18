@@ -1,5 +1,3 @@
-import { Link } from 'react-router-dom';
-
 export default function Campaigns() {
   return (
     <div className="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full flex flex-col">

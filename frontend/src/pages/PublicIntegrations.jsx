@@ -1,7 +1,8 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Blocks, Zap, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Blocks, Zap, ArrowRight, Globe, Smartphone, Lock, BarChart3, LinkIcon } from 'lucide-react';
 import { Button } from '../components/ui/Button';
+import { api } from '../lib/axios';
 
 const SlackIcon = ({ className }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className={className}>
@@ -25,39 +26,45 @@ const BarChartIcon = ({ className }) => (
   </svg>
 );
 
+const iconMap = {
+  slack: <SlackIcon className="w-8 h-8 text-[#4A154B]" />,
+  zapier: <Zap className="w-8 h-8 text-[#FF4A00]" />,
+  webhook: <WebhookIcon className="w-8 h-8 text-brand" />,
+  salesforce: <Blocks className="w-8 h-8 text-[#00A1E0]" />,
+  hubspot: <Blocks className="w-8 h-8 text-[#FF7A59]" />,
+  analytics: <BarChartIcon className="w-8 h-8 text-[#E37400]" />,
+  Globe: <Globe className="w-8 h-8 text-brand" />,
+  Smartphone: <Smartphone className="w-8 h-8 text-brand" />,
+  Lock: <Lock className="w-8 h-8 text-brand" />,
+  BarChart3: <BarChart3 className="w-8 h-8 text-brand" />,
+  LinkIcon: <LinkIcon className="w-8 h-8 text-brand" />
+};
+
 export default function PublicIntegrations() {
-  const integrations = [
-    {
-      name: 'Slack',
-      icon: <SlackIcon className="w-8 h-8 text-[#4A154B]" />,
-      description: 'Get real-time notifications for link milestones and team activity directly in your Slack channels.'
-    },
-    {
-      name: 'Zapier',
-      icon: <Zap className="w-8 h-8 text-[#FF4A00]" />,
-      description: 'Connect Dragolink to 5,000+ apps. Automate your link creation and analytics workflows without code.'
-    },
-    {
-      name: 'Webhooks',
-      icon: <WebhookIcon className="w-8 h-8 text-brand" />,
-      description: 'Build custom workflows by subscribing to real-time events when links are created, updated, or clicked.'
-    },
-    {
-      name: 'Salesforce',
-      icon: <Blocks className="w-8 h-8 text-[#00A1E0]" />,
-      description: 'Sync your click data with your CRM to enrich lead profiles and track campaign attribution automatically.'
-    },
-    {
-      name: 'HubSpot',
-      icon: <Blocks className="w-8 h-8 text-[#FF7A59]" />,
-      description: 'Automatically append UTM parameters and sync tracking data directly to your marketing hub.'
-    },
-    {
-      name: 'Google Analytics',
-      icon: <BarChartIcon className="w-8 h-8 text-[#E37400]" />,
-      description: 'Seamlessly forward UTM parameters and click events to Google Analytics 4.'
-    }
-  ];
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.get('/public/pages/integrations')
+      .then(res => {
+        setData(JSON.parse(res.data.htmlContent));
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center bg-bg-light text-text-secondary">Loading Integrations...</div>;
+  }
+
+  if (!data || !data.hero) {
+    return <div className="min-h-screen flex items-center justify-center bg-bg-light text-text-secondary">Integrations data not available.</div>;
+  }
+
+  const { hero, integrations, cta } = data;
 
   return (
     <div className="bg-bg-light min-h-screen font-sans">
@@ -70,8 +77,8 @@ export default function PublicIntegrations() {
           animate={{ opacity: 1, y: 0 }}
           className="text-5xl md:text-6xl font-extrabold text-brand-dark mb-6 tracking-tight"
         >
-          Connect Dragolink to <br className="hidden md:block" />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-emerald">your favorite tools</span>
+          {hero.title1} <br className="hidden md:block" />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-emerald">{hero.title2}</span>
         </motion.h1>
 
         <motion.p
@@ -80,7 +87,7 @@ export default function PublicIntegrations() {
           transition={{ delay: 0.1 }}
           className="text-xl text-text-secondary max-w-3xl mx-auto mb-5 leading-relaxed"
         >
-          Automate your workflows, sync your analytics, and enrich your CRM data without writing a single line of code. Dragolink plugs into the tools your team already uses — from Slack to Salesforce, Zapier to HubSpot.
+          {hero.subtitle1}
         </motion.p>
         <motion.p
           initial={{ opacity: 0, y: 20 }}
@@ -88,7 +95,7 @@ export default function PublicIntegrations() {
           transition={{ delay: 0.18 }}
           className="text-lg text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed"
         >
-          Whether you need real-time notifications, automated link creation, or CRM attribution — our native integrations and Webhook API make it effortless. Connect once and let your data flow automatically, so your team can focus on growth instead of manual data entry.
+          {hero.subtitle2}
         </motion.p>
       </section>
 
@@ -105,7 +112,7 @@ export default function PublicIntegrations() {
               className="bg-surface-light border border-border-light rounded-3xl p-8 hover:shadow-xl hover:border-brand/30 transition-all group"
             >
               <div className="mb-6 group-hover:scale-110 transition-transform">
-                {integration.icon}
+                {iconMap[integration.icon] || <Blocks className="w-8 h-8 text-brand" />}
               </div>
               <h3 className="text-xl font-bold text-brand-dark mb-3">{integration.name}</h3>
               <p className="text-text-secondary leading-relaxed mb-6">{integration.description}</p>
@@ -120,12 +127,12 @@ export default function PublicIntegrations() {
       {/* CTA */}
       <section className="py-24 bg-surface-light border-y border-border-light text-center px-4">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold text-brand-dark mb-6">Need a custom integration?</h2>
+          <h2 className="text-3xl font-bold text-brand-dark mb-6">{cta.title}</h2>
           <p className="text-lg text-text-secondary mb-8">
-            Our Enterprise plan includes custom engineering support to integrate Dragolink directly into your proprietary internal tools.
+            {cta.description}
           </p>
-          <a href="mailto:sales@dragolink.com">
-            <Button size="lg" className="h-14 px-10 text-lg">Contact Sales</Button>
+          <a href={cta.buttonEmail.includes('@') ? `mailto:${cta.buttonEmail}` : cta.buttonEmail}>
+            <Button size="lg" className="h-14 px-10 text-lg">{cta.buttonText}</Button>
           </a>
         </div>
       </section>

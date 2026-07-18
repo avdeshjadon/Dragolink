@@ -18,6 +18,7 @@ export function AuthProvider({ children }) {
         const { data } = await api.get('/auth/me');
         setUser(data);
       } catch (error) {
+        console.error("Auth initialization failed:", error);
         localStorage.removeItem('token');
         setUser(null);
       }

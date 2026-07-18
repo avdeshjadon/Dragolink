@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import TopNavbar from './TopNavbar';
 
 export default function DashboardLayout() {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

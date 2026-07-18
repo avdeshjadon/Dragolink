@@ -1,42 +1,42 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { BarChart3, Globe, Smartphone, MousePointerClick, Clock, TrendingUp, Filter, ArrowRight, CheckCircle2, Zap, Lock } from 'lucide-react';
+import { BarChart3, Globe, Smartphone, MousePointerClick, Clock, TrendingUp, Filter, ArrowRight, CheckCircle2, Zap, Lock, ShieldCheck, Settings2, Users, Cpu, Server, LinkIcon, QrCode } from 'lucide-react';
 import { Button } from '../components/ui/Button';
+import { api } from '../lib/axios';
 
-const features = [
-  {
-    icon: <Globe className="w-8 h-8 text-brand mb-5" />,
-    title: 'Geographic Data',
-    description: 'Know exactly where your audience is located — down to the city level. Optimize localized campaigns with heat maps across 190+ countries.',
-  },
-  {
-    icon: <Smartphone className="w-8 h-8 text-brand mb-5" />,
-    title: 'Device & Browser',
-    description: 'Understand how users access your content. Track operating systems, device types, screen sizes, and browser versions in real time.',
-  },
-  {
-    icon: <MousePointerClick className="w-8 h-8 text-brand mb-5" />,
-    title: 'Referrer Tracking',
-    description: 'Identify your best performing channels. See exactly which social networks, emails, paid ads, or organic search is driving traffic.',
-  },
-  {
-    icon: <Clock className="w-8 h-8 text-brand mb-5" />,
-    title: 'Time-based Insights',
-    description: 'Discover peak engagement hours by timezone. Schedule campaigns at exactly the right time for maximum reach and conversion.',
-  },
-  {
-    icon: <TrendingUp className="w-8 h-8 text-brand mb-5" />,
-    title: 'Conversion Funnels',
-    description: 'Track click-to-conversion paths across multiple links and campaigns. Understand your full funnel, not just individual clicks.',
-  },
-  {
-    icon: <Filter className="w-8 h-8 text-brand mb-5" />,
-    title: 'Custom UTM Builder',
-    description: 'Automatically append UTM parameters to every link. Filter and segment analytics data by source, medium, campaign, and content.',
-  },
-];
+const iconMap = {
+  Globe, Smartphone, MousePointerClick, Clock, TrendingUp, Filter,
+  BarChart3, ShieldCheck, Settings2, Users, Zap, Lock, Cpu, Server, LinkIcon, QrCode
+};
+
 
 export default function PublicAnalytics() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.get('/public/pages/public-analytics')
+      .then(res => {
+        setData(JSON.parse(res.data.htmlContent));
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center bg-bg-light text-text-secondary">Loading analytics engine...</div>;
+  }
+
+  if (!data || !data.hero) {
+    return <div className="min-h-screen flex items-center justify-center bg-bg-light text-text-secondary">Analytics Engine data not available.</div>;
+  }
+
+  const { hero, stats, features } = data;
+
   return (
     <div className="bg-bg-light min-h-screen font-sans">
 
@@ -47,19 +47,14 @@ export default function PublicAnalytics() {
           {/* Left: Text */}
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
             <h1 className="text-5xl lg:text-6xl font-extrabold text-brand-dark mb-6 tracking-tight leading-[1.1]">
-              Understand your <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-emerald">audience deeply</span>
+              {hero.title1} <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-emerald">{hero.title2}</span>
             </h1>
             <p className="text-xl text-text-secondary mb-6 leading-relaxed max-w-lg">
-              Stop guessing. Get real-time, actionable insights on every click, scan, and tap across all your channels — from a single, powerful dashboard.
+              {hero.subtitle}
             </p>
             <ul className="space-y-2 mb-10">
-              {[
-                'Real-time click data with zero lag',
-                'Geographic & device breakdown by country',
-                'Custom UTM parameters and campaign filters',
-                'Exportable CSV reports for any date range',
-              ].map((item, i) => (
+              {hero.bulletPoints.map((item, i) => (
                 <li key={i} className="flex items-center gap-2 text-text-secondary text-sm">
                   <CheckCircle2 className="w-4 h-4 text-brand shrink-0" /> {item}
                 </li>
@@ -140,12 +135,7 @@ export default function PublicAnalytics() {
       {/* Stats Banner */}
       <section className="bg-surface-light border-y border-border-light py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          {[
-            { value: '5B+', label: 'Clicks tracked monthly' },
-            { value: '<1s', label: 'Analytics update latency' },
-            { value: '190+', label: 'Countries tracked' },
-            { value: '99.99%', label: 'Dashboard uptime' },
-          ].map((stat, i) => (
+          {stats.map((stat, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 10 }}
@@ -167,20 +157,23 @@ export default function PublicAnalytics() {
           <p className="text-lg text-text-secondary">Built for marketers, growth teams, and enterprises that treat data as a competitive advantage.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
-              className="bg-surface-light rounded-2xl p-8 border border-border-light hover:border-brand/30 hover:shadow-lg transition-all"
-            >
-              {feature.icon}
-              <h3 className="text-xl font-bold text-brand-dark mb-3">{feature.title}</h3>
-              <p className="text-text-secondary leading-relaxed">{feature.description}</p>
-            </motion.div>
-          ))}
+          {features.map((feature, idx) => {
+            const Icon = iconMap[feature.icon] || Globe;
+            return (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className="bg-surface-light rounded-2xl p-8 border border-border-light hover:border-brand/30 hover:shadow-lg transition-all"
+              >
+                <Icon className="w-8 h-8 text-brand mb-5" />
+                <h3 className="text-xl font-bold text-brand-dark mb-3">{feature.title}</h3>
+                <p className="text-text-secondary leading-relaxed">{feature.description}</p>
+              </motion.div>
+            );
+          })}
         </div>
       </section>
 

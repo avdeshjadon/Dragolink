@@ -1,18 +1,40 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Terminal, Shield, Zap, Code2, ArrowRight } from 'lucide-react';
+import { Terminal, Shield, Zap, Code2, Database, Globe, Server, Cpu, Lock, Key, Activity, TrendingUp, Smartphone, Box } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
+import { api } from '../lib/axios';
+
+const iconMap = {
+  Terminal, Shield, Zap, Code2, Database, Globe, Server, Cpu,
+  Lock, Key, Activity, TrendingUp, Smartphone, Box
+};
 
 export default function PublicAPI() {
-  const codeSnippet = `curl -X POST https://api.dragolink.com/v1/links \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "originalUrl": "https://example.com/very/long/url",
-    "domain": "drg.link",
-    "customAlias": "summer-sale",
-    "tags": ["marketing", "q3"]
-  }'`;
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.get('/public/pages/api')
+      .then(res => {
+        setData(JSON.parse(res.data.htmlContent));
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center bg-bg-light text-text-secondary">Loading API Details...</div>;
+  }
+
+  if (!data || !data.hero) {
+    return <div className="min-h-screen flex items-center justify-center bg-bg-light text-text-secondary">API data not available.</div>;
+  }
+
+  const { hero, terminalSnippet, features } = data;
 
   return (
     <div className="bg-bg-light min-h-screen font-sans">
@@ -24,19 +46,14 @@ export default function PublicAPI() {
             animate={{ opacity: 1, x: 0 }}
           >
             <h1 className="text-5xl lg:text-6xl font-extrabold text-brand-dark mb-6 tracking-tight leading-[1.1]">
-              Link infrastructure <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-emerald">built for scale</span>
+              {hero.title1} <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-emerald">{hero.title2}</span>
             </h1>
             <p className="text-xl text-text-secondary mb-4 leading-relaxed max-w-lg">
-              Integrate short links, QR codes, and deep analytics directly into your product in minutes with our clean REST API. Engineered for extreme reliability, ultra-low latency, and teams that ship fast.
+              {hero.subtitle}
             </p>
             <ul className="space-y-2 mb-10">
-              {[
-                'RESTful endpoints with JSON responses',
-                'Scoped API keys with role-based access',
-                'Webhooks for real-time event delivery',
-                'OpenAPI spec + Postman collection included',
-              ].map((item, i) => (
+              {hero.bulletPoints.map((item, i) => (
                 <li key={i} className="flex items-center gap-2 text-text-secondary text-sm">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand shrink-0" />
                   {item}
@@ -72,7 +89,7 @@ export default function PublicAPI() {
             </div>
             <div className="p-6 overflow-x-auto">
               <pre className="text-sm text-green-400 font-mono leading-relaxed">
-                <code>{codeSnippet}</code>
+                <code>{terminalSnippet}</code>
               </pre>
             </div>
           </motion.div>
@@ -83,21 +100,16 @@ export default function PublicAPI() {
       <section className="py-24 bg-surface-light border-y border-border-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-8">
-              <Zap className="w-10 h-10 text-brand mb-6" />
-              <h3 className="text-xl font-bold text-brand-dark mb-3">&lt;20ms Latency</h3>
-              <p className="text-text-secondary">Globally distributed edge nodes ensure your links resolve instantly, no matter where your users are.</p>
-            </div>
-            <div className="p-8">
-              <Shield className="w-10 h-10 text-brand mb-6" />
-              <h3 className="text-xl font-bold text-brand-dark mb-3">Enterprise Security</h3>
-              <p className="text-text-secondary">SOC2 Type II compliant with role-based scoped API keys and strict rate-limiting options.</p>
-            </div>
-            <div className="p-8">
-              <Code2 className="w-10 h-10 text-brand mb-6" />
-              <h3 className="text-xl font-bold text-brand-dark mb-3">Webhooks</h3>
-              <p className="text-text-secondary">Get real-time push notifications for link clicks, analytics milestones, and account events.</p>
-            </div>
+            {features.map((feature, idx) => {
+              const Icon = iconMap[feature.icon] || Code2;
+              return (
+                <div key={idx} className="p-8">
+                  <Icon className="w-10 h-10 text-brand mb-6" />
+                  <h3 className="text-xl font-bold text-brand-dark mb-3">{feature.title}</h3>
+                  <p className="text-text-secondary">{feature.description}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'motion/react';
-import { ArrowRight, Lock, Mail, ShieldCheck, Zap, BarChart3 } from 'lucide-react';
+import { Lock, Mail } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import AuthVisual from '../components/AuthVisual';

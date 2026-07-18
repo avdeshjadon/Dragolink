@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import { Mail, Shield, Zap, ArrowRight } from 'lucide-react';
-import { Button } from './ui/Button';
-import { Input } from './ui/Input';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Shield, Zap } from 'lucide-react';
 
 const TwitterIcon = ({ className }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -25,6 +25,42 @@ const LinkedinIcon = ({ className }) => (
 );
 
 export default function PublicFooter() {
+  const [links, setLinks] = useState({});
+
+  useEffect(() => {
+    // Fetch dynamic footer links from Spring Boot Backend
+    axios.get('http://localhost:8080/api/public/navigation')
+      .then(res => {
+        // Group by category
+        const grouped = res.data.reduce((acc, link) => {
+          if (!acc[link.category]) acc[link.category] = [];
+          acc[link.category].push(link);
+          return acc;
+        }, {});
+        setLinks(grouped);
+      })
+      .catch(err => console.error('Failed to load navigation links', err));
+  }, []);
+
+  const renderLink = (link) => {
+    const isExternal = link.isExternal || link.is_external;
+    const badge = link.badgeText || link.badge_text;
+    
+    if (isExternal) {
+      return (
+        <a href={link.url} target="_blank" rel="noopener noreferrer" className="hover:text-brand transition-colors flex items-center gap-2">
+          {link.label} {badge && <span className="bg-brand-emerald/10 text-brand-emerald text-[10px] px-1.5 py-0.5 rounded font-bold">{badge}</span>}
+        </a>
+      );
+    }
+    
+    return (
+      <Link to={link.url} className="hover:text-brand transition-colors flex items-center gap-2">
+        {link.label} {badge && <span className="bg-brand-emerald/10 text-brand-emerald text-[10px] px-1.5 py-0.5 rounded font-bold">{badge}</span>}
+      </Link>
+    );
+  };
+
   return (
     <footer className="bg-surface-light border-t border-border-light pt-16 pb-8 font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -43,8 +79,6 @@ export default function PublicFooter() {
               Optimize your links, track engagement, and scale your brand.
             </p>
             
-
-            
             <div className="flex items-center gap-4 text-text-secondary">
               <a href="#" className="hover:text-brand transition-colors"><TwitterIcon className="w-5 h-5" /></a>
               <a href="#" className="hover:text-brand transition-colors"><GithubIcon className="w-5 h-5" /></a>
@@ -52,45 +86,19 @@ export default function PublicFooter() {
             </div>
           </div>
 
-          {/* Product Links */}
-          <div className="col-span-1">
-            <h4 className="font-bold text-text-primary mb-4">Product</h4>
-            <ul className="space-y-3 text-sm text-text-secondary">
-              <li><Link to="/features" className="hover:text-brand transition-colors">Features</Link></li>
-              <li><Link to="/pricing" className="hover:text-brand transition-colors">Pricing</Link></li>
-              <li><Link to="/public-analytics" className="hover:text-brand transition-colors">Analytics Engine</Link></li>
-              <li><Link to="/qr-codes" className="hover:text-brand transition-colors">QR Codes</Link></li>
-              <li><Link to="/integrations" className="hover:text-brand transition-colors">Integrations</Link></li>
-              <li><Link to="/api" className="hover:text-brand transition-colors">Developer API</Link></li>
-
-            </ul>
-          </div>
-
-          {/* Resources Links */}
-          <div className="col-span-1">
-            <h4 className="font-bold text-text-primary mb-4">Resources</h4>
-            <ul className="space-y-3 text-sm text-text-secondary">
-              <li><Link to="/blog" className="hover:text-brand transition-colors">Blog</Link></li>
-              <li><Link to="/docs" className="hover:text-brand transition-colors">Documentation</Link></li>
-              <li><Link to="/help" className="hover:text-brand transition-colors">Help Center</Link></li>
-              <li><Link to="/guides" className="hover:text-brand transition-colors">Link Management Guides</Link></li>
-              <li><Link to="/case-studies" className="hover:text-brand transition-colors">Case Studies</Link></li>
-              <li><Link to="/status" className="hover:text-brand transition-colors">System Status</Link></li>
-            </ul>
-          </div>
-
-          {/* Company & Legal Links */}
-          <div className="col-span-1">
-            <h4 className="font-bold text-text-primary mb-4">Company</h4>
-            <ul className="space-y-3 text-sm text-text-secondary">
-              <li><Link to="/about" className="hover:text-brand transition-colors">About Us</Link></li>
-              <li><Link to="/careers" className="hover:text-brand transition-colors flex items-center gap-2">Careers <span className="bg-brand-emerald/10 text-brand-emerald text-[10px] px-1.5 py-0.5 rounded font-bold">HIRING</span></Link></li>
-              <li><Link to="/contact" className="hover:text-brand transition-colors">Contact Sales</Link></li>
-              <li><Link to="/privacy" className="hover:text-brand transition-colors mt-4 block">Privacy Policy</Link></li>
-              <li><Link to="/terms" className="hover:text-brand transition-colors">Terms of Service</Link></li>
-              <li><Link to="/security" className="hover:text-brand transition-colors">Security</Link></li>
-            </ul>
-          </div>
+          {/* Dynamic Links Columns */}
+          {['Product', 'Resources', 'Company'].map(category => (
+            <div key={category} className="col-span-1">
+              <h4 className="font-bold text-text-primary mb-4">{category}</h4>
+              <ul className="space-y-3 text-sm text-text-secondary">
+                {links[category]?.map(link => (
+                  <li key={link.id}>
+                    {renderLink(link)}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
 
         </div>
 
