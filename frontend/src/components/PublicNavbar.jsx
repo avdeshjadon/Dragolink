@@ -1,8 +1,21 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { api } from '../lib/axios';
 import { Button } from './ui/Button';
 
 export default function PublicNavbar() {
   const location = useLocation();
+  const [links, setLinks] = useState([]);
+
+  useEffect(() => {
+    api.get('/public/navigation?position=PUBLIC_HEADER')
+      .then(res => {
+        setLinks(res.data);
+      })
+      .catch(err => {
+        console.error("Failed to load header navigation", err);
+      });
+  }, []);
 
   const isCurrent = (path) => location.pathname === path;
 
@@ -16,30 +29,16 @@ export default function PublicNavbar() {
           </Link>
         </div>
         <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-6 text-sm font-medium">
-            <Link 
-              to="/product" 
-              className={`transition-colors ${isCurrent('/product') ? 'text-brand' : 'text-text-secondary hover:text-brand'}`}
-            >
-              Product
-            </Link>
-            <Link 
-              to="/features" 
-              className={`transition-colors ${isCurrent('/features') ? 'text-brand' : 'text-text-secondary hover:text-brand'}`}
-            >
-              Features
-            </Link>
-            <Link 
-              to="/pricing" 
-              className={`transition-colors ${isCurrent('/pricing') ? 'text-brand' : 'text-text-secondary hover:text-brand'}`}
-            >
-              Pricing
-            </Link>
-            <Link 
-              to="/about" 
-              className={`transition-colors ${isCurrent('/about') ? 'text-brand' : 'text-text-secondary hover:text-brand'}`}
-            >
-              About Us
-            </Link>
+            {links.map((link) => (
+              <Link 
+                key={link.id}
+                to={link.url} 
+                className={`transition-colors ${isCurrent(link.url) ? 'text-brand' : 'text-text-secondary hover:text-brand'}`}
+                {...(link.isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              >
+                {link.label}
+              </Link>
+            ))}
           </div>
         <div className="flex items-center justify-end gap-4">
           <Link to="/login" className="text-sm font-medium text-text-secondary hover:text-brand transition-colors">

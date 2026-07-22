@@ -1,0 +1,55 @@
+{
+  "hero": {
+    "title1": "Build the future of",
+    "title2": "digital connections",
+    "subtitle": "Join a team of passionate engineers, designers, and thinkers who are redefining how the world clicks. At Dragolink, we don't just route traffic—we build the infrastructure that secures and analyzes billions of digital interactions every day."
+  },
+  "perks": [
+    {
+      "icon": "Globe",
+      "title": "Work from anywhere",
+      "description": "We are a remote-first company. Whether you prefer a home office, a co-working space, or a cabin in the woods, you can work from anywhere in the world."
+    },
+    {
+      "icon": "Activity",
+      "title": "Comprehensive Healthcare",
+      "description": "100% premium coverage for medical, dental, and vision for you and your dependents, plus mental health and wellness stipends."
+    },
+    {
+      "icon": "Zap",
+      "title": "Unlimited PTO",
+      "description": "We hire adults and trust them to manage their time. Take the time you need to recharge, travel, and spend time with family. Mandatory 3-week minimum."
+    },
+    {
+      "icon": "Cpu",
+      "title": "Home Office Stipend",
+      "description": "Get a $2,000 stipend to set up your perfect workspace, plus a top-of-the-line MacBook Pro, monitor, and ergonomic chair on your first day."
+    }
+  ],
+  "jobs": [
+    {
+      "title": "Senior Distributed Systems Engineer",
+      "department": "Engineering",
+      "location": "Remote (Global)",
+      "type": "Full-time"
+    },
+    {
+      "title": "Product Marketing Manager",
+      "department": "Marketing",
+      "location": "Remote (US/Canada)",
+      "type": "Full-time"
+    },
+    {
+      "title": "Enterprise Account Executive",
+      "department": "Sales",
+      "location": "London, UK (Hybrid)",
+      "type": "Full-time"
+    },
+    {
+      "title": "Lead Product Designer",
+      "department": "Design",
+      "location": "Remote (EMEA)",
+      "type": "Full-time"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "hero": {
+    "badgeText": "Join 50,000+ subscribers",
+    "title1": "The Dragolink ",
+    "title2": "Blog",
+    "subtitle": "Insights, updates, and deep-dives on link management, analytics, engineering, and digital marketing from the Dragolink team.",
+    "buttonText": "Subscribe"
+  },
+  "newsletter": {
+    "title": "Never miss an update.",
+    "description": "Join 50,000+ marketers and engineers getting our latest insights delivered directly to their inbox once a week.",
+    "buttonText": "Subscribe"
+  }
+}

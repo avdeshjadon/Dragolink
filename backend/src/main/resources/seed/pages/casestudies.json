@@ -1,0 +1,65 @@
+{
+  "hero": {
+    "title1": "Enterprise scale.",
+    "title2": "Measurable impact.",
+    "description": "Discover how the world's most innovative brands leverage Dragolink to secure their infrastructure, optimize conversion rates, and drive millions in incremental revenue.",
+    "stats": [
+      { "val": "10k+", "label": "Enterprise Customers" },
+      { "val": "$2.4B", "label": "Attributed Revenue" },
+      { "val": "35%", "label": "Avg. Conversion Lift" },
+      { "val": "Zero", "label": "Security Breaches" }
+    ]
+  },
+  "cases": [
+    {
+      "industry": "E-Commerce",
+      "company": "GlobalRetail Co.",
+      "color": "from-blue-500 to-indigo-500",
+      "accent": "text-indigo-600",
+      "iconColor": "text-blue-500",
+      "title": "Scaling to 50M+ holiday clicks with zero downtime",
+      "quote": "Dragolink completely transformed our Black Friday strategy. The deep-linking capabilities into our mobile app increased our checkout conversion rate by 42%.",
+      "author": "Sarah Jenkins, VP of Growth",
+      "metrics": [
+        { "value": "42%", "label": "Conversion Lift" },
+        { "value": "50M", "label": "Holiday Clicks" },
+        { "value": "100%", "label": "Uptime Maintained" }
+      ]
+    },
+    {
+      "industry": "Finance",
+      "company": "FinTrust Bank",
+      "color": "from-emerald-500 to-teal-500",
+      "accent": "text-emerald-600",
+      "iconColor": "text-emerald-500",
+      "title": "Securing customer communications at scale",
+      "quote": "In the financial sector, trust is everything. Dragolink's automated malware scanning on destination URLs ensures our clients are never exposed to phishing attempts.",
+      "author": "David Chen, CISO",
+      "metrics": [
+        { "value": "100%", "label": "Phishing Blocked" },
+        { "value": "5M+", "label": "Secure SMS Sent" },
+        { "value": "SOC2", "label": "Compliance Met" }
+      ]
+    },
+    {
+      "industry": "Media",
+      "company": "StreamFlix",
+      "color": "from-purple-500 to-pink-500",
+      "accent": "text-purple-600",
+      "iconColor": "text-purple-500",
+      "title": "Optimizing multi-channel subscriber acquisition",
+      "quote": "With Dragolink's UTM automation and granular analytics, we can finally attribute subscriber growth accurately across social, email, and partner channels.",
+      "author": "Elena Rodriguez, Head of Marketing",
+      "metrics": [
+        { "value": "28%", "label": "Lower CAC" },
+        { "value": "1.2M", "label": "New Subscribers" },
+        { "value": "15+", "label": "Channels Tracked" }
+      ]
+    }
+  ],
+  "cta": {
+    "title": "Ready to write your own success story?",
+    "description": "Speak with our enterprise team today to learn how Dragolink can be customized for your specific organizational requirements.",
+    "buttonText": "Contact Sales"
+  }
+}

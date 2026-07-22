@@ -6,26 +6,7 @@ import { api } from '../lib/axios';
 
 const iconMap = { Globe, Heart, BookOpen, Coffee, Zap, Target, Users, Shield };
 
-const DEFAULT_DATA = {
-  hero: {
-    subtitle: "WE ARE HIRING",
-    title1: "Join the ",
-    title2: "Dragolink team",
-    description: "Help us build the connective tissue of the modern internet. We're looking for ambitious builders who want to define the future of link infrastructure."
-  },
-  perks: [
-    { title: "Remote-First", description: "Work from anywhere. We provide a top-tier home office stipend.", icon: "Globe" },
-    { title: "Full Health Coverage", description: "100% premium coverage for you and your dependents.", icon: "Heart" },
-    { title: "Continuous Learning", description: "$3,000 annual budget for conferences, courses, and books.", icon: "BookOpen" },
-    { title: "Generous PTO", description: "Unlimited PTO with a mandatory minimum of 20 days off.", icon: "Coffee" }
-  ],
-  jobs: [
-    { title: 'Senior Backend Engineer', dept: 'Engineering', loc: 'Remote (US)', url: '#' },
-    { title: 'Product Manager, Analytics', dept: 'Product', loc: 'San Francisco, CA', url: '#' },
-    { title: 'Enterprise Account Executive', dept: 'Sales', loc: 'New York, NY', url: '#' },
-    { title: 'Developer Advocate', dept: 'DevRel', loc: 'Remote (Global)', url: '#' }
-  ]
-};
+
 
 export default function Careers() {
   const [data, setData] = useState(null);
@@ -38,7 +19,6 @@ export default function Careers() {
           setData(JSON.parse(res.data.htmlContent));
         } catch (e) {
           console.error("Failed to parse Careers CMS data:", e);
-          setData(DEFAULT_DATA);
         }
         setLoading(false);
       })

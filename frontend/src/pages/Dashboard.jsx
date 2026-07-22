@@ -1,9 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { api } from '../lib/axios';
 
 export default function Dashboard() {
   const { user } = useAuth();
   const [timeRange, setTimeRange] = useState('7D');
+  const [metrics, setMetrics] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.get('/analytics/dashboard')
+      .then(res => {
+        setMetrics(res.data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to load dashboard metrics", err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading || !metrics) {
+    return <div className="min-h-screen flex items-center justify-center">Loading dashboard...</div>;
+  }
 
   return (
     <div className="flex flex-col gap-6 font-sans">
@@ -46,7 +65,7 @@ export default function Dashboard() {
             <span className="material-symbols-outlined text-primary" data-icon="link">link</span>
           </div>
           <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-headline-lg font-headline-lg text-on-surface">1,248</span>
+            <span className="text-headline-lg font-headline-lg text-on-surface">{metrics.totalLinks.toLocaleString()}</span>
             <span className="text-label-sm font-label-sm text-tertiary flex items-center">
               <span className="material-symbols-outlined text-[14px]">arrow_upward</span> 12%
             </span>
@@ -66,7 +85,7 @@ export default function Dashboard() {
             <span className="material-symbols-outlined text-primary" data-icon="mouse">mouse</span>
           </div>
           <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-headline-lg font-headline-lg text-on-surface">45.2k</span>
+            <span className="text-headline-lg font-headline-lg text-on-surface">{metrics.totalClicks.toLocaleString()}</span>
             <span className="text-label-sm font-label-sm text-tertiary flex items-center">
               <span className="material-symbols-outlined text-[14px]">arrow_upward</span> 8%
             </span>
@@ -172,36 +191,24 @@ export default function Dashboard() {
                 </tr>
               </thead>
               <tbody className="text-body-md font-body-md">
-                <tr className="border-b border-outline-variant/5 hover:bg-surface-container-high transition-colors">
-                  <td className="p-4 text-on-surface font-medium flex items-center gap-2">
-                    <div className="w-6 h-6 rounded bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
-                      <span className="material-symbols-outlined text-[14px]">campaign</span>
-                    </div>
-                    Q4 Promo Campaign
-                  </td>
-                  <td className="p-4"><span className="font-code-sm text-code-sm text-primary">lp.co/q4-promo</span></td>
-                  <td className="p-4 text-right text-on-surface-variant">12,450</td>
-                </tr>
-                <tr className="border-b border-outline-variant/5 hover:bg-surface-container-high transition-colors">
-                  <td className="p-4 text-on-surface font-medium flex items-center gap-2">
-                    <div className="w-6 h-6 rounded bg-secondary-container flex items-center justify-center text-on-secondary-container">
-                      <span className="material-symbols-outlined text-[14px]">article</span>
-                    </div>
-                    Blog: New Features
-                  </td>
-                  <td className="p-4"><span className="font-code-sm text-code-sm text-primary">lp.co/update-v2</span></td>
-                  <td className="p-4 text-right text-on-surface-variant">8,102</td>
-                </tr>
-                <tr className="border-b border-outline-variant/5 hover:bg-surface-container-high transition-colors">
-                  <td className="p-4 text-on-surface font-medium flex items-center gap-2">
-                    <div className="w-6 h-6 rounded bg-surface-variant flex items-center justify-center text-on-surface">
-                      <span className="material-symbols-outlined text-[14px]">share</span>
-                    </div>
-                    Social Bio Link
-                  </td>
-                  <td className="p-4"><span className="font-code-sm text-code-sm text-primary">lp.co/bio</span></td>
-                  <td className="p-4 text-right text-on-surface-variant">5,231</td>
-                </tr>
+                {metrics.topLinks && metrics.topLinks.length > 0 ? (
+                  metrics.topLinks.map((link) => (
+                    <tr key={link.id} className="border-b border-outline-variant/5 hover:bg-surface-container-high transition-colors">
+                      <td className="p-4 text-on-surface font-medium flex items-center gap-2">
+                        <div className="w-6 h-6 rounded bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
+                          <span className="material-symbols-outlined text-[14px]">campaign</span>
+                        </div>
+                        {link.title || link.shortCode}
+                      </td>
+                      <td className="p-4"><span className="font-code-sm text-code-sm text-primary">{import.meta.env.VITE_APP_URL || 'http://localhost:8080'}/{link.shortCode}</span></td>
+                      <td className="p-4 text-right text-on-surface-variant">{link.clickCount?.toLocaleString()}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3" className="p-4 text-center text-on-surface-variant">No top links found</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -216,18 +223,18 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="mt-6 flex flex-col gap-2">
-            <div className="flex justify-between items-center text-label-md font-label-md">
-              <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-primary-container"></span><span className="text-on-surface">Mobile</span></div>
-              <span className="text-on-surface-variant">60%</span>
-            </div>
-            <div className="flex justify-between items-center text-label-md font-label-md">
-              <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-primary"></span><span className="text-on-surface">Desktop</span></div>
-              <span className="text-on-surface-variant">25%</span>
-            </div>
-            <div className="flex justify-between items-center text-label-md font-label-md">
-              <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-tertiary"></span><span className="text-on-surface">Tablet</span></div>
-              <span className="text-on-surface-variant">15%</span>
-            </div>
+            {metrics.clicksByDevice && metrics.clicksByDevice.map((device, index) => (
+              <div key={index} className="flex justify-between items-center text-label-md font-label-md">
+                <div className="flex items-center gap-2">
+                  <span className={`w-3 h-3 rounded-full ${index % 3 === 0 ? 'bg-primary-container' : index % 3 === 1 ? 'bg-primary' : 'bg-tertiary'}`}></span>
+                  <span className="text-on-surface">{device.deviceType || 'Unknown'}</span>
+                </div>
+                <span className="text-on-surface-variant">{device.count}</span>
+              </div>
+            ))}
+            {(!metrics.clicksByDevice || metrics.clicksByDevice.length === 0) && (
+              <div className="text-center text-on-surface-variant text-label-sm">No device data available</div>
+            )}
           </div>
         </div>
       </div>

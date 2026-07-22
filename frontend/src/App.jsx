@@ -9,10 +9,6 @@ import Dashboard from './pages/Dashboard';
 import CreateLink from './pages/CreateLink';
 import MyLinks from './pages/MyLinks';
 import Analytics from './pages/Analytics';
-import AdminBilling from './pages/AdminBilling';
-import AdminOverview from './pages/AdminOverview';
-import AdminUsers from './pages/AdminUsers';
-import AdminDomains from './pages/AdminDomains';
 import SettingsProfile from './pages/SettingsProfile';
 import SettingsSecurity from './pages/SettingsSecurity';
 import Product from './pages/Product';
@@ -124,11 +120,6 @@ function App() {
           <Route path="/api-keys" element={<APIKeys />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/analytics/:id" element={<Analytics />} />
-          
-          <Route path="/admin/overview" element={<ProtectedRoute adminOnly={true}><AdminOverview /></ProtectedRoute>} />
-          <Route path="/admin/users" element={<ProtectedRoute adminOnly={true}><AdminUsers /></ProtectedRoute>} />
-          <Route path="/admin/domains" element={<ProtectedRoute adminOnly={true}><AdminDomains /></ProtectedRoute>} />
-          <Route path="/admin/billing" element={<ProtectedRoute adminOnly={true}><AdminBilling /></ProtectedRoute>} />
         </Route>
         {/* Settings Routes wrapped in SettingsLayout */}
         <Route element={

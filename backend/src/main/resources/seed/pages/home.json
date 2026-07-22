@@ -1,0 +1,49 @@
+{
+  "hero": {
+    "title1": "Shorten links.",
+    "title2": "Understand every click.",
+    "subtitle": "Create powerful short links, track engagement in real-time, generate dynamic QR codes, and manage your entire enterprise link infrastructure from one intelligent platform."
+  },
+  "capabilities": {
+    "title1": "Everything you need to",
+    "title2": "scale globally",
+    "subtitle": "Dragolink provides a comprehensive suite of tools designed for modern marketing teams, developers, and enterprise creators who demand absolute reliability and granular data."
+  },
+  "features": [
+    {
+      "title": "Custom short links",
+      "description": "Create branded, memorable links that stand out, build audience trust, and drive up to 34% higher click-through rates across all your marketing channels.",
+      "icon": "LinkIcon"
+    },
+    {
+      "title": "Advanced analytics",
+      "description": "Track clicks, devices, browsers, and geographic data in real time with sub-second latency. Make data-driven decisions with comprehensive funnel reports.",
+      "icon": "BarChart3"
+    },
+    {
+      "title": "QR code generation",
+      "description": "Generate dynamic, highly-customizable QR codes for offline marketing campaigns. Update the destination URL at any time without reprinting.",
+      "icon": "QrCode"
+    },
+    {
+      "title": "Enterprise Security",
+      "description": "Bank-grade protection with automated malware scanning, TLS encryption, SOC2 compliance, and a 99.99% uptime SLA to ensure zero broken links.",
+      "icon": "ShieldCheck"
+    },
+    {
+      "title": "Robust API Access",
+      "description": "Integrate link generation and analytics directly into your own applications seamlessly with our RESTful API capable of 10k requests per second.",
+      "icon": "Settings2"
+    },
+    {
+      "title": "Team Workspaces",
+      "description": "Collaborate effortlessly with granular Role-Based Access Control (RBAC), SSO via SAML, and detailed immutable audit logs for compliance.",
+      "icon": "Users"
+    }
+  ],
+  "cta": {
+    "title": "Ready to optimize your link infrastructure?",
+    "subtitle": "Join over 10,000 enterprise teams who trust Dragolink for their global link management and real-time analytics.",
+    "buttonText": "Start for free"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "hero": {
+    "subtitle": "Our Mission",
+    "title1": "Building the connective tissue",
+    "title2": "of the internet.",
+    "description": "Dragolink was founded on a simple premise: a link is not just a routing mechanism, it's a strategic asset. We're building the infrastructure to make every click measurable, secure, and infinitely scalable."
+  },
+  "stats": [
+    { "val": "2B+", "label": "Links clicked monthly" },
+    { "val": "50+", "label": "Countries served" },
+    { "val": "99.99%", "label": "Uptime SLA" },
+    { "val": "24/7", "label": "Global support" }
+  ],
+  "values": [
+    { "title": "Security First", "description": "We protect every click with enterprise-grade encryption and real-time threat analysis.", "icon": "Shield" },
+    { "title": "Radical Transparency", "description": "Our analytics are an open book. No black boxes, just pure actionable data.", "icon": "Eye" },
+    { "title": "Relentless Reliability", "description": "When your campaign goes viral, our infrastructure scales instantly.", "icon": "Activity" }
+  ],
+  "team": [
+    { "name": "Alex Chen", "role": "Co-Founder & CEO", "imageUrl": "https://i.pravatar.cc/150?u=alex", "linkedin": "#" },
+    { "name": "Sarah Jenkins", "role": "Co-Founder & CTO", "imageUrl": "https://i.pravatar.cc/150?u=sarah", "linkedin": "#" },
+    { "name": "Marcus Johnson", "role": "VP of Engineering", "imageUrl": "https://i.pravatar.cc/150?u=marcus", "linkedin": "#" },
+    { "name": "Elena Rodriguez", "role": "Head of Product", "imageUrl": "https://i.pravatar.cc/150?u=elena", "linkedin": "#" }
+  ],
+  "story": {
+    "title": "How it all started",
+    "content": "In 2020, we realized that the humble hyperlink hadn't evolved in two decades. While the rest of the web became intelligent, responsive, and secure, links remained static strings of text. We built Dragolink to change that.\n\nToday, a link is the most critical intersection between your brand and your audience. We believe that every click should be protected by enterprise-grade security, tracked with microscopic precision, and routed intelligently. Our team of distributed engineers works around the clock to ensure our infrastructure can handle billions of redirects with zero latency."
+  },
+  "milestones": [
+    { "year": "2020", "title": "The Inception", "description": "Dragolink was founded in a small garage in San Francisco with a mission to secure the web." },
+    { "year": "2021", "title": "Series A", "description": "Raised $15M led by top-tier venture capitalists to scale our engineering team." },
+    { "year": "2022", "title": "Global Scale", "description": "Hit the milestone of 2 billion links processed monthly with 99.99% uptime." }
+  ]
+}

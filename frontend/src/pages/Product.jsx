@@ -40,36 +40,9 @@ const fadeUp = {
 };
 
 export default function Product() {
-  const defaultFeatures = [
-    { icon: 'QrCode', title: 'QR codes', desc: 'Generate a branded, scannable QR code for any link in one click.' },
-    { icon: 'Webhook', title: 'Webhooks & API', desc: 'Trigger workflows on click events and manage links programmatically.' },
-    { icon: 'Zap', title: 'Link retargeting', desc: 'Attach pixels to any short link and retarget visitors across ad platforms.' },
-    { icon: 'Users', title: 'Team workspaces', desc: 'Organize links by project with shared folders and granular permissions.' },
-    { icon: 'Clock', title: 'Link expiration', desc: 'Set links to expire or redirect elsewhere after a date or click limit.' },
-    { icon: 'Globe', title: 'Geo-targeting', desc: 'Send visitors to different destinations based on their location or device.' },
-  ];
+  
 
-  const [pageData, setPageData] = useState({
-    hero: {
-      title1: "One platform to manage",
-      title2: "all your links",
-      subtitle: "Dragolink is the complete, high-performance link management infrastructure built for modern enterprises. We provide the tools you need to shorten, brand, organize, and track every single click across your entire marketing funnel with zero friction and absolute reliability.",
-      button1: "Start for free",
-      button2: "Talk to sales",
-      guarantee: "No credit card required • Free plan includes 1,000 links/month"
-    },
-    featuresHeader: {
-      title: "Everything you need, nothing you don't",
-      subtitle: "Dragolink brings link creation, tracking, and governance into a single workflow so your team stops piecing tools together."
-    },
-    features: defaultFeatures,
-    quote: "\"The links we build today create the pathways to our success tomorrow. Every connection is an opportunity waiting to be realized.\"",
-    cta: {
-      title: "Experience the Dragolink difference",
-      subtitle: "Join thousands of teams shortening, branding, and tracking their links with confidence.",
-      buttonText: "Get started"
-    }
-  });
+  const [pageData, setPageData] = useState(null);
 
   useEffect(() => {
     const fetchPageData = async () => {
@@ -84,6 +57,8 @@ export default function Product() {
     };
     fetchPageData();
   }, []);
+
+  if (!pageData) return <div className="min-h-screen flex items-center justify-center bg-bg-light">Loading...</div>;
 
   return (
     <div className="bg-bg-light min-h-screen font-sans">

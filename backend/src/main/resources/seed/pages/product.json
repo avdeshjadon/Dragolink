@@ -1,0 +1,52 @@
+{
+  "hero": {
+    "title1": "Everything you need to",
+    "title2": "scale your links",
+    "subtitle": "Dragolink is the enterprise link management platform built for modern teams. From advanced routing to deep analytics and uncompromising security, we provide the infrastructure so you can focus on growth.",
+    "button1": "Start for free",
+    "button2": "Contact Sales",
+    "guarantee": "No credit card required • Cancel anytime"
+  },
+  "featuresHeader": {
+    "title": "Built for scale, designed for speed",
+    "subtitle": "Explore the comprehensive suite of tools that power billions of clicks globally."
+  },
+  "features": [
+    {
+      "icon": "Globe",
+      "title": "Custom Domains",
+      "desc": "Use your own branded domains (e.g., link.brand.com) to increase trust and click-through rates by up to 34%."
+    },
+    {
+      "icon": "ShieldCheck",
+      "title": "Automated Malware Scanning",
+      "desc": "Every destination URL is scanned against global threat intelligence databases to protect your audience from phishing."
+    },
+    {
+      "icon": "Network",
+      "title": "Dynamic Routing",
+      "desc": "Route users based on their geolocation, device type, or operating system to optimize the end-user experience."
+    },
+    {
+      "icon": "BarChart3",
+      "title": "Real-time Analytics",
+      "desc": "Get second-by-second visibility into click volume, geographic distribution, and referral sources."
+    },
+    {
+      "icon": "QrCode",
+      "title": "Dynamic QR Codes",
+      "desc": "Generate high-resolution QR codes that can be updated after printing. Perfect for packaging and physical marketing."
+    },
+    {
+      "icon": "Users",
+      "title": "Team Workspaces",
+      "desc": "Organize links by department or campaign with granular Role-Based Access Control (RBAC) and SAML SSO."
+    }
+  ],
+  "quote": "\"Dragolink isn't just a URL shortener—it's the foundational routing layer for our entire global marketing infrastructure.\"",
+  "cta": {
+    "title": "Ready to upgrade your link management?",
+    "subtitle": "Join thousands of enterprises who trust Dragolink.",
+    "buttonText": "Create your first link"
+  }
+}

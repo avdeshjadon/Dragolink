@@ -1,0 +1,63 @@
+{
+  "hero": {
+    "title1": "Understand your ",
+    "title2": "audience deeply",
+    "subtitle": "Stop guessing. Get real-time, actionable insights on every click, scan, and tap across all your channels — from a single, powerful dashboard. With Dragolink Analytics, your marketing becomes highly predictable and perfectly measurable.",
+    "bulletPoints": [
+      "Real-time click data with zero lag across our edge network",
+      "Geographic & device breakdown by country and city",
+      "Custom UTM parameters and automated campaign filters",
+      "Exportable CSV reports for any date range with one click"
+    ]
+  },
+  "stats": [
+    {
+      "value": "5B+",
+      "label": "Clicks tracked monthly"
+    },
+    {
+      "value": "<1s",
+      "label": "Analytics update latency"
+    },
+    {
+      "value": "190+",
+      "label": "Countries tracked"
+    },
+    {
+      "value": "99.99%",
+      "label": "Dashboard uptime SLA"
+    }
+  ],
+  "features": [
+    {
+      "icon": "Globe",
+      "title": "Geographic Data",
+      "description": "Know exactly where your audience is located — down to the city level. Optimize localized campaigns with high-fidelity heat maps across 190+ countries."
+    },
+    {
+      "icon": "Smartphone",
+      "title": "Device & Browser",
+      "description": "Understand how users access your content. Track operating systems, device types (mobile, tablet, desktop), screen resolutions, and browser versions in real time."
+    },
+    {
+      "icon": "MousePointerClick",
+      "title": "Referrer Tracking",
+      "description": "Identify your best performing channels instantly. See exactly which social networks, emails, paid ads, or organic search terms are driving the most traffic."
+    },
+    {
+      "icon": "Clock",
+      "title": "Time-based Insights",
+      "description": "Discover peak engagement hours by timezone. Schedule campaigns at exactly the right time for maximum reach, open rates, and conversion."
+    },
+    {
+      "icon": "TrendingUp",
+      "title": "Conversion Funnels",
+      "description": "Track click-to-conversion paths across multiple links and complex marketing campaigns. Understand your full funnel, not just individual isolated clicks."
+    },
+    {
+      "icon": "Filter",
+      "title": "Custom UTM Builder",
+      "description": "Automatically append UTM parameters to every link. Filter and segment analytics data by source, medium, campaign, content, and custom tags."
+    }
+  ]
+}

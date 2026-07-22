@@ -1,40 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { api } from '../lib/axios';
 
 export default function MyLinks() {
   const navigate = useNavigate();
   const [selectedLinks, setSelectedLinks] = useState([]);
   const [activeFilter, setActiveFilter] = useState('Active');
 
-  const links = [
-    {
-      id: 1,
-      title: 'Product Launch Q3',
-      longUrl: 'https://marketing.acme.com/q3-launch-page',
-      shortUrl: 'lp.io/q3-launch',
-      clicks: '12,405',
-      status: 'Active',
-      icon: 'link'
-    },
-    {
-      id: 2,
-      title: 'Blog: Remote Work 2024',
-      longUrl: 'https://blog.acme.com/remote-work-trends',
-      shortUrl: 'lp.io/remote-blog',
-      clicks: '3,291',
-      status: 'Active',
-      icon: 'article'
-    },
-    {
-      id: 3,
-      title: 'Webinar Registration (Past)',
-      longUrl: 'https://events.acme.com/q1-webinar',
-      shortUrl: 'lp.io/q1-webinar',
-      clicks: '842',
-      status: 'Expired',
-      icon: 'event'
-    }
-  ];
+  const [links, setLinks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.get('/links')
+      .then(res => {
+        setLinks(res.data.content || res.data); // Support both paginated and list responses
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to load links", err);
+        setLoading(false);
+      });
+  }, []);
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -149,31 +135,31 @@ export default function MyLinks() {
                     <td className="p-4">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded bg-surface-container flex items-center justify-center border border-outline-variant/20 shrink-0">
-                          <span className="material-symbols-outlined text-on-surface-variant text-[18px]">{link.icon}</span>
+                          <span className="material-symbols-outlined text-on-surface-variant text-[18px]">link</span>
                         </div>
                         <div className="flex flex-col min-w-0">
-                          <span className="text-label-md font-label-md text-on-surface truncate">{link.title}</span>
+                          <span className="text-label-md font-label-md text-on-surface truncate">{link.title || link.shortCode}</span>
                           <span className="text-code-sm font-code-sm text-on-surface-variant/70 truncate hidden sm:block">{link.longUrl}</span>
                         </div>
                       </div>
                     </td>
                     <td className="p-4 hidden sm:table-cell">
                       <div className="flex items-center gap-2 group/copy cursor-pointer">
-                        <span className="text-body-md font-body-md text-primary hover:underline">{link.shortUrl}</span>
+                        <span className="text-body-md font-body-md text-primary hover:underline">{import.meta.env.VITE_APP_URL || 'http://localhost:8080'}/{link.shortCode}</span>
                         <span className="material-symbols-outlined text-[14px] text-on-surface-variant opacity-0 group-hover/copy:opacity-100 transition-opacity">content_copy</span>
                       </div>
                     </td>
                     <td className="p-4 text-right">
-                      <span className="text-code-sm font-code-sm text-on-surface">{link.clicks}</span>
+                      <span className="text-code-sm font-code-sm text-on-surface">{link.clickCount?.toLocaleString()}</span>
                     </td>
                     <td className="p-4 text-center">
-                      {link.status === 'Active' ? (
+                      {link.active ? (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-tertiary-container/20 text-tertiary-fixed border border-tertiary-container/50 text-label-sm font-label-sm">
                           <span className="w-1.5 h-1.5 rounded-full bg-tertiary-fixed"></span> Active
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant/30 text-label-sm font-label-sm">
-                          Expired
+                          Inactive
                         </span>
                       )}
                     </td>

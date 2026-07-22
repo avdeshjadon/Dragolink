@@ -1,0 +1,77 @@
+{
+  "hero": {
+    "title1": "Bridge the physical",
+    "title2": "and digital worlds",
+    "subtitle": "Create beautifully branded, dynamic QR codes that connect your offline audience directly to your most critical digital assets. Track scans in real-time, just like you track clicks.",
+    "bulletPoints": [
+      "Dynamic destination routing (change URLs after printing)",
+      "Fully customizable colors, shapes, and logos",
+      "High-resolution vector exports (SVG, EPS, PDF)",
+      "Real-time geographic and device scan analytics"
+    ]
+  },
+  "stats": [
+    { "value": "120M+", "label": "QR Scans Tracked" },
+    { "value": "45%", "label": "Higher Scan Rates" },
+    { "value": "100%", "label": "Editable Anytime" },
+    { "value": "Zero", "label": "Broken Links" }
+  ],
+  "featuresInfo": {
+    "title": "Built for modern marketing teams",
+    "subtitle": "Stop throwing away printed materials because of a broken link. Dragolink QR codes are dynamic by default."
+  },
+  "features": [
+    {
+      "icon": "PaintBucket",
+      "title": "Complete Brand Customization",
+      "description": "Align your QR codes perfectly with your brand guidelines. Customize the patterns, corner eyes, colors, and embed your own logo in the center."
+    },
+    {
+      "icon": "RefreshCcw",
+      "title": "Dynamic Routing",
+      "description": "Update the destination URL of your QR code at any time, even after it's been printed on thousands of flyers, billboards, or product packages."
+    },
+    {
+      "icon": "BarChart3",
+      "title": "Granular Scan Analytics",
+      "description": "See exactly when and where your QR codes are being scanned. Track cities, countries, device types, and operating systems in real time."
+    },
+    {
+      "icon": "Download",
+      "title": "Print-Ready Exports",
+      "description": "Download your QR codes in high-resolution PNG, SVG, or EPS formats, ensuring crisp, scannable codes at any physical size."
+    },
+    {
+      "icon": "Globe",
+      "title": "Geo-Targeting",
+      "description": "Route users to different destination URLs based on the country or city they are scanning the QR code from."
+    },
+    {
+      "icon": "Lock",
+      "title": "Enterprise Security",
+      "description": "Secure your QR codes with password protection or SSO walls, ensuring sensitive documents are only accessible to authorized personnel."
+    }
+  ],
+  "useCasesInfo": {
+    "title": "Endless possibilities",
+    "subtitle": "See how leading brands are leveraging Dragolink QR codes to drive offline engagement."
+  },
+  "useCases": [
+    {
+      "label": "Retail & CPG Packaging",
+      "desc": "Place dynamic QR codes on product packaging to route customers to instruction manuals, warranty registration, or loyalty programs."
+    },
+    {
+      "label": "Direct Mail Campaigns",
+      "desc": "Track the exact ROI of your direct mailers by measuring geographic scan data and tying it back to regional sales performance."
+    },
+    {
+      "label": "Event Badges & Ticketing",
+      "desc": "Enable seamless check-ins, contact sharing, and session tracking at live events with individualized, scannable QR codes."
+    },
+    {
+      "label": "Restaurant Menus & Ordering",
+      "desc": "Update your menu instantly without reprinting. Route customers directly to your online ordering system or digital wine list."
+    }
+  ]
+}

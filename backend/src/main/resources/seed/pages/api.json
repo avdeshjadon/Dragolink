@@ -1,0 +1,31 @@
+{
+  "hero": {
+    "title1": "Programmatic control at",
+    "title2": "infinite scale",
+    "subtitle": "Integrate enterprise-grade link management, real-time analytics, and dynamic QR codes directly into your application. Built by developers, for developers, with sub-50ms latency.",
+    "bulletPoints": [
+      "RESTful architecture with predictable resource-oriented URLs",
+      "Form-encoded requests, JSON responses, and standard HTTP verbs",
+      "SDKs available for Node.js, Python, Go, and Ruby",
+      "Rate limits up to 10,000 requests per second for enterprise"
+    ]
+  },
+  "terminalSnippet": "curl -X POST https://api.dragolink.com/v1/links \\\n  -H \"Authorization: Bearer sk_live_YOUR_API_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"destination\": \"https://example.com/very-long-url\",\n    \"domain\": \"link.yourbrand.com\",\n    \"tags\": [\"campaign_2024\", \"social\"],\n    \"expires_at\": \"2024-12-31T23:59:59Z\"\n  }'\n\n# Response:\n# {\n#   \"id\": \"link_8h3j9k\",\n#   \"short_url\": \"https://link.yourbrand.com/x7Yz9\",\n#   \"created_at\": \"2024-05-15T14:32:01Z\"\n# }",
+  "features": [
+    {
+      "icon": "Zap",
+      "title": "Ultra-Low Latency",
+      "description": "Our globally distributed edge network processes API requests in under 50ms, ensuring your application remains blazing fast even during traffic spikes."
+    },
+    {
+      "icon": "Shield",
+      "title": "Bank-Grade Security",
+      "description": "Secure your endpoints with granular OAuth 2.0 scopes, IP allowlisting, and automated threat detection on every single API call."
+    },
+    {
+      "icon": "Activity",
+      "title": "Webhooks & Events",
+      "description": "Subscribe to real-time webhook events for link clicks, QR code scans, and threat detections to trigger automated workflows instantly."
+    }
+  ]
+}

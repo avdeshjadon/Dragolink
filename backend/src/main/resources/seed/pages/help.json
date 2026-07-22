@@ -1,0 +1,15 @@
+{
+  "hero": {
+    "badgeText": "Dragolink Support",
+    "title1": "How can we ",
+    "title2": "help you?",
+    "searchPlaceholder": "Search for guides, API docs, and troubleshooting..."
+  },
+  "trending": [
+    "Setting up SSO",
+    "Custom domains",
+    "API rate limits",
+    "Webhook signatures",
+    "Bulk import CSV"
+  ]
+}

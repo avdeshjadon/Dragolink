@@ -1,0 +1,123 @@
+{
+  "hero": {
+    "title1": "Powerful features for modern",
+    "title2": "link management",
+    "subtitle": "Everything you need to create, manage, track, and scale your links globally. From dynamic QR codes and deep linking to advanced threat protection and real-time granular analytics, Dragolink equips your team with absolute precision and unmatched security."
+  },
+  "categories": [
+    {
+      "name": "Create",
+      "tagline": "Turn any URL into a branded, trackable asset",
+      "features": [
+        {
+          "title": "Custom Short Links",
+          "description": "Create deeply memorable, branded short links that immediately increase click-through rates, build unshakeable audience trust, and drive meaningful engagement across every single marketing channel.",
+          "icon": "LinkIcon"
+        },
+        {
+          "title": "Dynamic QR Codes",
+          "description": "Generate high-resolution, dynamic QR codes that seamlessly bridge offline and online worlds. Update the destination URL at any time without ever needing to reprint your physical marketing materials.",
+          "icon": "QrCode"
+        },
+        {
+          "title": "UTM Builder",
+          "description": "Automatically construct and append UTM parameters to track complex campaign performance with pinpoint accuracy directly inside Google Analytics and other BI tools.",
+          "icon": "Cpu"
+        },
+        {
+          "title": "Deep Linking",
+          "description": "Intelligently route mobile users directly into specific screens within your iOS or Android applications, dramatically improving the user experience and app engagement.",
+          "icon": "Smartphone"
+        }
+      ]
+    },
+    {
+      "name": "Measure",
+      "tagline": "See exactly how every link performs",
+      "features": [
+        {
+          "title": "Real-time Analytics",
+          "description": "Track every single click as it happens with ultra-detailed breakdowns by device type, geographic location, browser, and referrer. Make lightning-fast, data-driven decisions.",
+          "icon": "BarChart3"
+        },
+        {
+          "title": "Geotargeting",
+          "description": "Automatically route users to entirely different destination URLs or localized landing pages based on their exact geographic location for maximum conversion rates.",
+          "icon": "Globe"
+        },
+        {
+          "title": "Link Expiration",
+          "description": "Maintain absolute control over your campaigns by setting links to automatically expire on a specific date and time, or after hitting a precise click threshold.",
+          "icon": "Zap"
+        }
+      ]
+    },
+    {
+      "name": "Protect & Scale",
+      "tagline": "Governance and infrastructure your security team trusts",
+      "features": [
+        {
+          "title": "Advanced Threat Protection",
+          "description": "Enterprise-grade, automated scanning of all destination URLs instantly protects your audience from malware, phishing, and malicious redirects, keeping your brand reputation pristine.",
+          "icon": "ShieldCheck"
+        },
+        {
+          "title": "Team Workspaces",
+          "description": "Collaborate effortlessly by inviting team members to secure workspaces. Manage everything with granular, role-based access control and comprehensive audit logs.",
+          "icon": "Users"
+        },
+        {
+          "title": "SSO & SAML",
+          "description": "Enterprise-grade security integrations supporting SAML and Single Sign-On (SSO) for seamless identity management and frictionless onboarding for large organizations.",
+          "icon": "Lock"
+        },
+        {
+          "title": "High Availability",
+          "description": "Built on a globally distributed, high-performance edge network infrastructure guaranteeing 99.99% uptime and lightning-fast redirects from anywhere in the world.",
+          "icon": "Server"
+        },
+        {
+          "title": "Developer API",
+          "description": "Integrate powerful link generation and analytics programmatically into your own applications, internal tools, or workflows using our blazing-fast, robust REST API.",
+          "icon": "Settings2"
+        }
+      ]
+    }
+  ],
+  "integrations": {
+    "title": "Connects with the tools you already use",
+    "subtitle": "Wire Dragolink into your existing stack in minutes, no custom code required.",
+    "items": [
+      {
+        "label": "Slack",
+        "icon": "MessageSquare"
+      },
+      {
+        "label": "Webhooks",
+        "icon": "WebhookIcon"
+      },
+      {
+        "label": "Zapier",
+        "icon": "Network"
+      },
+      {
+        "label": "Chrome extension",
+        "icon": "Layout"
+      }
+    ]
+  },
+  "comparison": {
+    "without": [
+      "Untrusted, generic short links",
+      "Click data scattered across tools",
+      "No visibility into link security",
+      "Manual UTM tagging every time"
+    ],
+    "with": [
+      "Branded links on your own domain",
+      "One dashboard for every click",
+      "Automatic malware & phishing scans",
+      "UTM parameters built in by default"
+    ]
+  }
+}

@@ -4,24 +4,7 @@ import { MapPin, Phone, Mail, Building, ArrowRight, Send } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { api } from '../lib/axios';
 
-const DEFAULT_DATA = {
-  hero: {
-    subtitle: "CONTACT SALES",
-    title1: "Let's build something ",
-    title2: "incredible together.",
-    description: "Get in touch with our enterprise sales team to discuss custom pricing, SLA requirements, and tailored infrastructure solutions for your business."
-  },
-  offices: [
-    { city: "San Francisco", address: "100 Market St, Suite 400\nSan Francisco, CA 94105", phone: "+1 (800) 555-0199", email: "sf@dragolink.com" },
-    { city: "London", address: "250 Bishopsgate\nLondon EC2M 4AA, UK", phone: "+44 20 7946 0958", email: "london@dragolink.com" },
-    { city: "Singapore", address: "8 Marina View, Asia Square\nSingapore 018960", phone: "+65 6511 9223", email: "apac@dragolink.com" }
-  ],
-  emails: [
-    { dept: "Enterprise Sales", email: "sales@dragolink.com" },
-    { dept: "Press & Media", email: "press@dragolink.com" },
-    { dept: "Partnerships", email: "partners@dragolink.com" }
-  ]
-};
+
 
 export default function Contact() {
   const [data, setData] = useState(null);
@@ -37,7 +20,6 @@ export default function Contact() {
           setData(JSON.parse(res.data.htmlContent));
         } catch (e) {
           console.error("Failed to parse Contact CMS data:", e);
-          setData(DEFAULT_DATA);
         }
         setLoading(false);
       })

@@ -1,0 +1,22 @@
+{
+  "hero": {
+    "subtitle": "ENTERPRISE SECURITY",
+    "title1": "Governance your ",
+    "title2": "security team trusts.",
+    "description": "At Dragolink, security isn't an afterthought. Our entire infrastructure is designed from the ground up to protect your links, your users, and your data at global scale. Zero trust, 100% visibility."
+  },
+  "badges": [
+    { "title": "SOC2 Type II", "icon": "ShieldCheck" },
+    { "title": "GDPR Compliant", "icon": "Globe" },
+    { "title": "HIPAA Ready", "icon": "Activity" },
+    { "title": "ISO 27001", "icon": "Lock" }
+  ],
+  "features": [
+    { "title": "SSO & SAML", "description": "Enterprise-grade security integrations supporting SAML, Okta, and Azure AD for seamless, secure identity management.", "icon": "Key" },
+    { "title": "End-to-End Encryption", "description": "All data is encrypted at rest (AES-256) and in transit (TLS 1.3), ensuring absolute privacy and data sovereignty.", "icon": "Lock" },
+    { "title": "Granular Role-Based Access (RBAC)", "description": "Define custom roles and permissions down to the workspace and individual link level to enforce principle of least privilege.", "icon": "Users" },
+    { "title": "Comprehensive Audit Logs", "description": "Immutable logs track every user action, API request, and configuration change for rigorous internal compliance.", "icon": "FileText" },
+    { "title": "Automated Threat Intelligence", "description": "Every link is scanned dynamically against global blacklists (Google Safe Browsing, PhishTank) to block malware instantly.", "icon": "Zap" },
+    { "title": "Isolated Compute Environments", "description": "Enterprise customers operate in dedicated, single-tenant environments ensuring zero cross-contamination of analytics data.", "icon": "Server" }
+  ]
+}

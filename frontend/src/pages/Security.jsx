@@ -6,26 +6,7 @@ import { api } from '../lib/axios';
 
 const iconMap = { ShieldCheck, Globe, Activity, Lock, Key, Users, FileText, Zap, Server };
 
-const DEFAULT_DATA = {
-  hero: {
-    subtitle: "ENTERPRISE SECURITY",
-    title1: "Governance your ",
-    title2: "security team trusts.",
-    description: "At Dragolink, security isn't an afterthought. Our entire infrastructure is designed from the ground up to protect your links, your users, and your data at global scale."
-  },
-  badges: [
-    { title: "SOC2 Type II", icon: "ShieldCheck" },
-    { title: "GDPR Compliant", icon: "Globe" },
-    { title: "HIPAA Ready", icon: "Activity" },
-    { title: "ISO 27001", icon: "Lock" }
-  ],
-  features: [
-    { title: "SSO & SAML", description: "Enterprise-grade security integrations supporting SAML and Single Sign-On (SSO) for seamless identity management.", icon: "Key" },
-    { title: "End-to-End Encryption", description: "All data is encrypted at rest (AES-256) and in transit (TLS 1.3), ensuring absolute privacy.", icon: "Lock" },
-    { title: "Granular Role-Based Access (RBAC)", description: "Define custom roles and permissions down to the workspace and individual link level.", icon: "Users" },
-    { title: "Comprehensive Audit Logs", description: "Immutable logs track every user action, API request, and configuration change for compliance.", icon: "FileText" }
-  ]
-};
+
 
 export default function Security() {
   const [data, setData] = useState(null);
@@ -38,7 +19,6 @@ export default function Security() {
           setData(JSON.parse(res.data.htmlContent));
         } catch (e) {
           console.error("Failed to load CMS data:", e);
-          setData(DEFAULT_DATA);
         }
         setLoading(false);
       })

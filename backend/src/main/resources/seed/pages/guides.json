@@ -1,0 +1,72 @@
+{
+  "hero": {
+    "badgeText": "Dragolink Academy",
+    "title1": "Master the art of",
+    "title2": "link infrastructure",
+    "subtitle": "Dive into deep-dive tutorials, architectural guides, and best practices. Learn how to leverage Dragolink to build resilient, high-conversion digital experiences."
+  },
+  "tracks": [
+    {
+      "title": "Marketing & Attribution Core",
+      "desc": "Master UTM parameters, conversion funnels, and advanced multi-channel attribution.",
+      "color": "from-emerald-400 to-teal-500",
+      "progress": 100,
+      "courses": 5,
+      "time": "4h 30m"
+    },
+    {
+      "title": "Developer & API Integration",
+      "desc": "Build scalable applications using Dragolink's REST API, webhooks, and SDKs.",
+      "color": "from-blue-500 to-indigo-600",
+      "progress": 45,
+      "courses": 8,
+      "time": "6h 15m"
+    },
+    {
+      "title": "Enterprise Security & Compliance",
+      "desc": "Implement SSO, RBAC, and threat protection for large-scale link infrastructure.",
+      "color": "from-purple-500 to-pink-500",
+      "progress": 0,
+      "courses": 3,
+      "time": "2h 45m"
+    }
+  ],
+  "guides": [
+    {
+      "title": "Configuring Custom Domains for High Availability",
+      "desc": "Learn how to set up DNS records, SSL certificates, and failover routing for your custom short domains.",
+      "color": "bg-blue-50 text-blue-600 border-blue-200",
+      "level": "Intermediate",
+      "time": "15 min read",
+      "icon": "Globe"
+    },
+    {
+      "title": "Automating UTM Tags at Scale",
+      "desc": "A comprehensive guide to building programmatic UTM builders for your entire marketing team.",
+      "color": "bg-emerald-50 text-emerald-600 border-emerald-200",
+      "level": "Beginner",
+      "time": "10 min read",
+      "icon": "Target"
+    },
+    {
+      "title": "Webhooks: Reacting to Link Clicks in Real-Time",
+      "desc": "Step-by-step tutorial on securing and processing Dragolink webhook payloads in Node.js.",
+      "color": "bg-purple-50 text-purple-600 border-purple-200",
+      "level": "Advanced",
+      "time": "25 min read",
+      "icon": "Zap"
+    },
+    {
+      "title": "Protecting Users from Phishing and Malware",
+      "desc": "How Dragolink's automated threat detection works and how to configure custom blocklists.",
+      "color": "bg-red-50 text-red-600 border-red-200",
+      "level": "Intermediate",
+      "time": "12 min read",
+      "icon": "Shield"
+    }
+  ],
+  "newsletter": {
+    "title": "Never stop learning.",
+    "description": "Join 50,000+ developers and marketers. Get one deeply technical guide on link infrastructure sent to your inbox every month."
+  }
+}

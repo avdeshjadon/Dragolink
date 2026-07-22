@@ -32,6 +32,12 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column(length = 100)
+    private String company;
+
+    @Column(length = 50)
+    private String timezone;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;

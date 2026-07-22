@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { api } from '../lib/axios';
 
 export default function TopNavbar() {
   const location = useLocation();
   const isSettingsActive = location.pathname.startsWith('/settings');
+  const [links, setLinks] = useState([]);
+
+  useEffect(() => {
+    api.get('/public/navigation?position=PUBLIC_HEADER')
+      .then(res => {
+        setLinks(res.data);
+      })
+      .catch(err => {
+        console.error("Failed to load top navbar navigation", err);
+      });
+  }, []);
 
   return (
     <header className="flex-none border-b border-outline-variant/10 bg-surface/80 backdrop-blur-md sticky top-0 z-50">
@@ -17,10 +29,16 @@ export default function TopNavbar() {
         </div>
         
         <nav className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-4">
-          <Link to="#" className="text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary transition-colors duration-200">Product</Link>
-          <Link to="#" className="text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary transition-colors duration-200">Pricing</Link>
-          <Link to="#" className="text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary transition-colors duration-200">Solutions</Link>
-          <Link to="#" className="text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary transition-colors duration-200">Docs</Link>
+          {links.map((link) => (
+            <Link 
+              key={link.id}
+              to={link.url} 
+              className="text-on-surface-variant font-medium font-label-md text-label-md hover:text-primary transition-colors duration-200"
+              {...(link.isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
         
         {/* Trailing Actions */}

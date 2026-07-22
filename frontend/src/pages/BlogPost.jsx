@@ -12,7 +12,7 @@ export default function BlogPost() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const res = await api.get(`/cms/posts/${id}`);
+        const res = await api.get(`/public/posts/${id}`);
         setPost(res.data);
       } catch (err) {
         console.error("Failed to fetch post", err);
@@ -85,14 +85,38 @@ export default function BlogPost() {
               {post.content && typeof post.content === 'string' && post.content.startsWith('[') ? 
                 JSON.parse(post.content).map((section, idx) => (
                   <div key={idx} className="mb-12">
-                    <h2 id={`section-${idx}`} className="text-3xl font-bold text-brand-dark mb-6 tracking-tight">
-                      {section.heading}
-                    </h2>
+                    {section.heading && (
+                      <h2 id={`section-${idx}`} className="text-3xl font-bold text-brand-dark mb-6 tracking-tight">
+                        {section.heading}
+                      </h2>
+                    )}
                     {section.body.map((para, pIdx) => (
                       <p key={pIdx} className="text-lg text-text-secondary leading-relaxed mb-6">
                         {para}
                       </p>
                     ))}
+                    {section.table && (
+                      <div className="my-8 overflow-x-auto rounded-xl border border-border-light shadow-sm">
+                        <table className="w-full text-left border-collapse">
+                          <thead>
+                            <tr className="bg-surface-light border-b border-border-light">
+                              {section.table.headers.map((header, cIdx) => (
+                                <th key={cIdx} className="py-4 px-6 text-sm font-bold text-brand-dark uppercase tracking-wider">{header}</th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-border-light bg-white">
+                            {section.table.rows.map((row, rIdx) => (
+                              <tr key={rIdx} className="hover:bg-bg-light/50 transition-colors">
+                                {row.map((cell, cIdx) => (
+                                  <td key={cIdx} className="py-4 px-6 text-base text-text-secondary">{cell}</td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
                   </div>
                 )) : (
                   <div dangerouslySetInnerHTML={{ __html: post.content }} />
@@ -108,11 +132,13 @@ export default function BlogPost() {
               <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider mb-6">In this article</h3>
               <ul className="space-y-4">
                 {post.content && typeof post.content === 'string' && post.content.startsWith('[') && JSON.parse(post.content).map((section, idx) => (
-                  <li key={idx}>
-                    <a href={`#section-${idx}`} className="text-text-secondary hover:text-brand font-medium transition-colors line-clamp-2">
-                      {section.heading}
-                    </a>
-                  </li>
+                  section.heading ? (
+                    <li key={idx}>
+                      <a href={`#section-${idx}`} className="text-text-secondary hover:text-brand font-medium transition-colors line-clamp-2">
+                        {section.heading}
+                      </a>
+                    </li>
+                  ) : null
                 ))}
               </ul>
             </div>  

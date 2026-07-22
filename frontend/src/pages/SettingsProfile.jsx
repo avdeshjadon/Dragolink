@@ -1,16 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { api } from '../lib/axios';
 
 export default function SettingsProfile() {
   const [formData, setFormData] = useState({
-    firstName: 'Jane',
-    lastName: 'Doe',
-    email: 'jane.doe@dragolink.io',
-    company: 'Dragolink Analytics',
+    name: '',
+    email: '',
+    company: '',
     timezone: 'est'
   });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await api.get('/users/profile');
+        setFormData({
+          name: res.data.name || '',
+          email: res.data.email || '',
+          company: res.data.company || '',
+          timezone: res.data.timezone || 'est'
+        });
+      } catch (error) {
+        console.error("Failed to load profile", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setMessage('');
+    try {
+      await api.put('/users/profile', {
+        name: formData.name,
+        company: formData.company,
+        timezone: formData.timezone
+      });
+      setMessage('Profile updated successfully!');
+    } catch (error) {
+      console.error("Failed to update profile", error);
+      setMessage('Failed to update profile.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -44,24 +85,22 @@ export default function SettingsProfile() {
       </div>
       
       {/* Form Fields */}
-      <form className="flex flex-col gap-6 max-w-2xl" onSubmit={(e) => e.preventDefault()}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex flex-col gap-2">
-            <label className="font-label-md text-label-md text-on-surface" htmlFor="firstName">First Name</label>
-            <input 
-              id="firstName" 
-              type="text" 
-              value={formData.firstName}
-              onChange={handleChange}
-              className="bg-surface-dim border border-outline-variant/30 rounded-md px-4 py-2 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all w-full" 
-            />
+      {loading ? (
+        <div className="py-10 text-center text-on-surface-variant">Loading profile...</div>
+      ) : (
+      <form className="flex flex-col gap-6 max-w-2xl" onSubmit={handleSave}>
+        {message && (
+          <div className={`p-4 rounded-md ${message.includes('success') ? 'bg-primary-container text-on-primary-container' : 'bg-error-container text-on-error-container'}`}>
+            {message}
           </div>
+        )}
+        <div className="grid grid-cols-1 gap-4">
           <div className="flex flex-col gap-2">
-            <label className="font-label-md text-label-md text-on-surface" htmlFor="lastName">Last Name</label>
+            <label className="font-label-md text-label-md text-on-surface" htmlFor="name">Full Name</label>
             <input 
-              id="lastName" 
+              id="name" 
               type="text" 
-              value={formData.lastName}
+              value={formData.name}
               onChange={handleChange}
               className="bg-surface-dim border border-outline-variant/30 rounded-md px-4 py-2 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all w-full" 
             />
@@ -76,8 +115,8 @@ export default function SettingsProfile() {
               id="email" 
               type="email" 
               value={formData.email}
-              onChange={handleChange}
-              className="bg-surface-dim border border-outline-variant/30 rounded-md pl-[42px] pr-4 py-2 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all w-full" 
+              disabled
+              className="bg-surface-dim border border-outline-variant/30 rounded-md pl-[42px] pr-4 py-2 font-body-md text-body-md text-on-surface/70 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all w-full opacity-70 cursor-not-allowed" 
             />
           </div>
         </div>
@@ -120,14 +159,12 @@ export default function SettingsProfile() {
         
         {/* Actions */}
         <div className="flex justify-end gap-4">
-          <button type="button" className="bg-transparent text-on-surface-variant font-label-md text-label-md px-6 py-2 rounded-md hover:bg-surface-container-highest hover:text-on-surface transition-colors duration-200">
-            Cancel
-          </button>
-          <button type="submit" className="bg-primary-container text-on-primary-container font-label-md text-label-md px-6 py-2 rounded-md hover:bg-primary hover:text-white transition-colors duration-200 shadow-sm border border-primary-fixed/20 active:scale-95">
-            Save Changes
+          <button type="submit" disabled={saving} className="bg-primary-container text-on-primary-container font-label-md text-label-md px-6 py-2 rounded-md hover:bg-primary hover:text-white transition-colors duration-200 shadow-sm border border-primary-fixed/20 active:scale-95 disabled:opacity-50">
+            {saving ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
       </form>
+      )}
     </div>
   );
 }

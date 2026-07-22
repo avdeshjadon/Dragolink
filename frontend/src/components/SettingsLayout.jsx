@@ -1,18 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
+import { api } from '../lib/axios';
 import TopNavbar from './TopNavbar';
 
 export default function SettingsLayout() {
   const location = useLocation();
 
-  const navItems = [
-    { name: 'Profile', path: '/settings/profile', icon: 'person' },
-    { name: 'Security', path: '/settings/security', icon: 'lock' },
-    { name: 'Appearance', path: '#', icon: 'palette' },
-    { name: 'Notifications', path: '#', icon: 'notifications_active' },
-    { name: 'Billing', path: '#', icon: 'credit_card' },
-    { name: 'API Keys', path: '#', icon: 'api' },
-  ];
+  const [navItems, setNavItems] = useState([]);
+
+  useEffect(() => {
+    api.get('/public/navigation?position=SETTINGS_SIDEBAR')
+      .then(res => setNavItems(res.data))
+      .catch(err => console.error("Failed to load settings navigation", err));
+  }, []);
 
   return (
     <div className="min-h-screen bg-background font-sans flex flex-col">
@@ -26,11 +26,11 @@ export default function SettingsLayout() {
           <h2 className="font-headline-md text-headline-md text-on-surface mb-4 px-1">Settings</h2>
           <nav className="flex flex-col gap-1">
             {navItems.map((item) => {
-              const isActive = location.pathname.startsWith(item.path) && item.path !== '#';
+              const isActive = location.pathname.startsWith(item.url) && item.url !== '#';
               return (
                 <Link
-                  key={item.name}
-                  to={item.path}
+                  key={item.id}
+                  to={item.url}
                   className={`flex items-center gap-3 font-label-md text-label-md rounded-lg px-4 py-3 transition-colors duration-200 ${
                     isActive
                       ? 'bg-surface-container text-primary border-l-2 border-primary'
@@ -41,9 +41,9 @@ export default function SettingsLayout() {
                     className="material-symbols-outlined text-[20px]" 
                     style={isActive ? { fontVariationSettings: "'FILL' 1" } : {}}
                   >
-                    {item.icon}
+                    {item.badgeText}
                   </span>
-                  {item.name}
+                  {item.label}
                 </Link>
               );
             })}

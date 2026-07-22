@@ -1,25 +1,6 @@
 version: '3.8'
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: dragolink-mysql
-    environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-dragolink}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
-      MYSQL_USER: ${MYSQL_USER:-root}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-root}
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - dragolink-network
-    healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      timeout: 20s
-      retries: 10
-
   redis:
     image: redis:7.0-alpine
     container_name: dragolink-redis
@@ -66,21 +47,19 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      mysql:
-        condition: service_healthy
       redis:
         condition: service_started
       kafka:
         condition: service_started
     environment:
-      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:mysql://mysql:3306/dragolink?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true}
-      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME:-root}
-      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD:-root}
-      - SPRING_DATA_REDIS_HOST=${SPRING_DATA_REDIS_HOST:-redis}
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=${SPRING_KAFKA_BOOTSTRAP_SERVERS:-kafka:29092}
-      - APP_JWT_SECRET=${JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+      - SPRING_DATASOURCE_URL
+      - SPRING_DATASOURCE_USERNAME
+      - SPRING_DATASOURCE_PASSWORD
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - APP_JWT_SECRET=${JWT_SECRET}
       - APP_JWT_EXPIRATIONMS=${JWT_EXPIRATION_MS:-86400000}
-      - APP_BASE_URL=${APP_BASE_URL:-http://localhost:8080/}
+      - APP_BASE_URL
     networks:
       - dragolink-network
 
@@ -95,7 +74,6 @@ services:
       - dragolink-network
 
 volumes:
-  mysql_data:
   redis_data:
 
 networks:

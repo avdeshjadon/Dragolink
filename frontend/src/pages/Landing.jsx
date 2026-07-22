@@ -33,60 +33,9 @@ import { Input } from "../components/ui/Input";
 export default function Landing() {
   const [url, setUrl] = useState("");
 
-  const defaultFeatures = [
-    {
-      title: "Custom short links",
-      description: "Create branded, memorable links that stand out, build audience trust, and drive higher click-through rates across all your marketing channels.",
-      icon: "LinkIcon",
-    },
-    {
-      title: "Advanced analytics",
-      description: "Track clicks, devices, browsers, and geographic data in real time. Make data-driven decisions with comprehensive performance reports.",
-      icon: "BarChart3",
-    },
-    {
-      title: "QR code generation",
-      description: "Generate dynamic, highly-customizable QR codes for offline marketing campaigns that bridge the gap between physical and digital spaces.",
-      icon: "QrCode",
-    },
-    {
-      title: "Security & Reliability",
-      description:
-        "Enterprise-grade protection with advanced threat filtering and 99.99% uptime SLA to ensure your links are always secure and accessible.",
-      icon: "ShieldCheck",
-    },
-    {
-      title: "API Access",
-      description:
-        "Integrate powerful link generation and analytics directly into your own applications seamlessly with our robust, developer-friendly API.",
-      icon: "Settings2",
-    },
-    {
-      title: "Team Collaboration",
-      description:
-        "Work together effortlessly with granular role-based access control, shared workspaces, and detailed audit logs for your entire team.",
-      icon: "Users",
-    },
-  ];
+  
 
-  const [pageData, setPageData] = useState({
-    hero: {
-      title1: "Shorten links.",
-      title2: "Understand every click.",
-      subtitle: "Create powerful short links, track engagement, generate QR codes, and manage your entire link infrastructure from one intelligent platform."
-    },
-    capabilities: {
-      title1: "Everything you need to",
-      title2: "scale",
-      subtitle: "Dragolink provides a comprehensive suite of tools designed for modern teams and creators who demand the best."
-    },
-    features: defaultFeatures,
-    cta: {
-      title: "Ready to optimize your links?",
-      subtitle: "Join thousands of teams who trust Dragolink for their link management and analytics.",
-      buttonText: "Get Started Now"
-    }
-  });
+  const [pageData, setPageData] = useState(null);
 
   useEffect(() => {
     const fetchPageData = async () => {
@@ -101,6 +50,8 @@ export default function Landing() {
     };
     fetchPageData();
   }, []);
+
+  if (!pageData) return <div className="min-h-screen flex items-center justify-center bg-bg-light">Loading...</div>;
 
   return (
     <div className="flex flex-col min-h-screen bg-bg-light w-full font-sans">

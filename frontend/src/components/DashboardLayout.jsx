@@ -1,6 +1,7 @@
-import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { api } from '../lib/axios';
 import { useAuth } from '../context/AuthContext';
 import TopNavbar from './TopNavbar';
 
@@ -9,16 +10,13 @@ export default function DashboardLayout() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: 'dashboard' },
-    { name: 'Analytics', href: '/analytics', icon: 'analytics' },
-    { name: 'Links', href: '/links', icon: 'link' },
-    { name: 'QR Codes', href: '/qr', icon: 'qr_code' },
-    { name: 'Campaigns', href: '/campaigns', icon: 'campaign' },
-    { name: 'Team', href: '/team', icon: 'group' },
-    { name: 'API Keys', href: '/api-keys', icon: 'vpn_key' },
-    { name: 'Admin', href: '/admin/overview', icon: 'admin_panel_settings' },
-  ];
+  const [navigation, setNavigation] = useState([]);
+
+  useEffect(() => {
+    api.get('/public/navigation?position=DASHBOARD_SIDEBAR')
+      .then(res => setNavigation(res.data))
+      .catch(err => console.error("Failed to load sidebar navigation", err));
+  }, []);
 
   const SidebarContent = () => (
     <nav className="flex h-full flex-col p-4 bg-surface-container-low w-64 overflow-y-auto">
@@ -32,21 +30,21 @@ export default function DashboardLayout() {
       <div className="flex-1 space-y-2">
         {navigation.map(item => {
           // Special active state matching Stitch design
-          const isActive = location.pathname.startsWith(item.href) && (item.href !== '/dashboard' || location.pathname === '/dashboard');
+          const isActive = location.pathname.startsWith(item.url) && (item.url !== '/dashboard' || location.pathname === '/dashboard');
           
           if (isActive) {
             return (
-              <Link key={item.name} to={item.href} className="flex items-center gap-4 bg-secondary-container text-on-secondary-container rounded-lg px-4 py-2 shadow-sm translate-x-1 transition-transform duration-200">
-                <span className="material-symbols-outlined icon-fill">{item.icon}</span>
-                <span className="font-label-md text-label-md font-medium">{item.name}</span>
+              <Link key={item.id} to={item.url} className="flex items-center gap-4 bg-secondary-container text-on-secondary-container rounded-lg px-4 py-2 shadow-sm translate-x-1 transition-transform duration-200">
+                <span className="material-symbols-outlined icon-fill">{item.badgeText}</span>
+                <span className="font-label-md text-label-md font-medium">{item.label}</span>
               </Link>
             );
           }
 
           return (
-            <Link key={item.name} to={item.href} className="flex items-center gap-4 text-on-surface-variant hover:bg-surface-container-high rounded-lg px-4 py-2 transition-all duration-200">
-              <span className="material-symbols-outlined">{item.icon}</span>
-              <span className="font-label-md text-label-md">{item.name}</span>
+            <Link key={item.id} to={item.url} className="flex items-center gap-4 text-on-surface-variant hover:bg-surface-container-high rounded-lg px-4 py-2 transition-all duration-200">
+              <span className="material-symbols-outlined">{item.badgeText}</span>
+              <span className="font-label-md text-label-md">{item.label}</span>
             </Link>
           );
         })}

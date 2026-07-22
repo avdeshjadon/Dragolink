@@ -1,6 +1,44 @@
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { api } from '../lib/axios';
 
 export default function Footer() {
+  const [links, setLinks] = useState({});
+
+  useEffect(() => {
+    // Fetch dynamic footer links from Spring Boot Backend
+    api.get('/public/navigation')
+      .then(res => {
+        // Group by category
+        const grouped = res.data.reduce((acc, link) => {
+          if (!acc[link.category]) acc[link.category] = [];
+          acc[link.category].push(link);
+          return acc;
+        }, {});
+        setLinks(grouped);
+      })
+      .catch(err => console.error('Failed to load navigation links', err));
+  }, []);
+
+  const renderLink = (link) => {
+    const isExternal = link.isExternal || link.is_external;
+    const badge = link.badgeText || link.badge_text;
+    
+    if (isExternal) {
+      return (
+        <a href={link.url} target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors flex items-center gap-2">
+          {link.label} {badge && <span className="bg-primary/10 text-primary text-[10px] px-1.5 py-0.5 rounded font-bold">{badge}</span>}
+        </a>
+      );
+    }
+    
+    return (
+      <Link to={link.url} className="hover:text-primary transition-colors flex items-center gap-2">
+        {link.label} {badge && <span className="bg-primary/10 text-primary text-[10px] px-1.5 py-0.5 rounded font-bold">{badge}</span>}
+      </Link>
+    );
+  };
+
   return (
     <footer className="bg-white border-t border-slate-200 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -17,35 +55,18 @@ export default function Footer() {
             </p>
           </div>
           
-          <div>
-            <h3 className="text-sm font-semibold text-slate-900 tracking-wider uppercase mb-4">Product</h3>
-            <ul className="space-y-3 text-sm text-slate-500">
-              <li><Link to="/features" className="hover:text-primary transition-colors">Features</Link></li>
-              <li><Link to="/pricing" className="hover:text-primary transition-colors">Pricing</Link></li>
-              <li><Link to="/analytics" className="hover:text-primary transition-colors">Analytics</Link></li>
-              <li><Link to="/api" className="hover:text-primary transition-colors">API</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold text-slate-900 tracking-wider uppercase mb-4">Resources</h3>
-            <ul className="space-y-3 text-sm text-slate-500">
-              <li><Link to="/docs" className="hover:text-primary transition-colors">Documentation</Link></li>
-              <li><Link to="/blog" className="hover:text-primary transition-colors">Blog</Link></li>
-              <li><Link to="/help" className="hover:text-primary transition-colors">Help Center</Link></li>
-              <li><Link to="/guides" className="hover:text-primary transition-colors">Guides</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold text-slate-900 tracking-wider uppercase mb-4">Company</h3>
-            <ul className="space-y-3 text-sm text-slate-500">
-              <li><Link to="/about" className="hover:text-primary transition-colors">About</Link></li>
-              <li><Link to="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
-              <li><Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
-            </ul>
-          </div>
+          {['Product', 'Resources', 'Company'].map(category => (
+            <div key={category}>
+              <h3 className="text-sm font-semibold text-slate-900 tracking-wider uppercase mb-4">{category}</h3>
+              <ul className="space-y-3 text-sm text-slate-500">
+                {links[category]?.map(link => (
+                  <li key={link.id}>
+                    {renderLink(link)}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
         
         <div className="mt-12 pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">

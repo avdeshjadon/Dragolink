@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface NavigationLinkRepository extends JpaRepository<NavigationLink, Long> {
     List<NavigationLink> findAllByOrderByCategoryAscSortOrderAsc();
+    List<NavigationLink> findAllByPositionOrderByCategoryAscSortOrderAsc(String position);
+    List<NavigationLink> findAllByPositionOrderBySortOrderAsc(String position);
 }

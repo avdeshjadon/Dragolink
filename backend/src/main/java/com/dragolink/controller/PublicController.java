@@ -1,7 +1,9 @@
 package com.dragolink.controller;
 
+import com.dragolink.entity.BlogPost;
 import com.dragolink.entity.NavigationLink;
 import com.dragolink.entity.PageContent;
+import com.dragolink.repository.BlogPostRepository;
 import com.dragolink.repository.NavigationLinkRepository;
 import com.dragolink.repository.PageContentRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import com.dragolink.exception.ResourceNotFoundException;
+import org.springframework.cache.annotation.Cacheable;
 
 @RestController
 @RequestMapping("/api/public")
@@ -19,16 +22,33 @@ public class PublicController {
 
     private final NavigationLinkRepository navigationLinkRepository;
     private final PageContentRepository pageContentRepository;
+    private final BlogPostRepository blogPostRepository;
 
     @GetMapping("/navigation")
-    public ResponseEntity<List<NavigationLink>> getNavigationLinks() {
-        return ResponseEntity.ok(navigationLinkRepository.findAllByOrderByCategoryAscSortOrderAsc());
+    public List<NavigationLink> getNavigationLinks(@RequestParam(required = false) String position) {
+        if (position != null && !position.isEmpty()) {
+            return navigationLinkRepository.findAllByPositionOrderByCategoryAscSortOrderAsc(position);
+        }
+        return navigationLinkRepository.findAllByOrderByCategoryAscSortOrderAsc();
     }
 
     @GetMapping("/pages/{slug}")
-    public ResponseEntity<PageContent> getPageContent(@PathVariable String slug) {
+    @Cacheable(value = "pages", key = "#slug")
+    public PageContent getPageContent(@PathVariable String slug) {
         return pageContentRepository.findBySlug(slug)
-                .map(ResponseEntity::ok)
                 .orElseThrow(() -> new ResourceNotFoundException("Page content not found with slug: " + slug));
+    }
+
+    @GetMapping("/posts")
+    @Cacheable("posts")
+    public List<BlogPost> getPosts() {
+        return blogPostRepository.findAll();
+    }
+
+    @GetMapping("/posts/{id}")
+    @Cacheable(value = "post", key = "#id")
+    public BlogPost getPostById(@PathVariable Long id) {
+        return blogPostRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Blog post not found with id: " + id));
     }
 }

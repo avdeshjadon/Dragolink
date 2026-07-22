@@ -22,6 +22,10 @@ public class ShortLink {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "campaign_id")
+    private Campaign campaign;
+
     @Column(name = "long_url", nullable = false, length = 2048)
     private String longUrl;
 
