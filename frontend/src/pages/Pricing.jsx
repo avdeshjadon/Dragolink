@@ -94,7 +94,7 @@ export default function Pricing() {
               
               <div className="mb-8">
                 <div className="flex items-end gap-1">
-                  <span className="text-5xl font-extrabold text-brand-dark">${annual ? plan.priceAnnual : plan.priceMonthly}</span>
+                  <span className="text-5xl font-extrabold text-brand-dark">₹{annual ? plan.priceAnnual : plan.priceMonthly}</span>
                   <span className="text-text-secondary font-medium mb-1">/mo</span>
                 </div>
                 {(annual ? plan.priceAnnual : plan.priceMonthly) > 0 && (

@@ -16,7 +16,8 @@ public class QrSeeder implements Seeder {
 
     @Override
     public void seed() throws Exception {
-        String slug = "qr";
+        String slug = "qr-codes";
+        repository.findBySlug("qr").ifPresent(repository::delete); // cleanup old
         repository.findBySlug(slug).ifPresent(repository::delete);
             try (var is = new ClassPathResource("seed/pages/qr.json").getInputStream()) {
                 String content = new String(is.readAllBytes(), StandardCharsets.UTF_8);

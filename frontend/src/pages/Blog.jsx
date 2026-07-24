@@ -10,8 +10,14 @@ export default function Blog() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [blogPosts, setBlogPosts] = useState([]);
   const [pageData, setPageData] = useState(null);
-  const [categories] = useState(['All', 'Product Updates', 'Engineering', 'Marketing', 'Growth', 'Case Studies']);
   const [loading, setLoading] = useState(true);
+
+  const categories = useMemo(() => {
+    if (pageData && pageData.categories && pageData.categories.length > 0) {
+      return ['All', ...pageData.categories];
+    }
+    return ['All', 'Product Updates', 'Engineering', 'Marketing', 'Growth', 'Case Studies'];
+  }, [pageData]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,13 +66,7 @@ export default function Blog() {
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
         {pageData && pageData.hero ? (
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand/10 text-brand font-semibold text-sm mb-8">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-brand"></span>
-              </span>
-              {pageData.hero.badgeText}
-            </div>
+
             <h1 className="text-5xl lg:text-7xl font-extrabold text-brand-dark mb-6 tracking-tight">
               {pageData.hero.title1} <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-emerald">{pageData.hero.title2}</span>
             </h1>
@@ -75,8 +75,8 @@ export default function Blog() {
             </p>
             <form className="max-w-md mx-auto flex gap-2 relative" onSubmit={(e) => e.preventDefault()}>
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary" />
-              <input type="email" placeholder="Enter your email" className="w-full pl-12 pr-4 py-4 rounded-xl border border-border-light bg-surface-light focus:outline-none focus:ring-2 focus:ring-brand/50 transition-all text-brand-dark" />
-              <Button type="submit" className="whitespace-nowrap px-8 rounded-xl shadow-lg shadow-brand/20">{pageData.hero.buttonText}</Button>
+              <input type="email" placeholder="Enter your email" className="w-full pl-12 pr-4 h-14 rounded-xl border border-border-light bg-surface-light focus:outline-none focus:ring-2 focus:ring-brand/50 transition-all text-brand-dark" />
+              <Button type="submit" className="whitespace-nowrap px-8 !h-14 rounded-xl shadow-lg shadow-brand/20">{pageData.hero.buttonText}</Button>
             </form>
           </motion.div>
         ) : (
@@ -101,9 +101,9 @@ export default function Blog() {
         >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-12 bg-surface-light rounded-[2rem] border border-border-light overflow-hidden shadow-xl hover:shadow-2xl hover:border-brand/30 transition-all duration-300">
             {/* Featured Image */}
-            <div className={`h-64 lg:h-full w-full bg-surface-light relative overflow-hidden`}>
-               <img src={featuredPost.imageUrl} alt={featuredPost.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
-               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className={`h-64 lg:h-full w-full bg-surface-light relative overflow-hidden flex items-center justify-center p-8`}>
+               <img src={featuredPost.imageUrl} alt={featuredPost.title} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700 ease-out" />
+               <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
             </div>
 
             {/* Featured Content */}
@@ -211,9 +211,9 @@ export default function Blog() {
                 className="group cursor-pointer bg-surface-light border border-border-light rounded-2xl overflow-hidden hover:shadow-xl hover:border-brand/30 transition-all flex flex-col h-full"
               >
                 {/* Image */}
-                <div className={`h-52 w-full bg-surface-light relative overflow-hidden shrink-0`}>
-                  <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className={`h-52 w-full bg-surface-light relative overflow-hidden shrink-0 flex items-center justify-center p-6`}>
+                  <img src={post.imageUrl} alt={post.title} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700 ease-out" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 </div>
 
                 {/* Content */}

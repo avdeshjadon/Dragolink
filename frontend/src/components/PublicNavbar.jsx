@@ -2,10 +2,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { api } from '../lib/axios';
 import { Button } from './ui/Button';
+import { useAuth } from '../context/AuthContext';
+import { LayoutDashboard } from 'lucide-react';
 
 export default function PublicNavbar() {
   const location = useLocation();
   const [links, setLinks] = useState([]);
+  const { user } = useAuth();
 
   useEffect(() => {
     api.get('/public/navigation?position=PUBLIC_HEADER')
@@ -41,12 +44,22 @@ export default function PublicNavbar() {
             ))}
           </div>
         <div className="flex items-center justify-end gap-4">
-          <Link to="/login" className="text-sm font-medium text-text-secondary hover:text-brand transition-colors">
-            Log in
-          </Link>
-          <Link to="/register">
-            <Button size="sm">Get Started</Button>
-          </Link>
+          {user ? (
+            <Link to="/dashboard">
+              <Button size="sm" className="flex items-center gap-2 cursor-pointer shadow-md bg-brand text-white hover:bg-brand-dark transition-colors">
+                <LayoutDashboard className="w-4 h-4" /> Dashboard
+              </Button>
+            </Link>
+          ) : (
+            <>
+              <Link to="/login" className="text-sm font-medium text-text-secondary hover:text-brand transition-colors">
+                Log in
+              </Link>
+              <Link to="/register">
+                <Button size="sm">Get Started</Button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>

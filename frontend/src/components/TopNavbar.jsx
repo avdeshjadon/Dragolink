@@ -62,9 +62,6 @@ export default function TopNavbar() {
                 <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full"></div>
               )}
             </Link>
-            <button className="p-1 text-on-surface-variant hover:text-primary transition-colors duration-200 active:scale-95 transition-transform duration-150">
-              <span className="material-symbols-outlined">dark_mode</span>
-            </button>
           </div>
           
           <div className="h-6 w-[1px] bg-outline-variant/30 mx-1 hidden lg:block"></div>

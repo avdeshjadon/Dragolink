@@ -41,13 +41,13 @@ export default function About() {
     <div className="bg-bg-light min-h-screen font-sans pb-32 text-brand-dark overflow-hidden">
       
       {/* Hero Section */}
-      <section className="relative pt-32 pb-24 px-4 sm:px-6 lg:px-8 border-b border-border-light overflow-hidden">
+      <section className="relative min-h-[calc(100vh-80px)] flex items-center justify-center px-4 sm:px-6 lg:px-8 border-b border-border-light overflow-hidden pt-16 pb-16">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-emerald/10 blur-[120px] rounded-full pointer-events-none" />
         
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
             
-            <h1 className="text-5xl lg:text-8xl font-extrabold text-brand-dark mb-8 tracking-tight leading-[1.05]">
+            <h1 className="text-5xl lg:text-7xl font-extrabold text-brand-dark mb-8 tracking-tight leading-[1.05]">
               {hero.title1} <br/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-emerald">{hero.title2}</span>
             </h1>

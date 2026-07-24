@@ -69,8 +69,8 @@ export default function PublicIntegrations() {
   return (
     <div className="bg-bg-light min-h-screen font-sans">
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center relative overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-brand-emerald/15 blur-[120px] rounded-full pointer-events-none -z-10" />
+      <section className="min-h-[calc(100vh-80px)] flex flex-col justify-center pt-20 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-brand-emerald/15 blur-[120px] rounded-full pointer-events-none -z-10" />
 
         <motion.h1
           initial={{ opacity: 0, y: 20 }}

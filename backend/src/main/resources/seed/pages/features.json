@@ -119,5 +119,10 @@
       "Automatic malware & phishing scans",
       "UTM parameters built in by default"
     ]
+  },
+  "cta": {
+    "title": "Ready to put every feature to work?",
+    "subtitle": "Start free and upgrade whenever your team needs more.",
+    "buttonText": "Start for free"
   }
 }

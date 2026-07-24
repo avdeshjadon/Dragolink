@@ -28,28 +28,61 @@
   ],
   "jobs": [
     {
+      "id": "senior-distributed-systems-engineer",
       "title": "Senior Distributed Systems Engineer",
-      "department": "Engineering",
-      "location": "Remote (Global)",
-      "type": "Full-time"
+      "dept": "Engineering",
+      "loc": "Remote (Global)",
+      "type": "Full-time",
+      "salary": "$150k - $200k",
+      "description": "We are looking for a Senior Distributed Systems Engineer to help scale Dragolink's core link redirection and analytics engine. You will be responsible for designing and implementing high-throughput, low-latency services that handle billions of requests per day.",
+      "responsibilities": [
+        "Design and build scalable, reliable, and performant distributed systems.",
+        "Optimize our real-time analytics pipeline processing billions of events.",
+        "Mentor junior engineers and contribute to our engineering culture."
+      ],
+      "requirements": [
+        "5+ years of experience in building distributed systems.",
+        "Expertise in Java, Go, or Rust.",
+        "Deep understanding of databases, caching, and message queues (Redis, Kafka)."
+      ]
     },
     {
+      "id": "product-marketing-manager",
       "title": "Product Marketing Manager",
-      "department": "Marketing",
-      "location": "Remote (US/Canada)",
-      "type": "Full-time"
+      "dept": "Marketing",
+      "loc": "Remote (US/Canada)",
+      "type": "Full-time",
+      "salary": "$110k - $140k",
+      "description": "As a Product Marketing Manager, you will be the bridge between our product and our users. You will craft compelling narratives, go-to-market strategies, and marketing campaigns that drive adoption and growth.",
+      "responsibilities": [
+        "Develop and execute go-to-market strategies for new features.",
+        "Create product positioning and messaging that resonates with our target audience.",
+        "Collaborate with sales and product teams to drive user engagement."
+      ],
+      "requirements": [
+        "3+ years of experience in product marketing for B2B SaaS.",
+        "Strong written and verbal communication skills.",
+        "Experience with market research and competitive analysis."
+      ]
     },
     {
+      "id": "enterprise-account-executive",
       "title": "Enterprise Account Executive",
-      "department": "Sales",
-      "location": "London, UK (Hybrid)",
-      "type": "Full-time"
-    },
-    {
-      "title": "Lead Product Designer",
-      "department": "Design",
-      "location": "Remote (EMEA)",
-      "type": "Full-time"
+      "dept": "Sales",
+      "loc": "London, UK (Hybrid)",
+      "type": "Full-time",
+      "salary": "£80k - £120k + Commission",
+      "description": "We are seeking a driven Enterprise Account Executive to expand our presence in the EMEA region. You will be responsible for managing the entire sales cycle, from prospecting to closing six-figure deals.",
+      "responsibilities": [
+        "Manage the full sales cycle for enterprise accounts.",
+        "Build and maintain strong relationships with key stakeholders.",
+        "Collaborate with solution engineers to deliver compelling product demonstrations."
+      ],
+      "requirements": [
+        "5+ years of experience in enterprise B2B SaaS sales.",
+        "Proven track record of consistently exceeding quota.",
+        "Excellent presentation and negotiation skills."
+      ]
     }
   ]
 }

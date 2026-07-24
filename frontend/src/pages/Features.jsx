@@ -65,7 +65,7 @@ export default function Features() {
     return <div className="min-h-screen flex items-center justify-center bg-bg-light text-text-secondary">Failed to load content.</div>;
   }
 
-  const { hero, categories, integrations, comparison } = data;
+  const { hero, categories, integrations, comparison, cta } = data;
 
   return (
     <div className="bg-bg-light min-h-screen py-24 font-sans relative overflow-hidden">
@@ -182,13 +182,13 @@ export default function Features() {
           viewport={{ once: true, margin: '-50px' }}
           className="text-center"
         >
-          <h2 className="text-3xl font-bold text-brand-dark mb-4 tracking-tight">Ready to put every feature to work?</h2>
+          <h2 className="text-3xl font-bold text-brand-dark mb-4 tracking-tight">{cta?.title || "Ready to put every feature to work?"}</h2>
           <p className="text-lg text-text-secondary max-w-xl mx-auto mb-8 font-medium">
-            Start free and upgrade whenever your team needs more.
+            {cta?.subtitle || "Start free and upgrade whenever your team needs more."}
           </p>
           <Link to="/register">
             <Button size="lg" className="text-base px-8 inline-flex items-center gap-2">
-              Start for free <ArrowRight className="w-4 h-4" />
+              {cta?.buttonText || "Start for free"} <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
         </motion.div>

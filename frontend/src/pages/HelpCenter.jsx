@@ -32,16 +32,13 @@ export default function HelpCenter() {
     <div className="bg-bg-light min-h-screen font-sans pb-24 text-brand-dark overflow-hidden">
       
       {/* Hero Section */}
-      <section className="relative pt-32 pb-32 px-4 sm:px-6 lg:px-8 border-b border-border-light">
+      <section className="relative min-h-[calc(100vh-80px)] flex flex-col justify-center px-4 sm:px-6 lg:px-8">
         {/* Abstract Glowing Backgrounds */}
         <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-brand/20 opacity-40 blur-[150px] rounded-full mix-blend-multiply pointer-events-none" />
         <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-brand-emerald/20 opacity-30 blur-[150px] rounded-full mix-blend-multiply pointer-events-none" />
         
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: "easeOut" }}>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-light border border-border-light text-brand-emerald text-sm font-medium mb-8 backdrop-blur-md shadow-sm">
-              <Zap className="w-4 h-4" /> {hero.badgeText}
-            </div>
             
             <h1 className="text-5xl lg:text-7xl font-extrabold text-brand-dark mb-6 tracking-tight leading-tight">
               {hero.title1} <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-emerald to-brand">{hero.title2}</span>

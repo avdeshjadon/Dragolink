@@ -24,6 +24,11 @@ Run this command in the root of the project:
 docker-compose up -d --build
 ```
 
+*(Optional) Clean Restart:* If you face container startup issues or want to wipe your local cache/queues and start completely fresh, use this command instead:
+```bash
+docker-compose down -v && docker-compose up -d --build
+```
+
 **Access Points:**
 - Frontend App: http://localhost:5173
 - Backend API: http://localhost:8080/api

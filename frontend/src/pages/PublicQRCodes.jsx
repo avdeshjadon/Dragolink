@@ -315,24 +315,7 @@ export default function PublicQRCodes() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 px-4">
-        <div className="max-w-5xl mx-auto bg-brand-dark rounded-[2.5rem] p-12 md:p-20 text-center relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-brand-emerald opacity-20 blur-[100px] rounded-full" />
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-brand opacity-20 blur-[100px] rounded-full" />
-          <div className="relative z-10">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Ready to create your first QR code?</h2>
-            <p className="text-lg text-white/80 mb-10 max-w-2xl mx-auto">
-              Start free — no credit card required. Generate your first dynamic QR code in under 60 seconds.
-            </p>
-            <Link to="/register">
-              <Button size="lg" className="h-14 px-10 text-lg bg-brand-emerald hover:bg-brand text-brand-dark hover:text-white transition-all shadow-xl">
-                Get Started for Free <ArrowRight className="ml-2 w-5 h-5 inline" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
+
     </div>
   );
 }

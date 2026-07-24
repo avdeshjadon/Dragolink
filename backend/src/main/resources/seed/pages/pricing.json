@@ -29,8 +29,8 @@
       "name": "Professional",
       "description": "Advanced tools for growing marketing teams and agencies.",
       "popular": true,
-      "priceAnnual": 29,
-      "priceMonthly": 39,
+      "priceAnnual": 399,
+      "priceMonthly": 499,
       "features": [
         "Up to 10,000 links/month",
         "1-year analytics retention",
@@ -50,8 +50,8 @@
       "name": "Enterprise",
       "description": "Custom limits, security, and SLAs for large organizations.",
       "popular": false,
-      "priceAnnual": 199,
-      "priceMonthly": 249,
+      "priceAnnual": 1499,
+      "priceMonthly": 1999,
       "features": [
         "Unlimited links",
         "Unlimited analytics retention",

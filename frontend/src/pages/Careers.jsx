@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Globe, Heart, BookOpen, Coffee, Zap, Target, Users, Shield, ArrowRight, MapPin, Briefcase } from 'lucide-react';
 import { Button } from '../components/ui/Button';
@@ -104,28 +105,28 @@ export default function Careers() {
 
         <div className="space-y-4">
           {jobs.map((job, idx) => (
-            <motion.a 
+            <motion.div 
               key={idx} 
-              href={job.url}
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.05 }}
-              className="block bg-surface-light border border-border-light rounded-2xl p-6 hover:border-brand-emerald hover:shadow-lg transition-all cursor-pointer group"
             >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <h3 className="text-xl font-bold mb-3 group-hover:text-brand-emerald transition-colors">{job.title}</h3>
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-text-secondary font-medium">
-                    <span className="flex items-center gap-1.5 bg-bg-light px-3 py-1 rounded-full border border-border-light"><Briefcase className="w-4 h-4 text-brand-emerald" /> {job.dept}</span>
-                    <span className="flex items-center gap-1.5 bg-bg-light px-3 py-1 rounded-full border border-border-light"><MapPin className="w-4 h-4 text-brand-emerald" /> {job.loc}</span>
+              <Link to={`/careers/${job.id || '#'}`} className="block bg-surface-light border border-border-light rounded-2xl p-6 hover:border-brand-emerald hover:shadow-lg transition-all cursor-pointer group">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-xl font-bold mb-3 group-hover:text-brand-emerald transition-colors">{job.title}</h3>
+                    <div className="flex flex-wrap items-center gap-4 text-sm text-text-secondary font-medium">
+                      <span className="flex items-center gap-1.5 bg-bg-light px-3 py-1 rounded-full border border-border-light"><Briefcase className="w-4 h-4 text-brand-emerald" /> {job.dept}</span>
+                      <span className="flex items-center gap-1.5 bg-bg-light px-3 py-1 rounded-full border border-border-light"><MapPin className="w-4 h-4 text-brand-emerald" /> {job.loc}</span>
+                    </div>
+                  </div>
+                  <div className="w-12 h-12 shrink-0 rounded-full bg-white border border-border-light flex items-center justify-center group-hover:bg-brand-emerald group-hover:text-white group-hover:border-brand-emerald transition-all shadow-sm">
+                    <ArrowRight className="w-5 h-5" />
                   </div>
                 </div>
-                <div className="w-12 h-12 shrink-0 rounded-full bg-white border border-border-light flex items-center justify-center group-hover:bg-brand-emerald group-hover:text-white group-hover:border-brand-emerald transition-all shadow-sm">
-                  <ArrowRight className="w-5 h-5" />
-                </div>
-              </div>
-            </motion.a>
+              </Link>
+            </motion.div>
           ))}
           {jobs.length === 0 && (
             <div className="text-center p-12 bg-surface-light rounded-2xl border border-dashed border-border-light">

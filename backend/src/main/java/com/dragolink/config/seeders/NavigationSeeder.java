@@ -22,15 +22,17 @@ public class NavigationSeeder implements Seeder {
             NavigationLink.builder().position("PUBLIC_FOOTER").label("QR Codes").url("/qr-codes").category("Product").sortOrder(4).isExternal(false).build(),
             NavigationLink.builder().position("PUBLIC_FOOTER").label("Integrations").url("/integrations").category("Product").sortOrder(5).isExternal(false).build(),
             
-            NavigationLink.builder().position("PUBLIC_FOOTER").label("API Docs").url("/api-docs").category("Resources").sortOrder(1).isExternal(false).build(),
-            NavigationLink.builder().position("PUBLIC_FOOTER").label("Guides").url("/guides").category("Resources").sortOrder(2).isExternal(false).build(),
-            NavigationLink.builder().position("PUBLIC_FOOTER").label("Help Center").url("/help").category("Resources").sortOrder(3).isExternal(false).build(),
-            NavigationLink.builder().position("PUBLIC_FOOTER").label("System Status").url("/status").category("Resources").sortOrder(4).isExternal(false).build(),
+            NavigationLink.builder().position("PUBLIC_FOOTER").label("API Docs").url("/api").category("Resources").sortOrder(1).isExternal(false).build(),
+            NavigationLink.builder().position("PUBLIC_FOOTER").label("Documentation").url("/docs").category("Resources").sortOrder(2).isExternal(false).build(),
+            NavigationLink.builder().position("PUBLIC_FOOTER").label("Guides").url("/guides").category("Resources").sortOrder(3).isExternal(false).build(),
+            NavigationLink.builder().position("PUBLIC_FOOTER").label("Help Center").url("/help").category("Resources").sortOrder(4).isExternal(false).build(),
+
             
             NavigationLink.builder().position("PUBLIC_FOOTER").label("About Us").url("/about").category("Company").sortOrder(1).isExternal(false).build(),
-            NavigationLink.builder().position("PUBLIC_FOOTER").label("Careers").url("/careers").category("Company").sortOrder(2).isExternal(false).badgeText("Hiring").build(),
-            NavigationLink.builder().position("PUBLIC_FOOTER").label("Security").url("/security").category("Company").sortOrder(3).isExternal(false).build(),
-            NavigationLink.builder().position("PUBLIC_FOOTER").label("Contact").url("/contact").category("Company").sortOrder(4).isExternal(false).build(),
+            NavigationLink.builder().position("PUBLIC_FOOTER").label("Blog").url("/blog").category("Company").sortOrder(2).isExternal(false).build(),
+            NavigationLink.builder().position("PUBLIC_FOOTER").label("Careers").url("/careers").category("Company").sortOrder(3).isExternal(false).badgeText("Hiring").build(),
+            NavigationLink.builder().position("PUBLIC_FOOTER").label("Security").url("/security").category("Company").sortOrder(4).isExternal(false).build(),
+            NavigationLink.builder().position("PUBLIC_FOOTER").label("Contact").url("/contact").category("Company").sortOrder(5).isExternal(false).build(),
 
             // PUBLIC_HEADER
             NavigationLink.builder().position("PUBLIC_HEADER").label("Product").url("/product").category("Header").sortOrder(1).isExternal(false).build(),
@@ -47,6 +49,7 @@ public class NavigationSeeder implements Seeder {
             NavigationLink.builder().position("DASHBOARD_SIDEBAR").label("Team").url("/team").category("Main").sortOrder(6).isExternal(false).badgeText("group").build(),
             NavigationLink.builder().position("DASHBOARD_SIDEBAR").label("API Keys").url("/api-keys").category("Main").sortOrder(7).isExternal(false).badgeText("vpn_key").build(),
             NavigationLink.builder().position("DASHBOARD_SIDEBAR").label("Admin").url("/admin/overview").category("Main").sortOrder(8).isExternal(false).badgeText("admin_panel_settings").build(),
+            NavigationLink.builder().position("DASHBOARD_SIDEBAR").label("My Applications").url("/applications").category("Main").sortOrder(9).isExternal(false).badgeText("work").build(),
 
             // SETTINGS_SIDEBAR
             NavigationLink.builder().position("SETTINGS_SIDEBAR").label("Profile").url("/settings/profile").category("Settings").sortOrder(1).isExternal(false).badgeText("person").build(),

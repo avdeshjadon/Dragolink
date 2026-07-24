@@ -1,68 +1,33 @@
 {
   "hero": {
-    "badgeText": "Dragolink Academy",
-    "title1": "Master the art of",
-    "title2": "link infrastructure",
+    "title1": "Dragolink",
+    "title2": "Library",
     "subtitle": "Dive into deep-dive tutorials, architectural guides, and best practices. Learn how to leverage Dragolink to build resilient, high-conversion digital experiences."
   },
-  "tracks": [
-    {
-      "title": "Marketing & Attribution Core",
-      "desc": "Master UTM parameters, conversion funnels, and advanced multi-channel attribution.",
-      "color": "from-emerald-400 to-teal-500",
-      "progress": 100,
-      "courses": 5,
-      "time": "4h 30m"
-    },
-    {
-      "title": "Developer & API Integration",
-      "desc": "Build scalable applications using Dragolink's REST API, webhooks, and SDKs.",
-      "color": "from-blue-500 to-indigo-600",
-      "progress": 45,
-      "courses": 8,
-      "time": "6h 15m"
-    },
-    {
-      "title": "Enterprise Security & Compliance",
-      "desc": "Implement SSO, RBAC, and threat protection for large-scale link infrastructure.",
-      "color": "from-purple-500 to-pink-500",
-      "progress": 0,
-      "courses": 3,
-      "time": "2h 45m"
-    }
-  ],
   "guides": [
     {
       "title": "Configuring Custom Domains for High Availability",
       "desc": "Learn how to set up DNS records, SSL certificates, and failover routing for your custom short domains.",
-      "color": "bg-blue-50 text-blue-600 border-blue-200",
-      "level": "Intermediate",
       "time": "15 min read",
-      "icon": "Globe"
+      "content": "<h3>Introduction to High Availability Domains</h3><p>When operating at a global scale, relying on a single DNS endpoint can be a critical point of failure. Setting up custom domains for high availability ensures that your short links always resolve, even during regional outages.</p><h3>Step 1: Anycast DNS Setup</h3><p>To achieve minimal latency globally, we strongly recommend using an Anycast DNS provider (like Cloudflare or Route53). This routes your users to the nearest geographical nameserver.</p><h3>Step 2: Configuring A/AAAA Records</h3><p>Point your root domain (<code>@</code>) or subdomain to Dragolink's globally load-balanced IP addresses. Ensure you configure both IPv4 (A records) and IPv6 (AAAA records).</p><pre><code>Type  Name  Target               TTL\nA     link  198.51.100.1        Auto\nAAAA  link  2001:db8::1         Auto</code></pre><h3>SSL Certificate Generation</h3><p>Dragolink automatically provisions Let's Encrypt wildcard certificates for your domains. However, for enterprise clients requiring custom EV (Extended Validation) certificates, you can upload your <code>.pem</code> and <code>.key</code> files securely via the Dragolink Dashboard under <strong>Domains &gt; Security</strong>.</p><h3>Graceful Failover</h3><p>In the event of an edge node failure, Dragolink's BGP routing will automatically withdraw the failed route, seamlessly redirecting traffic to the next closest POP (Point of Presence) within milliseconds. No manual intervention is required.</p>"
     },
     {
       "title": "Automating UTM Tags at Scale",
       "desc": "A comprehensive guide to building programmatic UTM builders for your entire marketing team.",
-      "color": "bg-emerald-50 text-emerald-600 border-emerald-200",
-      "level": "Beginner",
       "time": "10 min read",
-      "icon": "Target"
+      "content": "<h3>The Problem with Manual UTMs</h3><p>Marketing teams often rely on messy spreadsheets to generate UTM parameters. This leads to inconsistent naming conventions (e.g., <code>source=facebook</code> vs <code>source=FB</code>), which breaks attribution modeling in Google Analytics.</p><h3>Building a Programmatic Solution</h3><p>With Dragolink's Link Builder API, you can integrate UTM generation directly into your internal CMS or Slack bots. This ensures every link generated across your organization adheres to a strict schema.</p><h3>Sample Node.js Implementation</h3><p>Here's how you can programmatically generate a short link with enforced UTM parameters:</p><pre><code>const dragolink = require('dragolink-sdk');\n\nasync function createCampaignLink(destination, campaignName) {\n  const response = await dragolink.links.create({\n    destination: destination,\n    utm_source: 'internal_newsletter',\n    utm_medium: 'email',\n    utm_campaign: campaignName.toLowerCase().replace(/\\s+/g, '_')\n  });\n  \n  return response.shortUrl;\n}</code></pre><h3>Best Practices for Tagging</h3><ul><li><strong>Always use lowercase:</strong> <code>Email</code> and <code>email</code> are treated as different sources by most analytics platforms.</li><li><strong>Use underscores instead of spaces:</strong> Spaces become <code>%20</code> in URLs, which makes them ugly and harder to read.</li><li><strong>Keep it simple:</strong> Only use <code>utm_content</code> or <code>utm_term</code> if you are actually running A/B tests or paid search campaigns.</li></ul>"
     },
     {
       "title": "Webhooks: Reacting to Link Clicks in Real-Time",
       "desc": "Step-by-step tutorial on securing and processing Dragolink webhook payloads in Node.js.",
-      "color": "bg-purple-50 text-purple-600 border-purple-200",
-      "level": "Advanced",
       "time": "25 min read",
-      "icon": "Zap"
+      "content": "<h3>Why Use Webhooks?</h3><p>While the Dragolink dashboard provides powerful aggregated analytics, sometimes you need to react to individual clicks instantly. For example, triggering an email sequence the moment a user clicks a specific link, or syncing click data into your own Snowflake data warehouse.</p><h3>Endpoint Configuration</h3><p>Navigate to <strong>Settings &gt; Webhooks</strong> in your Dragolink Dashboard. Add your endpoint URL (e.g., <code>https://api.yourcompany.com/webhooks/dragolink</code>). Select the <code>click.created</code> event.</p><h3>Securing Your Webhook (HMAC)</h3><p>Dragolink signs all webhook payloads using HMAC-SHA256. It is critical that you verify this signature to ensure the payload actually came from Dragolink and wasn't spoofed.</p><pre><code>const crypto = require('crypto');\n\nfunction verifySignature(payload, signatureHeader, secret) {\n  const hash = crypto\n    .createHmac('sha256', secret)\n    .update(JSON.stringify(payload))\n    .digest('hex');\n    \n  return crypto.timingSafeEqual(\n    Buffer.from(hash),\n    Buffer.from(signatureHeader)\n  );\n}</code></pre><h3>Processing the Payload</h3><p>The payload contains comprehensive metadata about the click, including geographic location, device type, and referral data. Because Dragolink processes millions of events per second, expect your webhook endpoint to receive high volume. We strongly recommend pushing these payloads into a message queue (like AWS SQS or RabbitMQ) immediately, rather than processing them synchronously.</p>"
     },
     {
       "title": "Protecting Users from Phishing and Malware",
       "desc": "How Dragolink's automated threat detection works and how to configure custom blocklists.",
-      "color": "bg-red-50 text-red-600 border-red-200",
-      "level": "Intermediate",
       "time": "12 min read",
-      "icon": "Shield"
+      "content": "<h3>The Threat Landscape</h3><p>URL shorteners are frequently abused by bad actors to hide malicious destinations. If your custom domain is used to serve malware, it will be flagged by Google Safe Browsing, destroying your email deliverability and brand reputation.</p><h3>Dragolink's Automated Shield</h3><p>Dragolink automatically scans every destination URL created on our platform against multiple global threat intelligence databases (including Google Safe Browsing, SURBL, and PhishTank).</p><p>If a destination URL is flagged:</p><ol><li>The link creation is instantly blocked.</li><li>If an existing link's destination becomes malicious later, it is automatically suspended and redirects to a warning page.</li></ol><h3>Configuring Custom Blocklists</h3><p>Enterprise administrators can enforce strict URL policies. Navigate to <strong>Security &gt; Policies</strong> to configure:</p><ul><li><strong>Allowed Domains (Allowlist):</strong> Only allow links pointing to your own web properties (e.g., <code>*.yourcompany.com</code>). This completely eliminates the risk of abuse.</li><li><strong>Banned Keywords:</strong> Prevent links that contain certain high-risk keywords in their destination paths.</li><li><strong>Geographic Restrictions:</strong> Block traffic originating from specific high-risk countries from accessing your links.</li></ul><h3>Auditing and Alerts</h3><p>Set up instant Slack or Email alerts for whenever a team member attempts to create a link to a flagged domain. Regular security audits of your link infrastructure are essential for maintaining domain health.</p>"
     }
   ],
   "newsletter": {

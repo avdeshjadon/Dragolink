@@ -19,6 +19,7 @@ import QRCodes from './pages/QRCodes';
 import Campaigns from './pages/Campaigns';
 import Team from './pages/Team';
 import APIKeys from './pages/APIKeys';
+import MyApplications from './pages/MyApplications';
 import PublicQRCodes from './pages/PublicQRCodes';
 import PublicIntegrations from './pages/PublicIntegrations';
 import PublicAPI from './pages/PublicAPI';
@@ -27,10 +28,12 @@ import BlogPost from './pages/BlogPost';
 import HelpCenter from './pages/HelpCenter';
 import Guides from './pages/Guides';
 import CaseStudies from './pages/CaseStudies';
-import SystemStatus from './pages/SystemStatus';
+
 import Docs from './pages/Docs';
 import About from './pages/About';
 import Careers from './pages/Careers';
+import JobDetails from './pages/JobDetails';
+import JobApplicationForm from './pages/JobApplicationForm';
 import Contact from './pages/Contact';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
@@ -93,10 +96,12 @@ function App() {
           <Route path="/help" element={<HelpCenter />} />
           <Route path="/guides" element={<Guides />} />
           <Route path="/case-studies" element={<CaseStudies />} />
-          <Route path="/status" element={<SystemStatus />} />
+
           <Route path="/docs" element={<Docs />} />
           <Route path="/about" element={<About />} />
           <Route path="/careers" element={<Careers />} />
+          <Route path="/careers/:jobId" element={<JobDetails />} />
+          <Route path="/careers/:jobId/apply" element={<JobApplicationForm />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
@@ -118,6 +123,7 @@ function App() {
           <Route path="/campaigns" element={<Campaigns />} />
           <Route path="/team" element={<Team />} />
           <Route path="/api-keys" element={<APIKeys />} />
+          <Route path="/applications" element={<MyApplications />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/analytics/:id" element={<Analytics />} />
         </Route>
