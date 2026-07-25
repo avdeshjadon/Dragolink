@@ -14,21 +14,68 @@ export default function DashboardLayout() {
 
   useEffect(() => {
     api.get('/public/navigation?position=DASHBOARD_SIDEBAR')
-      .then(res => setNavigation(res.data))
+      .then(res => setNavigation(res.data.filter(item => item.label !== 'QR Codes')))
       .catch(err => console.error("Failed to load sidebar navigation", err));
   }, []);
 
-  const SidebarContent = () => (
+  const SidebarContent = () => {
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
+    return (
     <nav className="flex h-full flex-col p-4 bg-surface-container-low w-64 overflow-y-auto">
       {/* CTA */}
-      <Link to="/create" className="mt-2 mb-8 w-full py-2 px-4 bg-primary-container text-on-primary-container font-label-md text-label-md rounded-lg flex items-center justify-center gap-2 hover:bg-primary transition-colors duration-200 shadow-sm border border-primary-fixed/20">
-        <span className="material-symbols-outlined text-[18px]">add</span>
-        New Campaign
-      </Link>
+      <div className="relative mt-2 mb-8 w-full">
+        <button 
+          onClick={() => setIsCreateOpen(!isCreateOpen)}
+          className="w-full py-2 px-4 bg-primary-container text-on-primary-container font-label-md text-label-md rounded-lg flex items-center justify-center gap-2 hover:bg-primary transition-colors duration-200 shadow-sm border border-primary-fixed/20"
+        >
+          <span className="material-symbols-outlined text-[18px]">add</span>
+          Create New
+          <span className="material-symbols-outlined text-[18px] ml-1 transition-transform" style={{ transform: isCreateOpen ? 'rotate(180deg)' : 'none' }}>expand_more</span>
+        </button>
+
+        <AnimatePresence>
+          {isCreateOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.95 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
+              className="absolute left-0 top-full mt-2 w-full bg-surface-container-lowest rounded-xl shadow-lg border border-outline-variant/20 overflow-hidden z-50 flex flex-col p-2"
+            >
+              <Link 
+                to="/create" 
+                onClick={() => setIsCreateOpen(false)} 
+                className="px-4 py-2 flex items-center gap-3 text-label-md font-medium text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors rounded-lg"
+              >
+                <span className="material-symbols-outlined text-[20px]">link</span>
+                Shorten Link
+              </Link>
+              <Link 
+                to="/qr" 
+                onClick={() => setIsCreateOpen(false)} 
+                className="px-4 py-2 flex items-center gap-3 text-label-md font-medium text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors rounded-lg"
+              >
+                <span className="material-symbols-outlined text-[20px]">qr_code_2</span>
+                QR Code
+              </Link>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* Navigation Links */}
       <div className="flex-1 space-y-2">
         {navigation.map(item => {
+          // Special handling for admin routes to redirect to DragoAdmin app
+          if (item.url.startsWith('/admin')) {
+            return (
+              <a key={item.id} href={`http://localhost:5174${item.url}`} className="flex items-center gap-4 text-on-surface-variant hover:bg-surface-container-high rounded-lg px-4 py-2 transition-all duration-200">
+                <span className="material-symbols-outlined">{item.badgeText}</span>
+                <span className="font-label-md text-label-md">{item.label}</span>
+              </a>
+            );
+          }
+
           // Special active state matching Stitch design
           const isActive = location.pathname.startsWith(item.url) && (item.url !== '/dashboard' || location.pathname === '/dashboard');
           
@@ -62,7 +109,8 @@ export default function DashboardLayout() {
         </button>
       </div>
     </nav>
-  );
+    );
+  };
 
   return (
     <div className="antialiased min-h-screen flex flex-col font-body-md text-body-md overflow-x-hidden bg-background">

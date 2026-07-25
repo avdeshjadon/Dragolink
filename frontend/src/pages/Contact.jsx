@@ -91,8 +91,7 @@ export default function Contact() {
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
               className="bg-white rounded-[2rem] p-8 md:p-12 shadow-xl shadow-brand/5 border border-border-light relative overflow-hidden"
             >
-              {/* Decorative accent */}
-              <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-brand to-brand-emerald" />
+
 
               <h2 className="text-3xl font-extrabold text-brand-dark mb-2 flex items-center gap-3">
                 <MessageCircle className="w-8 h-8 text-brand" /> Send a Message

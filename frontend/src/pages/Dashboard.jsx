@@ -153,13 +153,13 @@ export default function Dashboard() {
             <line className="chart-grid" strokeWidth="1" x1="0" x2="800" y1="200" y2="200"></line>
             <defs>
               <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stopColor="#79db8d" stopOpacity="0.3"></stop>
-                <stop offset="100%" stopColor="#79db8d" stopOpacity="0"></stop>
+                <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.3"></stop>
+                <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0"></stop>
               </linearGradient>
             </defs>
             <path d="M0,200 Q50,180 100,150 T200,100 T300,120 T400,60 T500,80 T600,40 T700,50 T800,20 L800,250 L0,250 Z" fill="url(#chartGradient)"></path>
-            <path d="M0,200 Q50,180 100,150 T200,100 T300,120 T400,60 T500,80 T600,40 T700,50 T800,20" fill="none" stroke="#79db8d" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3"></path>
-            <circle className="cursor-pointer hover:r-6 transition-all" cx="400" cy="60" fill="#041711" r="5" stroke="#79db8d" strokeWidth="2"></circle>
+            <path d="M0,200 Q50,180 100,150 T200,100 T300,120 T400,60 T500,80 T600,40 T700,50 T800,20" fill="none" stroke="var(--color-primary)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3"></path>
+            <circle className="cursor-pointer hover:r-6 transition-all" cx="400" cy="60" fill="var(--color-surface-container-low)" r="5" stroke="var(--color-primary)" strokeWidth="2"></circle>
           </svg>
           
           {/* Simulated Tooltip */}

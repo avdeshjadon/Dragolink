@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { api } from '../lib/axios';
 
 export default function MyLinks() {
@@ -10,17 +11,29 @@ export default function MyLinks() {
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Modal states
+  const [deleteModalLink, setDeleteModalLink] = useState(null);
+  const [editModalLink, setEditModalLink] = useState(null);
+  const [editUrl, setEditUrl] = useState('');
+  const [editTitle, setEditTitle] = useState('');
+  const [editAlias, setEditAlias] = useState('');
+
   useEffect(() => {
+    fetchLinks();
+  }, []);
+
+  const fetchLinks = () => {
+    setLoading(true);
     api.get('/links')
       .then(res => {
-        setLinks(res.data.content || res.data); // Support both paginated and list responses
+        setLinks(res.data.content || res.data);
         setLoading(false);
       })
       .catch(err => {
         console.error("Failed to load links", err);
         setLoading(false);
       });
-  }, []);
+  };
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -38,13 +51,57 @@ export default function MyLinks() {
     }
   };
 
+  const handleCopy = (shortCode) => {
+    const url = `${import.meta.env.VITE_APP_URL || 'http://localhost:8080'}/${shortCode}`;
+    navigator.clipboard.writeText(url).then(() => {
+      toast.success('Link copied to clipboard!');
+    });
+  };
+
+  const openEditModal = (link) => {
+    setEditModalLink(link);
+    setEditUrl(link.longUrl || '');
+    setEditTitle(link.title || '');
+    setEditAlias(link.shortCode || '');
+  };
+
+  const handleEditSubmit = async () => {
+    if (!editModalLink) return;
+    try {
+      await api.put(`/links/${editModalLink.id}`, {
+        longUrl: editUrl,
+        title: editTitle,
+        customAlias: editAlias
+      });
+      setEditModalLink(null);
+      fetchLinks();
+      toast.success('Link updated successfully!');
+    } catch (err) {
+      console.error("Failed to update link", err);
+      toast.error(err.response?.data?.message || "Failed to update link");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await api.delete(`/links/${id}`);
+      setDeleteModalLink(null);
+      fetchLinks();
+      setSelectedLinks(selectedLinks.filter(selectedId => selectedId !== id));
+      toast.success('Link deleted successfully!');
+    } catch (err) {
+      console.error("Failed to delete link", err);
+      toast.error(err.response?.data?.message || "Failed to delete link");
+    }
+  };
+
   return (
-    <div className="flex flex-col h-full bg-background font-sans">
+    <div className="flex flex-col h-full bg-background font-sans relative">
       
       {/* Header Context for Desktop */}
       <div className="hidden md:flex flex-col mb-6">
         <h2 className="text-headline-lg font-headline-lg text-on-surface">My Links</h2>
-        <span className="text-label-md font-label-md text-on-surface-variant mt-1">42 Total Links</span>
+        <span className="text-label-md font-label-md text-on-surface-variant mt-1">{links.length} Total Links</span>
       </div>
 
       <div className="space-y-6">
@@ -110,7 +167,7 @@ export default function MyLinks() {
                     <input 
                       type="checkbox" 
                       className="lp-checkbox"
-                      checked={selectedLinks.length === links.length}
+                      checked={links.length > 0 && selectedLinks.length === links.length}
                       onChange={handleSelectAll}
                     />
                   </th>
@@ -144,9 +201,13 @@ export default function MyLinks() {
                       </div>
                     </td>
                     <td className="p-4 hidden sm:table-cell">
-                      <div className="flex items-center gap-2 group/copy cursor-pointer">
+                      <div 
+                        className="flex items-center gap-2 group/copy cursor-pointer"
+                        onClick={() => handleCopy(link.shortCode)}
+                        title="Copy to clipboard"
+                      >
                         <span className="text-body-md font-body-md text-primary hover:underline">{import.meta.env.VITE_APP_URL || 'http://localhost:8080'}/{link.shortCode}</span>
-                        <span className="material-symbols-outlined text-[14px] text-on-surface-variant opacity-0 group-hover/copy:opacity-100 transition-opacity">content_copy</span>
+                        <span className="material-symbols-outlined text-[14px] text-on-surface-variant transition-opacity">content_copy</span>
                       </div>
                     </td>
                     <td className="p-4 text-right">
@@ -164,42 +225,113 @@ export default function MyLinks() {
                       )}
                     </td>
                     <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => navigate(`/analytics/${link.id}`)} className="p-1.5 text-on-surface-variant hover:text-primary rounded-md hover:bg-surface-container-high transition-colors" title="Analytics">
+                      <div className="flex items-center justify-end gap-2 transition-opacity">
+                        <button onClick={() => navigate(`/analytics/${link.id}`)} className="p-1.5 text-on-surface-variant hover:text-primary rounded-md hover:bg-surface-container-high transition-colors cursor-pointer" title="Analytics">
                           <span className="material-symbols-outlined text-[18px]">bar_chart</span>
                         </button>
-                        <button className="p-1.5 text-on-surface-variant hover:text-primary rounded-md hover:bg-surface-container-high transition-colors" title="Edit">
+                        <button onClick={() => openEditModal(link)} className="p-1.5 text-on-surface-variant hover:text-primary rounded-md hover:bg-surface-container-high transition-colors cursor-pointer" title="Edit">
                           <span className="material-symbols-outlined text-[18px]">edit</span>
                         </button>
-                        <button className="p-1.5 text-on-surface-variant hover:text-error rounded-md hover:bg-error-container/30 transition-colors" title="Delete">
+                        <button onClick={() => setDeleteModalLink(link)} className="p-1.5 text-on-surface-variant hover:text-error rounded-md hover:bg-error-container/30 transition-colors cursor-pointer" title="Delete">
                           <span className="material-symbols-outlined text-[18px]">delete</span>
                         </button>
                       </div>
                     </td>
                   </tr>
                 ))}
+                {links.length === 0 && !loading && (
+                  <tr>
+                    <td colSpan="6" className="p-8 text-center text-on-surface-variant text-label-md">
+                      No links found. Create your first short link!
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
           
           {/* Pagination */}
           <div className="px-4 py-2 border-t border-outline-variant/20 flex items-center justify-between bg-surface-container-lowest/30">
-            <span className="text-label-sm font-label-sm text-on-surface-variant">Showing 1 to 3 of 42 results</span>
+            <span className="text-label-sm font-label-sm text-on-surface-variant">Showing results</span>
             <div className="flex items-center gap-1">
               <button className="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container disabled:opacity-50" disabled>
                 <span className="material-symbols-outlined text-[20px]">chevron_left</span>
               </button>
               <button className="w-8 h-8 rounded flex items-center justify-center text-label-sm font-label-sm bg-primary-container text-white">1</button>
-              <button className="w-8 h-8 rounded flex items-center justify-center text-label-sm font-label-sm text-on-surface hover:bg-surface-container transition-colors">2</button>
-              <button className="w-8 h-8 rounded flex items-center justify-center text-label-sm font-label-sm text-on-surface hover:bg-surface-container transition-colors">3</button>
-              <span className="text-on-surface-variant px-1">...</span>
-              <button className="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors">
+              <button className="p-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors disabled:opacity-50" disabled>
                 <span className="material-symbols-outlined text-[20px]">chevron_right</span>
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {deleteModalLink && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+          <div className="bg-surface rounded-xl shadow-2xl p-6 w-full max-w-sm border border-outline-variant/20">
+            <h3 className="text-headline-md font-headline-md text-on-surface mb-2">Delete Link</h3>
+            <p className="text-body-md font-body-md text-on-surface-variant mb-6">
+              Are you sure you want to delete the link for <strong className="text-on-surface">{deleteModalLink.title || deleteModalLink.shortCode}</strong>? This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button onClick={() => setDeleteModalLink(null)} className="px-4 py-2 text-label-md font-label-md text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors border border-outline-variant/30">
+                Cancel
+              </button>
+              <button onClick={() => handleDelete(deleteModalLink.id)} className="px-4 py-2 text-label-md font-label-md bg-error text-white rounded-lg hover:bg-error/90 transition-colors shadow-sm">
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {editModalLink && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+          <div className="bg-surface rounded-xl shadow-2xl p-6 w-full max-w-md border border-outline-variant/20">
+            <h3 className="text-headline-md font-headline-md text-on-surface mb-4">Edit Link</h3>
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="block text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Destination URL</label>
+                <input 
+                  type="url" 
+                  value={editUrl}
+                  onChange={(e) => setEditUrl(e.target.value)}
+                  className="w-full bg-surface-container-lowest text-on-surface border border-outline-variant/50 rounded-lg px-4 py-2 font-code-sm text-code-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none shadow-sm" 
+                />
+              </div>
+              <div>
+                <label className="block text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Link Title</label>
+                <input 
+                  type="text" 
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  className="w-full bg-surface-container-lowest text-on-surface border border-outline-variant/50 rounded-lg px-4 py-2 font-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none shadow-sm" 
+                />
+              </div>
+              <div>
+                <label className="block text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Custom Alias</label>
+                <input 
+                  type="text" 
+                  value={editAlias}
+                  onChange={(e) => setEditAlias(e.target.value)}
+                  className="w-full bg-surface-container-lowest text-on-surface border border-outline-variant/50 rounded-lg px-4 py-2 font-code-sm text-code-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none shadow-sm" 
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-3">
+              <button onClick={() => setEditModalLink(null)} className="px-4 py-2 text-label-md font-label-md text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors border border-outline-variant/30">
+                Cancel
+              </button>
+              <button onClick={handleEditSubmit} className="px-4 py-2 text-label-md font-label-md bg-primary-container text-white rounded-lg hover:bg-inverse-primary transition-colors shadow-sm">
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

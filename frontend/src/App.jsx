@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
+import { Toaster } from 'react-hot-toast';
 import SmoothScroll from './components/SmoothScroll';
 import { useAuth } from './context/AuthContext';
 import Landing from './pages/Landing';
@@ -44,6 +45,13 @@ import SettingsLayout from './components/SettingsLayout';
 import PublicNavbar from './components/PublicNavbar';
 import PublicFooter from './components/PublicFooter';
 import ScrollToTop from './components/ScrollToTop';
+
+// Redirect component for external admin routes
+const AdminRedirect = () => {
+  window.location.replace(`http://localhost:5174${window.location.pathname}`);
+  return null;
+};
+
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const { user } = useAuth();
   
@@ -79,6 +87,7 @@ const PublicLayout = () => {
 function App() {
   return (
     <SmoothScroll>
+      <Toaster position="top-right" />
       <BrowserRouter>
         <ScrollToTop />
         <Routes>
@@ -109,6 +118,9 @@ function App() {
 
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+
+          {/* External redirects */}
+          <Route path="/admin/*" element={<AdminRedirect />} />
         </Route>
         
         <Route element={

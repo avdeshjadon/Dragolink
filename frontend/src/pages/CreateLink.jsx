@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { api } from '../lib/axios';
 
 export default function CreateLink() {
   const navigate = useNavigate();
@@ -7,6 +9,36 @@ export default function CreateLink() {
   const [title, setTitle] = useState('');
   const [alias, setAlias] = useState('');
   const [tags, setTags] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async () => {
+    if (!url) {
+      toast.error('Destination URL is required');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      const payload = {
+        longUrl: url,
+        title: title || undefined,
+        customAlias: alias || undefined,
+        expiryDate: expiryDate ? new Date(expiryDate).toISOString() : undefined,
+      };
+
+      await api.post('/links', payload);
+      toast.success('Link created successfully!');
+      navigate('/links');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to create link');
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="font-sans flex flex-col h-full gap-6">
@@ -20,13 +52,17 @@ export default function CreateLink() {
         <div className="hidden md:flex gap-4">
           <button 
             onClick={() => navigate('/dashboard')}
-            className="px-4 py-2 rounded-lg border border-outline-variant text-primary font-label-md text-label-md hover:bg-surface-container-highest transition-colors"
+            className="px-4 py-2 rounded-lg border border-outline-variant text-primary font-label-md text-label-md hover:bg-surface-container-highest transition-colors cursor-pointer"
           >
             Cancel
           </button>
-          <button className="px-4 py-2 rounded-lg bg-primary-container text-white font-label-md text-label-md hover:bg-inverse-primary transition-colors flex items-center gap-2">
+          <button 
+            onClick={handleSubmit} 
+            disabled={isLoading}
+            className="px-4 py-2 rounded-lg bg-primary-container text-white font-label-md text-label-md hover:bg-inverse-primary transition-colors flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+          >
             <span className="material-symbols-outlined text-[18px]">bolt</span>
-            Create Now
+            {isLoading ? 'Creating...' : 'Create Now'}
           </button>
         </div>
       </div>
@@ -112,7 +148,12 @@ export default function CreateLink() {
               <div>
                 <label className="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Expiration Date</label>
                 <div className="relative">
-                  <input className="premium-input w-full rounded-lg px-4 py-2 font-body-md text-on-surface-variant" type="date" />
+                  <input 
+                    className="premium-input w-full rounded-lg px-4 py-2 font-body-md text-on-surface-variant" 
+                    type="date"
+                    value={expiryDate}
+                    onChange={(e) => setExpiryDate(e.target.value)}
+                  />
                 </div>
               </div>
               <div>
@@ -186,13 +227,17 @@ export default function CreateLink() {
 
             {/* Mobile Action Area */}
             <div className="md:hidden flex flex-col gap-2 mt-10">
-              <button className="w-full py-4 rounded-lg bg-primary-container text-white font-label-md text-label-md hover:bg-inverse-primary transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(21,128,61,0.3)]">
+              <button 
+                onClick={handleSubmit} 
+                disabled={isLoading}
+                className="w-full py-4 rounded-lg bg-primary-container text-white font-label-md text-label-md hover:bg-inverse-primary transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(21,128,61,0.3)] disabled:opacity-50 cursor-pointer"
+              >
                 <span className="material-symbols-outlined text-[18px]">bolt</span>
-                Create Link
+                {isLoading ? 'Creating...' : 'Create Link'}
               </button>
               <button 
                 onClick={() => navigate('/dashboard')}
-                className="w-full py-4 rounded-lg border border-outline-variant text-primary font-label-md text-label-md hover:bg-surface-container-highest transition-colors"
+                className="w-full py-4 rounded-lg border border-outline-variant text-primary font-label-md text-label-md hover:bg-surface-container-highest transition-colors cursor-pointer"
               >
                 Cancel
               </button>

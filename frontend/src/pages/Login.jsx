@@ -21,7 +21,7 @@ export default function Login() {
     setError('');
     
     try {
-      await login(email, password);
+      await login({ email, password });
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid email or password');

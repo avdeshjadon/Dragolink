@@ -7,6 +7,7 @@ import com.dragolink.entity.User;
 import com.dragolink.exception.BadRequestException;
 import com.dragolink.exception.ResourceNotFoundException;
 import com.dragolink.repository.BlockedDomainRepository;
+import com.dragolink.repository.ClickAnalyticsRepository;
 import com.dragolink.repository.ShortLinkRepository;
 import com.dragolink.repository.UserRepository;
 import com.dragolink.util.Base62Util;
@@ -26,6 +27,7 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
     private final ShortLinkRepository shortLinkRepository;
     private final UserRepository userRepository;
     private final BlockedDomainRepository blockedDomainRepository;
+    private final ClickAnalyticsRepository clickAnalyticsRepository;
 
     @Override
     @Transactional
@@ -87,6 +89,19 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
     public ShortLinkResponse updateLink(Long id, ShortLinkRequest request, UserDetails userDetails) {
         ShortLink link = getOwnedLink(id, userDetails);
 
+        if (request.getCustomAlias() != null && !request.getCustomAlias().isEmpty() && !request.getCustomAlias().equals(link.getCustomAlias())) {
+            if (shortLinkRepository.existsByCustomAlias(request.getCustomAlias()) || shortLinkRepository.existsByShortCode(request.getCustomAlias())) {
+                throw new BadRequestException("Custom alias already in use");
+            }
+            link.setCustomAlias(request.getCustomAlias());
+        } else if (request.getCustomAlias() == null || request.getCustomAlias().trim().isEmpty()) {
+            link.setCustomAlias(null);
+        }
+
+        if (request.getLongUrl() != null && !request.getLongUrl().isEmpty()) {
+            link.setLongUrl(request.getLongUrl());
+        }
+
         link.setTitle(request.getTitle());
         link.setExpiryDate(request.getExpiryDate());
 
@@ -97,6 +112,7 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
     @Transactional
     public void deleteLink(Long id, UserDetails userDetails) {
         ShortLink link = getOwnedLink(id, userDetails);
+        clickAnalyticsRepository.deleteByShortLinkId(link.getId());
         shortLinkRepository.delete(link);
     }
 

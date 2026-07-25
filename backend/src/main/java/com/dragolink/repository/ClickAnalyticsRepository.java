@@ -11,6 +11,7 @@ import java.util.Map;
 
 public interface ClickAnalyticsRepository extends JpaRepository<ClickAnalytics, Long> {
     List<ClickAnalytics> findByShortLinkIdOrderByClickedAtDesc(Long shortLinkId);
+    void deleteByShortLinkId(Long shortLinkId);
     long countByShortLink_User_Id(Long userId);
 
     @Query("SELECT c.browser AS browser, COUNT(c) AS count FROM ClickAnalytics c WHERE c.shortLink.user.id = :userId GROUP BY c.browser")
