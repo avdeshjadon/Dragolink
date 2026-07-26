@@ -29,6 +29,19 @@ docker-compose up -d --build
 docker-compose down -v && docker-compose up -d --build
 ```
 
+### Method A.1: Rebuilding Specific Services
+If you make changes to the frontend or backend code and only want to rebuild that specific container without restarting the entire system, use these commands:
+
+**To rebuild and restart only the frontend:**
+```bash
+docker-compose up -d --build frontend
+```
+
+**To rebuild and restart only the backend:**
+```bash
+docker-compose up -d --build backend
+```
+
 **Access Points:**
 - Frontend App: http://localhost:5173
 - Backend API: http://localhost:8080/api

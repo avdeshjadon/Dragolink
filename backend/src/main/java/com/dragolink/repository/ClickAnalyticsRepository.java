@@ -22,4 +22,10 @@ public interface ClickAnalyticsRepository extends JpaRepository<ClickAnalytics, 
 
     @Query("SELECT FUNCTION('DATE', c.clickedAt) AS date, COUNT(c) AS count FROM ClickAnalytics c WHERE c.shortLink.user.id = :userId AND c.clickedAt >= :startDate GROUP BY FUNCTION('DATE', c.clickedAt) ORDER BY date")
     List<Map<String, Object>> countClicksByDate(@Param("userId") Long userId, @Param("startDate") LocalDateTime startDate);
+
+    @Query("SELECT COUNT(DISTINCT c.ipAddress) FROM ClickAnalytics c WHERE c.shortLink.user.id = :userId")
+    long countUniqueVisitorsByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT c.referrer AS referrer, COUNT(c) AS count FROM ClickAnalytics c WHERE c.shortLink.user.id = :userId GROUP BY c.referrer")
+    List<Map<String, Object>> countClicksByReferrer(@Param("userId") Long userId);
 }

@@ -4,6 +4,8 @@ import com.dragolink.entity.ContactMessage;
 import com.dragolink.repository.ContactMessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +28,15 @@ public class ContactMessageController {
         message.setStatus("NEW");
         ContactMessage saved = contactMessageRepository.save(message);
         return ResponseEntity.ok(saved);
+    }
+
+    // Endpoint for user to see their own contact messages
+    @GetMapping("/contact/me")
+    public ResponseEntity<List<ContactMessage>> getMyContactMessages(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(401).build();
+        }
+        return ResponseEntity.ok(contactMessageRepository.findByEmailOrderByCreatedAtDesc(userDetails.getUsername()));
     }
 
     // Admin endpoints for managing contact messages

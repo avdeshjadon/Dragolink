@@ -21,6 +21,7 @@ import Campaigns from './pages/Campaigns';
 import Team from './pages/Team';
 import APIKeys from './pages/APIKeys';
 import MyApplications from './pages/MyApplications';
+import Notifications from './pages/Notifications';
 import PublicQRCodes from './pages/PublicQRCodes';
 import PublicIntegrations from './pages/PublicIntegrations';
 import PublicAPI from './pages/PublicAPI';
@@ -136,6 +137,7 @@ function App() {
           <Route path="/team" element={<Team />} />
           <Route path="/api-keys" element={<APIKeys />} />
           <Route path="/applications" element={<MyApplications />} />
+          <Route path="/notifications" element={<Notifications />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/analytics/:id" element={<Analytics />} />
         </Route>

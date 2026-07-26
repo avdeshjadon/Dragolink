@@ -50,7 +50,7 @@ export default function Campaigns() {
         <div className="flex items-center gap-2">
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-1 px-4 py-2 bg-primary-container text-on-primary-container rounded-lg font-medium hover:bg-primary-fixed transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-all duration-300 ease-out hover:scale-[1.02] active:scale-[0.98] shadow-sm border border-primary/20"
           >
             <span className="material-symbols-outlined text-[18px]">add</span>
             New Campaign

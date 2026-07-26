@@ -1,26 +1,187 @@
-import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { api } from '../lib/axios';
+import { Loader2, ArrowLeft } from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function Analytics() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  
+  const [loading, setLoading] = useState(true);
+  const [timeRange, setTimeRange] = useState(30);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [data, setData] = useState({
+    totalClicks: 0,
+    uniqueVisitors: 0,
+    topCampaign: 'N/A',
+    topCampaignSub: '',
+    clicksByDate: [],
+    referrers: [],
+    browsers: []
+  });
 
+  const [linkTitle, setLinkTitle] = useState('');
+
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      setLoading(true);
+      try {
+        if (id) {
+          // Fetch specific link analytics
+          const [linkRes, clicksRes] = await Promise.all([
+            api.get(`/links/${id}`),
+            api.get(`/analytics/links/${id}`)
+          ]);
+          
+          const link = linkRes.data;
+          const clicks = clicksRes.data;
+          
+          setLinkTitle(link.title || link.shortCode);
+          
+          // Process raw clicks
+          const totalClicks = clicks.length;
+          const uniqueVisitors = new Set(clicks.map(c => c.ipAddress)).size;
+          
+          // Group dates
+          const groupedDates = {};
+          for (let i = timeRange - 1; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            const dateStr = d.toISOString().split('T')[0];
+            groupedDates[dateStr] = 0;
+          }
+          
+          clicks.forEach(c => {
+            if (c.clickedAt) {
+               const dateStr = c.clickedAt.split('T')[0];
+               if (groupedDates[dateStr] !== undefined) {
+                 groupedDates[dateStr]++;
+               }
+            }
+          });
+          
+          const clicksByDate = Object.keys(groupedDates).map(date => ({
+            date,
+            count: groupedDates[date]
+          }));
+
+          // Group referrers
+          const refCount = {};
+          clicks.forEach(c => {
+            let ref = c.referrer || 'Direct';
+            if (ref.length > 30) ref = ref.substring(0, 30) + '...';
+            refCount[ref] = (refCount[ref] || 0) + 1;
+          });
+          const referrers = Object.keys(refCount).map(r => ({ name: r, count: refCount[r] })).sort((a, b) => b.count - a.count).slice(0, 5);
+          
+          // Group browsers
+          const browserCount = {};
+          clicks.forEach(c => {
+            let b = c.browser || 'Unknown';
+            browserCount[b] = (browserCount[b] || 0) + 1;
+          });
+          const browsers = Object.keys(browserCount).map(b => ({ name: b, count: browserCount[b] })).sort((a, b) => b.count - a.count).slice(0, 5);
+
+          setData({
+            totalClicks,
+            uniqueVisitors,
+            topCampaign: link.active ? 'Active' : 'Inactive',
+            topCampaignSub: `Created: ${new Date(link.createdAt).toLocaleDateString()}`,
+            clicksByDate,
+            referrers,
+            browsers
+          });
+
+        } else {
+          // Fetch global dashboard analytics
+          const res = await api.get('/analytics/dashboard', { params: { days: timeRange } });
+          const dash = res.data;
+          
+          const topLink = dash.topLinks && dash.topLinks.length > 0 ? dash.topLinks[0] : null;
+          
+          setData({
+            totalClicks: dash.totalClicks,
+            uniqueVisitors: dash.uniqueVisitors,
+            topCampaign: topLink ? (topLink.title || topLink.shortCode) : 'None',
+            topCampaignSub: topLink ? `${((topLink.clickCount / Math.max(1, dash.totalClicks)) * 100).toFixed(1)}% of total volume` : '',
+            clicksByDate: dash.clicksByDate.map(d => ({ date: d.date, count: d.count })),
+            referrers: (dash.clicksByReferrer || []).map(r => ({ name: r.referrer || 'Direct', count: r.count })).sort((a, b) => b.count - a.count).slice(0, 5),
+            browsers: (dash.clicksByBrowser || []).map(b => ({ name: b.browser || 'Unknown', count: b.count })).sort((a, b) => b.count - a.count).slice(0, 5)
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch analytics", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchAnalytics();
+  }, [id, timeRange]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // Calculate total for percentages
+  const refTotal = data.referrers.reduce((acc, curr) => acc + curr.count, 0) || 1; // avoid / 0
+  const browserTotal = data.browsers.reduce((acc, curr) => acc + curr.count, 0) || 1;
+  const colors = ['bg-primary', 'bg-secondary', 'bg-tertiary', 'bg-error', 'bg-outline'];
+  
   return (
-    <div className="flex flex-col h-full bg-background font-sans">
+    <div className="flex flex-col h-full bg-background font-sans animate-in fade-in slide-in-from-bottom-4 duration-500">
       
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
         <div>
-          <h2 className="text-headline-lg font-headline-lg text-primary-fixed-dim">Link Analytics {id && `(#${id})`}</h2>
-          <p className="text-body-md font-body-md text-on-surface-variant mt-1">Comprehensive breakdown of link performance and traffic sources.</p>
+          <div className="flex items-center gap-3">
+            {id && (
+              <button onClick={() => navigate(-1)} className="p-2 hover:bg-surface-container rounded-full transition-colors text-on-surface-variant">
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+            )}
+            <h2 className="text-headline-lg font-headline-lg text-primary-fixed-dim">
+              {id ? `Link Analytics: ${linkTitle}` : 'Global Analytics Dashboard'}
+            </h2>
+          </div>
+          <p className="text-body-md font-body-md text-on-surface-variant mt-1 ml-2 md:ml-0">Comprehensive breakdown of link performance and traffic sources.</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {/* Filters */}
           <div className="flex gap-2">
             <div className="relative group">
-              <button className="flex items-center gap-1 bg-surface-container px-4 py-2 rounded-lg border border-outline-variant/30 text-label-md font-label-md text-on-surface hover:border-primary transition-colors">
+              <button 
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center gap-1 bg-surface-container px-4 py-2 rounded-lg border border-outline-variant/30 text-label-md font-label-md text-on-surface hover:border-primary transition-colors"
+              >
                 <span className="material-symbols-outlined text-[16px]">calendar_today</span>
-                Last 30 Days
+                Last {timeRange} Days
                 <span className="material-symbols-outlined text-[16px]">arrow_drop_down</span>
               </button>
+              
+              {isDropdownOpen && (
+                <div className="absolute top-full right-0 mt-2 w-48 bg-surface-container-high border border-outline-variant/30 rounded-xl shadow-lg overflow-hidden z-50">
+                  <div className="flex flex-col py-1">
+                    {[7, 30, 90].map(days => (
+                      <button
+                        key={days}
+                        onClick={() => {
+                          setTimeRange(days);
+                          setIsDropdownOpen(false);
+                        }}
+                        className={`px-4 py-2 text-left text-label-md font-label-md hover:bg-primary/10 transition-colors ${timeRange === days ? 'text-primary bg-primary/5' : 'text-on-surface'}`}
+                      >
+                        Last {days} Days
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           {/* Export */}
@@ -35,184 +196,111 @@ export default function Analytics() {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-10">
         
         {/* Key Metrics Overview */}
-        <div className="xl:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="glass-panel p-4 rounded-xl hover:border-primary transition-colors">
+        <div className="xl:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="glass-panel p-4 rounded-xl hover:border-primary transition-colors border border-outline-variant/20 shadow-sm">
             <p className="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Total Clicks</p>
-            <p className="text-headline-lg font-headline-lg text-on-surface">1,248,593</p>
-            <p className="text-label-sm font-label-sm text-primary mt-2 flex items-center gap-1">
-              <span className="material-symbols-outlined text-[14px]">trending_up</span> +12.4% <span className="text-on-surface-variant">vs last month</span>
-            </p>
+            <p className="text-headline-lg font-headline-lg text-on-surface">{data.totalClicks.toLocaleString()}</p>
           </div>
-          <div className="glass-panel p-4 rounded-xl hover:border-primary transition-colors">
+          <div className="glass-panel p-4 rounded-xl hover:border-primary transition-colors border border-outline-variant/20 shadow-sm">
             <p className="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Unique Visitors</p>
-            <p className="text-headline-lg font-headline-lg text-on-surface">892,104</p>
-            <p className="text-label-sm font-label-sm text-primary mt-2 flex items-center gap-1">
-              <span className="material-symbols-outlined text-[14px]">trending_up</span> +8.2% <span className="text-on-surface-variant">vs last month</span>
-            </p>
+            <p className="text-headline-lg font-headline-lg text-on-surface">{data.uniqueVisitors.toLocaleString()}</p>
           </div>
-          <div className="glass-panel p-4 rounded-xl hover:border-primary transition-colors">
-            <p className="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Avg. Time to Click</p>
-            <p className="text-headline-lg font-headline-lg text-on-surface">2.4s</p>
-            <p className="text-label-sm font-label-sm text-error mt-2 flex items-center gap-1">
-              <span className="material-symbols-outlined text-[14px]">trending_down</span> -0.3s <span className="text-on-surface-variant">vs last month</span>
-            </p>
-          </div>
-          <div className="glass-panel p-4 rounded-xl hover:border-primary transition-colors">
-            <p className="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Top Campaign</p>
-            <p className="text-headline-md font-headline-md text-on-surface truncate">Q3_Launch_Alpha</p>
-            <p className="text-label-sm font-label-sm text-secondary mt-2">45% of total volume</p>
+          <div className="glass-panel p-4 rounded-xl hover:border-primary transition-colors border border-outline-variant/20 shadow-sm col-span-2 md:col-span-1">
+            <p className="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">{id ? 'Link Status' : 'Top Campaign'}</p>
+            <p className="text-headline-md font-headline-md text-on-surface truncate">{data.topCampaign}</p>
+            {data.topCampaignSub && <p className="text-label-sm font-label-sm text-secondary mt-1">{data.topCampaignSub}</p>}
           </div>
         </div>
 
-        {/* Interactive Heat Map (Section 1) */}
-        <div className="xl:col-span-2 glass-panel rounded-xl p-6 flex flex-col">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-headline-md font-headline-md text-on-surface">Global Click Distribution</h3>
-            <button className="text-on-surface-variant hover:text-primary transition-colors">
-              <span className="material-symbols-outlined">more_vert</span>
-            </button>
+        {/* Interactive Chart (Section 1) */}
+        <div className="xl:col-span-2 glass-panel rounded-xl p-6 flex flex-col border border-outline-variant/20 shadow-sm">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-headline-md font-headline-md text-on-surface">Clicks Over Time</h3>
           </div>
-          {/* Heatmap Visualization Area */}
-          <div className="flex-1 min-h-[300px] bg-surface-container-lowest rounded-lg border border-outline-variant/10 relative overflow-hidden flex items-center justify-center">
-            <div className="absolute inset-0 opacity-40 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/10 via-surface/0 to-surface/0"></div>
-            {/* Overlay UI elements for the map */}
-            <div className="absolute bottom-4 right-4 bg-surface-container/90 backdrop-blur px-2 py-1 rounded border border-outline-variant/30 flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-              <span className="text-code-sm font-code-sm text-on-surface-variant">Live Tracking Active</span>
-            </div>
-            <div className="text-on-surface-variant flex items-center gap-2">
-              <span className="material-symbols-outlined">map</span>
-              Map Visualization
-            </div>
+          {/* Chart Visualization Area */}
+          <div className="flex-1 w-full min-h-[300px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={data.clicksByDate} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/>
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff15" vertical={false} />
+                <XAxis 
+                  dataKey="date" 
+                  tick={{fill: '#a3a3a3', fontSize: 12}} 
+                  tickLine={false} 
+                  axisLine={false} 
+                  tickFormatter={(val) => {
+                    if (!val) return '';
+                    const d = new Date(val);
+                    return `${d.getDate()} ${d.toLocaleString('default', { month: 'short' })}`;
+                  }}
+                />
+                <YAxis tick={{fill: '#a3a3a3', fontSize: 12}} tickLine={false} axisLine={false} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px', color: '#f8fafc' }}
+                  labelFormatter={(val) => {
+                     if (!val) return '';
+                     return new Date(val).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })
+                  }}
+                />
+                <Area type="monotone" dataKey="count" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorCount)" />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
         {/* Referrers & Browsers (Section 2) */}
         <div className="xl:col-span-1 flex flex-col gap-6">
           {/* Referrers Chart */}
-          <div className="glass-panel rounded-xl p-4 flex-1">
-            <h3 className="text-label-md font-label-md text-on-surface mb-4">Top Referrers</h3>
-            <div className="space-y-2">
-              {/* Bar Item */}
-              <div>
-                <div className="flex justify-between text-label-sm font-label-sm mb-1">
-                  <span className="text-on-surface">Twitter / X</span>
-                  <span className="text-on-surface-variant font-code-sm">45%</span>
-                </div>
-                <div className="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
-                  <div className="h-full bg-primary" style={{ width: '45%' }}></div>
-                </div>
-              </div>
-              {/* Bar Item */}
-              <div>
-                <div className="flex justify-between text-label-sm font-label-sm mb-1">
-                  <span className="text-on-surface">LinkedIn</span>
-                  <span className="text-on-surface-variant font-code-sm">28%</span>
-                </div>
-                <div className="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
-                  <div className="h-full bg-secondary" style={{ width: '28%' }}></div>
-                </div>
-              </div>
-              {/* Bar Item */}
-              <div>
-                <div className="flex justify-between text-label-sm font-label-sm mb-1">
-                  <span className="text-on-surface">Direct</span>
-                  <span className="text-on-surface-variant font-code-sm">15%</span>
-                </div>
-                <div className="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
-                  <div className="h-full bg-tertiary" style={{ width: '15%' }}></div>
-                </div>
-              </div>
-              {/* Bar Item */}
-              <div>
-                <div className="flex justify-between text-label-sm font-label-sm mb-1">
-                  <span className="text-on-surface">Github</span>
-                  <span className="text-on-surface-variant font-code-sm">12%</span>
-                </div>
-                <div className="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
-                  <div className="h-full bg-outline" style={{ width: '12%' }}></div>
-                </div>
-              </div>
+          <div className="glass-panel rounded-xl p-5 flex-1 border border-outline-variant/20 shadow-sm">
+            <h3 className="text-label-md font-label-md text-on-surface mb-5 uppercase tracking-wider">Top Referrers</h3>
+            <div className="space-y-5">
+              {data.referrers.length === 0 ? (
+                <div className="text-on-surface-variant text-sm text-center py-4">No referrer data yet.</div>
+              ) : (
+                data.referrers.map((ref, idx) => (
+                  <div key={idx}>
+                    <div className="flex justify-between text-label-sm font-label-sm mb-2">
+                      <span className="text-on-surface truncate pr-2">{ref.name}</span>
+                      <span className="text-on-surface-variant font-code-sm">{((ref.count / refTotal) * 100).toFixed(0)}%</span>
+                    </div>
+                    <div className="w-full h-2.5 bg-surface-container-highest rounded-full overflow-hidden shadow-inner">
+                      <div className={`h-full ${colors[idx % colors.length]}`} style={{ width: `${(ref.count / refTotal) * 100}%` }}></div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 
           {/* Browser Chart */}
-          <div className="glass-panel rounded-xl p-4 flex-1">
-            <h3 className="text-label-md font-label-md text-on-surface mb-4">Browser Usage</h3>
+          <div className="glass-panel rounded-xl p-5 flex-1 border border-outline-variant/20 shadow-sm">
+            <h3 className="text-label-md font-label-md text-on-surface mb-6 uppercase tracking-wider">Browser Usage</h3>
             <div className="flex items-end justify-around h-32 mt-auto">
-              <div className="flex flex-col items-center gap-1 group">
-                <div className="w-8 bg-primary rounded-t-sm group-hover:bg-primary-fixed transition-colors" style={{ height: '80%' }}></div>
-                <span className="text-code-sm font-code-sm text-on-surface-variant">Chr</span>
-              </div>
-              <div className="flex flex-col items-center gap-1 group">
-                <div className="w-8 bg-secondary rounded-t-sm group-hover:bg-secondary-fixed transition-colors" style={{ height: '50%' }}></div>
-                <span className="text-code-sm font-code-sm text-on-surface-variant">Saf</span>
-              </div>
-              <div className="flex flex-col items-center gap-1 group">
-                <div className="w-8 bg-tertiary rounded-t-sm group-hover:bg-tertiary-fixed transition-colors" style={{ height: '30%' }}></div>
-                <span className="text-code-sm font-code-sm text-on-surface-variant">FF</span>
-              </div>
-              <div className="flex flex-col items-center gap-1 group">
-                <div className="w-8 bg-outline rounded-t-sm group-hover:bg-outline-variant transition-colors" style={{ height: '15%' }}></div>
-                <span className="text-code-sm font-code-sm text-on-surface-variant">Edg</span>
-              </div>
+              {data.browsers.length === 0 ? (
+                <div className="text-on-surface-variant text-sm flex items-center justify-center w-full h-full">No browser data yet.</div>
+              ) : (
+                data.browsers.map((b, idx) => (
+                  <div key={idx} className="flex flex-col items-center gap-2 group w-full relative">
+                    {/* Tooltip on hover */}
+                    <div className="absolute -top-8 opacity-0 group-hover:opacity-100 transition-opacity bg-surface-container-highest px-2 py-1 rounded text-xs text-on-surface z-10 pointer-events-none whitespace-nowrap shadow-md border border-outline-variant/20">
+                      {b.count} clicks
+                    </div>
+                    <div 
+                      className={`w-8 ${colors[idx % colors.length]} rounded-t-sm transition-all duration-300 group-hover:brightness-125`} 
+                      style={{ height: `${Math.max(10, (b.count / browserTotal) * 100)}%`, minHeight: '10px' }}
+                    ></div>
+                    <span className="text-code-sm font-code-sm text-on-surface-variant truncate w-full text-center" title={b.name}>
+                      {b.name.substring(0, 3)}
+                    </span>
+                  </div>
+                ))
+              )}
             </div>
-          </div>
-        </div>
-
-        {/* Detailed Click Logs Table (Section 3) */}
-        <div className="xl:col-span-3 glass-panel rounded-xl flex flex-col overflow-hidden">
-          <div className="p-6 border-b border-outline-variant/20 flex justify-between items-center">
-            <h3 className="text-headline-md font-headline-md text-on-surface">Real-Time Click Logs</h3>
-            <div className="relative hidden sm:block">
-              <span className="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
-              <input 
-                className="bg-surface-container border border-outline-variant/30 rounded-md py-2 pl-10 pr-4 text-label-sm font-label-sm text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all w-64" 
-                placeholder="Search hash, IP, or country..." 
-                type="text"
-              />
-            </div>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-outline-variant/20 bg-surface-container/50 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">
-                  <th className="p-4 font-medium">Timestamp</th>
-                  <th className="p-4 font-medium">Link Hash</th>
-                  <th className="p-4 font-medium">Country</th>
-                  <th className="p-4 font-medium hidden sm:table-cell">Device / OS</th>
-                  <th className="p-4 font-medium hidden md:table-cell">Referrer</th>
-                  <th className="p-4 font-medium text-right">Status</th>
-                </tr>
-              </thead>
-              <tbody className="text-body-md font-body-md text-on-surface font-code-sm">
-                {[
-                  { time: '2024-10-27 14:32:01', hash: '#xY7b2Q', country: '🇺🇸 United States', device: 'Mobile / iOS', referrer: 't.co', status: '200 OK', statusColor: 'primary' },
-                  { time: '2024-10-27 14:31:45', hash: '#aB9k1Z', country: '🇬🇧 United Kingdom', device: 'Desktop / Mac', referrer: 'linkedin.com', status: '200 OK', statusColor: 'primary' },
-                  { time: '2024-10-27 14:30:12', hash: '#xY7b2Q', country: '🇩🇪 Germany', device: 'Desktop / Win', referrer: 'direct', status: '404 ERR', statusColor: 'error' },
-                  { time: '2024-10-27 14:28:55', hash: '#mN4p8L', country: '🇯🇵 Japan', device: 'Mobile / Android', referrer: 'github.com', status: '200 OK', statusColor: 'primary' },
-                  { time: '2024-10-27 14:25:33', hash: '#xY7b2Q', country: '🇨🇦 Canada', device: 'Tablet / iPadOS', referrer: 't.co', status: '200 OK', statusColor: 'primary' },
-                ].map((log, i) => (
-                  <tr key={i} className="border-b border-outline-variant/10 hover:bg-surface-container-high/30 transition-colors">
-                    <td className="p-4 text-on-surface-variant">{log.time}</td>
-                    <td className="p-4 text-primary">{log.hash}</td>
-                    <td className="p-4">{log.country}</td>
-                    <td className="p-4 hidden sm:table-cell">{log.device}</td>
-                    <td className="p-4 hidden md:table-cell">{log.referrer}</td>
-                    <td className="p-4 text-right">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full bg-${log.statusColor}/10 text-${log.statusColor} text-[10px] uppercase font-bold tracking-widest`}>
-                        {log.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="p-4 border-t border-outline-variant/20 flex justify-center bg-surface-container/30">
-            <button className="text-label-sm font-label-sm text-primary hover:text-primary-fixed transition-colors flex items-center gap-1">
-              View All Logs <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-            </button>
           </div>
         </div>
       </div>

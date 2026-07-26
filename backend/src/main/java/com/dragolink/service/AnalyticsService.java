@@ -25,7 +25,7 @@ public class AnalyticsService {
     private final ShortLinkRepository shortLinkRepository;
     private final UserRepository userRepository;
 
-    public AnalyticsDashboardDto getDashboard(UserDetails userDetails) {
+    public AnalyticsDashboardDto getDashboard(UserDetails userDetails, int days) {
         User user = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Long userId = user.getId();
@@ -43,15 +43,19 @@ public class AnalyticsService {
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
 
+        long uniqueVisitors = clickAnalyticsRepository.countUniqueVisitorsByUserId(userId);
+
         return AnalyticsDashboardDto.builder()
                 .totalLinks(totalLinks)
                 .totalClicks(totalClicks)
+                .uniqueVisitors(uniqueVisitors)
                 .activeLinks(activeLinks)
                 .expiredLinks(expiredLinks)
                 .topLinks(topLinks)
-                .clicksByDate(clickAnalyticsRepository.countClicksByDate(userId, LocalDateTime.now().minusDays(30)))
+                .clicksByDate(clickAnalyticsRepository.countClicksByDate(userId, LocalDateTime.now().minusDays(days)))
                 .clicksByDevice(clickAnalyticsRepository.countClicksByDevice(userId))
                 .clicksByBrowser(clickAnalyticsRepository.countClicksByBrowser(userId))
+                .clicksByReferrer(clickAnalyticsRepository.countClicksByReferrer(userId))
                 // recentClicks can be filled by querying across all user's links, skipping for simplicity in dashboard, or fetch top 10
                 .build();
     }

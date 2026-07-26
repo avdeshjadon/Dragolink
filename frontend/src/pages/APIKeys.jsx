@@ -54,7 +54,7 @@ export default function APIKeys() {
         <div className="flex items-center gap-2">
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-1 px-4 py-2 bg-primary-container text-on-primary-container rounded-lg font-medium hover:bg-primary-fixed transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-label-md font-label-md hover:bg-primary/90 transition-colors shadow-sm"
           >
             <span className="material-symbols-outlined text-[18px]">key</span>
             Generate Key
@@ -102,7 +102,7 @@ export default function APIKeys() {
           <p className="text-sm text-on-surface-variant max-w-md text-center mb-6">Generate an API key to programmatically create short links, fetch analytics, and manage campaigns.</p>
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 px-6 py-2.5 bg-surface-container border border-outline-variant/30 rounded-lg text-on-surface font-medium hover:border-primary/50 transition-colors"
+            className="flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-lg text-label-md font-label-md hover:bg-primary/90 transition-colors shadow-sm"
           >
             Generate Key
           </button>
@@ -177,7 +177,7 @@ export default function APIKeys() {
                     <button 
                       type="submit" 
                       disabled={!newKeyName.trim()}
-                      className="px-6 py-2 bg-primary text-on-primary rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-6 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                     >
                       Generate Key
                     </button>

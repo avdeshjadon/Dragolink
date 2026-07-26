@@ -11,11 +11,13 @@ import java.util.Map;
 public class AnalyticsDashboardDto {
     private long totalLinks;
     private long totalClicks;
+    private long uniqueVisitors;
     private long activeLinks;
     private long expiredLinks;
     private List<ShortLinkResponse> topLinks;
     private List<Map<String, Object>> clicksByDate;
     private List<Map<String, Object>> clicksByDevice;
     private List<Map<String, Object>> clicksByBrowser;
+    private List<Map<String, Object>> clicksByReferrer;
     private List<ClickDetailsDto> recentClicks;
 }

@@ -47,7 +47,7 @@ export default function Team() {
           <h2 className="text-headline-lg font-headline-lg text-on-background tracking-tight">Team Management</h2>
           <p className="text-body-md font-body-md text-on-surface-variant mt-1">Manage workspace access, roles, and pending invitations.</p>
         </div>
-        <button className="flex items-center gap-2 bg-primary-container hover:bg-primary text-on-primary-container hover:text-white px-4 py-2 rounded-lg text-label-md font-label-md transition-colors duration-200 shadow-sm border border-primary-fixed/20">
+        <button className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90 px-4 py-2 rounded-lg text-label-md font-label-md transition-colors duration-200 shadow-sm border border-primary-fixed/20">
           <span className="material-symbols-outlined text-[18px]">person_add</span>
           Invite Member
         </button>

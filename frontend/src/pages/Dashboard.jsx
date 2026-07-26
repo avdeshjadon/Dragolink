@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../lib/axios';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+
+const COLORS = ['#15803d', '#79db8d', '#98da27', '#4ade80', '#22c55e'];
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -23,6 +26,17 @@ export default function Dashboard() {
   if (loading || !metrics) {
     return <div className="min-h-screen flex items-center justify-center">Loading dashboard...</div>;
   }
+
+  // Formatting data for Recharts
+  const chartData = metrics.clicksByDate?.map(item => ({
+    date: item.date,
+    clicks: item.count
+  })) || [];
+
+  const pieData = metrics.clicksByDevice?.map(item => ({
+    name: item.device || item.deviceType || 'Unknown',
+    value: item.count
+  })) || [];
 
   return (
     <div className="flex flex-col gap-6 font-sans">
@@ -66,15 +80,6 @@ export default function Dashboard() {
           </div>
           <div className="flex items-baseline gap-2 mb-1">
             <span className="text-headline-lg font-headline-lg text-on-surface">{metrics.totalLinks.toLocaleString()}</span>
-            <span className="text-label-sm font-label-sm text-tertiary flex items-center">
-              <span className="material-symbols-outlined text-[14px]">arrow_upward</span> 12%
-            </span>
-          </div>
-          <div className="h-8 w-full mt-2">
-            <svg className="w-full h-full preserve-aspect-ratio-none" viewBox="0 0 100 20">
-              <path className="text-primary sparkline-path" d="M0,15 Q10,5 20,10 T40,15 T60,5 T80,10 T100,2" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="2"></path>
-              <path className="text-primary sparkline-fill" d="M0,15 Q10,5 20,10 T40,15 T60,5 T80,10 T100,2 L100,20 L0,20 Z" fill="currentColor"></path>
-            </svg>
           </div>
         </div>
 
@@ -86,15 +91,6 @@ export default function Dashboard() {
           </div>
           <div className="flex items-baseline gap-2 mb-1">
             <span className="text-headline-lg font-headline-lg text-on-surface">{metrics.totalClicks.toLocaleString()}</span>
-            <span className="text-label-sm font-label-sm text-tertiary flex items-center">
-              <span className="material-symbols-outlined text-[14px]">arrow_upward</span> 8%
-            </span>
-          </div>
-          <div className="h-8 w-full mt-2">
-            <svg className="w-full h-full preserve-aspect-ratio-none" viewBox="0 0 100 20">
-              <path className="text-primary sparkline-path" d="M0,18 Q15,10 25,12 T50,5 T75,8 T100,0" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="2"></path>
-              <path className="text-primary sparkline-fill" d="M0,18 Q15,10 25,12 T50,5 T75,8 T100,0 L100,20 L0,20 Z" fill="currentColor"></path>
-            </svg>
           </div>
         </div>
 
@@ -105,36 +101,18 @@ export default function Dashboard() {
             <span className="material-symbols-outlined text-primary" data-icon="person">person</span>
           </div>
           <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-headline-lg font-headline-lg text-on-surface">12.8k</span>
-            <span className="text-label-sm font-label-sm text-tertiary flex items-center">
-              <span className="material-symbols-outlined text-[14px]">arrow_upward</span> 15%
-            </span>
-          </div>
-          <div className="h-8 w-full mt-2">
-            <svg className="w-full h-full preserve-aspect-ratio-none" viewBox="0 0 100 20">
-              <path className="text-primary sparkline-path" d="M0,10 Q20,15 30,5 T60,10 T80,2 T100,8" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="2"></path>
-              <path className="text-primary sparkline-fill" d="M0,10 Q20,15 30,5 T60,10 T80,2 T100,8 L100,20 L0,20 Z" fill="currentColor"></path>
-            </svg>
+            <span className="text-headline-lg font-headline-lg text-on-surface">{metrics.uniqueVisitors?.toLocaleString() || 0}</span>
           </div>
         </div>
 
         {/* Metric Card 4 */}
         <div className="bg-surface-container-low rounded-xl p-4 border border-outline-variant/10 relative overflow-hidden group hover:border-primary/30 transition-colors">
           <div className="flex justify-between items-start mb-2">
-            <span className="text-label-md font-label-md text-on-surface-variant">QR Scans</span>
-            <span className="material-symbols-outlined text-error" data-icon="qr_code_scanner">qr_code_scanner</span>
+            <span className="text-label-md font-label-md text-on-surface-variant">Active Links</span>
+            <span className="material-symbols-outlined text-primary" data-icon="link">link</span>
           </div>
           <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-headline-lg font-headline-lg text-on-surface">3.1k</span>
-            <span className="text-label-sm font-label-sm text-error flex items-center">
-              <span className="material-symbols-outlined text-[14px]">arrow_downward</span> 2%
-            </span>
-          </div>
-          <div className="h-8 w-full mt-2">
-            <svg className="w-full h-full preserve-aspect-ratio-none" viewBox="0 0 100 20">
-              <path className="text-error sparkline-path" d="M0,5 Q20,10 40,8 T70,15 T90,12 T100,18" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="2"></path>
-              <path className="text-error opacity-20" d="M0,5 Q20,10 40,8 T70,15 T90,12 T100,18 L100,20 L0,20 Z" fill="currentColor"></path>
-            </svg>
+            <span className="text-headline-lg font-headline-lg text-on-surface">{metrics.activeLinks?.toLocaleString() || 0}</span>
           </div>
         </div>
       </div>
@@ -145,31 +123,30 @@ export default function Dashboard() {
           <h3 className="text-headline-md font-headline-md text-on-surface">Click Activity</h3>
           <button className="text-on-surface-variant hover:text-primary"><span className="material-symbols-outlined">more_horiz</span></button>
         </div>
-        <div className="w-full h-64 relative">
-          <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 800 250">
-            <line className="chart-grid" strokeWidth="1" x1="0" x2="800" y1="50" y2="50"></line>
-            <line className="chart-grid" strokeWidth="1" x1="0" x2="800" y1="100" y2="100"></line>
-            <line className="chart-grid" strokeWidth="1" x1="0" x2="800" y1="150" y2="150"></line>
-            <line className="chart-grid" strokeWidth="1" x1="0" x2="800" y1="200" y2="200"></line>
-            <defs>
-              <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.3"></stop>
-                <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0"></stop>
-              </linearGradient>
-            </defs>
-            <path d="M0,200 Q50,180 100,150 T200,100 T300,120 T400,60 T500,80 T600,40 T700,50 T800,20 L800,250 L0,250 Z" fill="url(#chartGradient)"></path>
-            <path d="M0,200 Q50,180 100,150 T200,100 T300,120 T400,60 T500,80 T600,40 T700,50 T800,20" fill="none" stroke="var(--color-primary)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3"></path>
-            <circle className="cursor-pointer hover:r-6 transition-all" cx="400" cy="60" fill="var(--color-surface-container-low)" r="5" stroke="var(--color-primary)" strokeWidth="2"></circle>
-          </svg>
-          
-          {/* Simulated Tooltip */}
-          <div className="absolute top-[40px] left-[390px] bg-surface-container-highest border border-outline-variant/30 rounded p-2 shadow-lg pointer-events-none">
-            <p className="text-label-sm font-label-sm text-on-surface-variant mb-1">Oct 12</p>
-            <p className="text-label-md font-label-md text-on-surface font-semibold">1,245 Clicks</p>
-          </div>
-        </div>
-        <div className="flex justify-between text-label-sm font-label-sm text-on-surface-variant mt-2 px-2">
-          <span>Oct 8</span><span>Oct 9</span><span>Oct 10</span><span>Oct 11</span><span>Oct 12</span><span>Oct 13</span><span>Oct 14</span>
+        <div className="w-full h-72">
+          {chartData.length > 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorClicks" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#15803d" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#15803d" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'var(--color-on-surface-variant)' }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'var(--color-on-surface-variant)' }} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: 'var(--color-surface-container-highest)', borderRadius: '8px', border: '1px solid var(--color-outline-variant)' }}
+                  itemStyle={{ color: 'var(--color-on-surface)', fontWeight: 'bold' }}
+                />
+                <Area type="monotone" dataKey="clicks" stroke="#15803d" strokeWidth={3} fillOpacity={1} fill="url(#colorClicks)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex items-center justify-center h-full text-on-surface-variant">
+              No click activity data available.
+            </div>
+          )}
         </div>
       </div>
 
@@ -218,23 +195,47 @@ export default function Dashboard() {
         <div className="bg-surface-container-low rounded-xl border border-outline-variant/10 p-4 flex flex-col">
           <h3 className="text-label-md font-label-md font-semibold text-on-surface uppercase tracking-wider mb-6 border-b border-outline-variant/10 pb-4">Device Breakdown</h3>
           <div className="flex-grow flex items-center justify-center relative">
-            <div className="w-32 h-32 rounded-full relative shadow-lg" style={{ background: 'conic-gradient(#15803d 0% 60%, #79db8d 60% 85%, #98da27 85% 100%)' }}>
-              <div className="absolute inset-2 bg-surface-container-low rounded-full"></div>
+            <div className="w-40 h-40">
+              {pieData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={pieData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={45}
+                      outerRadius={70}
+                      paddingAngle={5}
+                      dataKey="value"
+                      stroke="none"
+                    >
+                      {pieData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: 'var(--color-surface-container-highest)', borderRadius: '8px', border: '1px solid var(--color-outline-variant)' }}
+                      itemStyle={{ color: 'var(--color-on-surface)' }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-full text-on-surface-variant text-label-sm">
+                  No device data
+                </div>
+              )}
             </div>
           </div>
           <div className="mt-6 flex flex-col gap-2">
-            {metrics.clicksByDevice && metrics.clicksByDevice.map((device, index) => (
+            {pieData.map((device, index) => (
               <div key={index} className="flex justify-between items-center text-label-md font-label-md">
                 <div className="flex items-center gap-2">
-                  <span className={`w-3 h-3 rounded-full ${index % 3 === 0 ? 'bg-primary-container' : index % 3 === 1 ? 'bg-primary' : 'bg-tertiary'}`}></span>
-                  <span className="text-on-surface">{device.deviceType || 'Unknown'}</span>
+                  <span className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }}></span>
+                  <span className="text-on-surface">{device.name}</span>
                 </div>
-                <span className="text-on-surface-variant">{device.count}</span>
+                <span className="text-on-surface-variant">{device.value}</span>
               </div>
             ))}
-            {(!metrics.clicksByDevice || metrics.clicksByDevice.length === 0) && (
-              <div className="text-center text-on-surface-variant text-label-sm">No device data available</div>
-            )}
           </div>
         </div>
       </div>
