@@ -20,11 +20,14 @@ spring:
 
   data:
     redis:
-      host: ${SPRING_DATA_REDIS_HOST:localhost}
-      port: ${SPRING_DATA_REDIS_PORT:6379}
+      url: ${REDIS_URL:redis://localhost:6379}
 
   kafka:
     bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    properties:
+      security.protocol: ${SPRING_KAFKA_SECURITY_PROTOCOL:PLAINTEXT}
+      sasl.mechanism: ${SPRING_KAFKA_SASL_MECHANISM:PLAIN}
+      sasl.jaas.config: ${SPRING_KAFKA_SASL_JAAS_CONFIG:}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer

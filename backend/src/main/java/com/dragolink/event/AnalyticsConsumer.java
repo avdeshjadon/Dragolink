@@ -40,11 +40,11 @@ public class AnalyticsConsumer {
 
             ClickAnalytics analytics = ClickAnalytics.builder()
                     .shortLink(link)
-                    .ipAddress((String) event.get("ipAddress"))
-                    .browser(userAgent.getValue(UserAgent.AGENT_NAME))
-                    .operatingSystem(userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME))
-                    .deviceType(userAgent.getValue(UserAgent.DEVICE_CLASS))
-                    .referrer((String) event.get("referrer"))
+                    .ipAddress(link.isTrackIp() ? (String) event.get("ipAddress") : "Anonymous")
+                    .browser(link.isTrackBrowser() ? userAgent.getValue(UserAgent.AGENT_NAME) : "Anonymous")
+                    .operatingSystem(link.isTrackOs() ? userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME) : "Anonymous")
+                    .deviceType(link.isTrackDevice() ? userAgent.getValue(UserAgent.DEVICE_CLASS) : "Anonymous")
+                    .referrer(link.isTrackReferrer() ? (String) event.get("referrer") : "Anonymous")
                     .clickedAt(LocalDateTime.parse((String) event.get("clickedAt")))
                     .build();
 

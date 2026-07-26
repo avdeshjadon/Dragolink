@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../lib/axios';
+import AsyncButton from '../components/AsyncButton';
 
 export default function APIKeys() {
   const [keys, setKeys] = useState([]);
@@ -23,13 +24,12 @@ export default function APIKeys() {
     fetchKeys();
   }, []);
 
-  const handleGenerateKey = async (e) => {
-    e.preventDefault();
+  const handleGenerateKey = async () => {
     if (!newKeyName.trim()) return;
     try {
       const res = await api.post('/keys', { name: newKeyName });
       setGeneratedKey(res.data.rawKey);
-      fetchKeys();
+      await fetchKeys();
       setNewKeyName('');
     } catch (error) {
       console.error("Failed to generate key", error);
@@ -39,7 +39,7 @@ export default function APIKeys() {
   const handleDeleteKey = async (id) => {
     try {
       await api.delete(`/keys/${id}`);
-      fetchKeys();
+      await fetchKeys();
     } catch (error) {
       console.error("Failed to delete key", error);
     }
@@ -84,9 +84,9 @@ export default function APIKeys() {
                   <td className="p-4 text-on-surface-variant">{new Date(key.createdAt).toLocaleDateString()}</td>
                   <td className="p-4 text-on-surface-variant">{key.lastUsedAt ? new Date(key.lastUsedAt).toLocaleDateString() : 'Never'}</td>
                   <td className="p-4 text-right">
-                    <button onClick={() => handleDeleteKey(key.id)} className="text-error hover:text-error/80 transition-colors p-2 rounded-full hover:bg-error-container">
+                    <AsyncButton onClick={() => handleDeleteKey(key.id)} className="text-error hover:text-error/80 transition-colors p-2 rounded-full hover:bg-error-container">
                       <span className="material-symbols-outlined text-[20px]">delete</span>
-                    </button>
+                    </AsyncButton>
                   </td>
                 </tr>
               ))}
@@ -154,7 +154,7 @@ export default function APIKeys() {
                   </div>
                 </div>
               ) : (
-                <form onSubmit={handleGenerateKey}>
+                <form onSubmit={e => e.preventDefault()}>
                   <div className="mb-4">
                     <label className="block text-label-sm font-label-md text-on-surface-variant mb-1">Key Name</label>
                     <input 
@@ -174,13 +174,14 @@ export default function APIKeys() {
                     >
                       Cancel
                     </button>
-                    <button 
+                    <AsyncButton 
                       type="submit" 
+                      onClick={handleGenerateKey}
                       disabled={!newKeyName.trim()}
                       className="px-6 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                     >
                       Generate Key
-                    </button>
+                    </AsyncButton>
                   </div>
                 </form>
               )}

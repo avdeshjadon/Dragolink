@@ -18,7 +18,6 @@ export default function JobApplicationForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 4;
   
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   
   const [formData, setFormData] = useState({
@@ -79,9 +78,7 @@ export default function JobApplicationForm() {
     if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  const handleSubmit = async () => {
     
     const applicationPayload = {
       ...formData,
@@ -98,8 +95,6 @@ export default function JobApplicationForm() {
     } catch (error) {
       console.error("Failed to submit application", error);
       alert("An error occurred while submitting your application. Please try again.");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -196,7 +191,7 @@ export default function JobApplicationForm() {
             <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Job Application</h1>
             <p className="text-gray-500 mb-8">Step {currentStep} of {totalSteps}</p>
             
-            <form onSubmit={(e) => { e.preventDefault(); currentStep === totalSteps ? handleSubmit(e) : nextStep(); }}>
+            <form onSubmit={e => e.preventDefault()}>
               <AnimatePresence mode="wait">
                 {currentStep === 1 && (
                   <motion.div key="step1" variants={stepVariants} initial="initial" animate="animate" exit="exit" className="space-y-6">
@@ -338,18 +333,18 @@ export default function JobApplicationForm() {
                   type="button" 
                   variant="outline" 
                   onClick={prevStep} 
-                  disabled={currentStep === 1 || isSubmitting}
+                  disabled={currentStep === 1}
                   className="px-6 flex items-center gap-2"
                 >
                   <ChevronLeft className="w-4 h-4" /> Previous
                 </Button>
                 
                 {currentStep < totalSteps ? (
-                  <Button type="submit" className="px-8 flex items-center gap-2">
+                  <Button type="submit" onClick={nextStep} className="px-8 flex items-center gap-2">
                     Next Step <ChevronRight className="w-4 h-4" />
                   </Button>
                 ) : (
-                  <Button type="submit" isLoading={isSubmitting} className="px-10 flex items-center gap-2 bg-brand text-white hover:bg-brand-dark shadow-lg shadow-brand/20">
+                  <Button type="submit" onClick={handleSubmit} className="px-10 flex items-center gap-2 bg-brand text-white hover:bg-brand-dark shadow-lg shadow-brand/20">
                     Submit Application <CheckCircle2 className="w-4 h-4" />
                   </Button>
                 )}

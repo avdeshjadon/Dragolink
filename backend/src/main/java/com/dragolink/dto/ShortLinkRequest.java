@@ -19,4 +19,10 @@ public class ShortLinkRequest {
     private String title;
 
     private LocalDateTime expiryDate;
+
+    private Boolean trackIp = true;
+    private Boolean trackBrowser = true;
+    private Boolean trackOs = true;
+    private Boolean trackDevice = true;
+    private Boolean trackReferrer = true;
 }

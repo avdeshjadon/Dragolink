@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../lib/axios';
+import AsyncButton from '../components/AsyncButton';
 
 export default function SettingsSecurity() {
   const [passwords, setPasswords] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [passwordMessage, setPasswordMessage] = useState('');
-  const [passwordLoading, setPasswordLoading] = useState(false);
   const [logs, setLogs] = useState([]);
   const [logsLoading, setLogsLoading] = useState(true);
 
@@ -22,13 +22,11 @@ export default function SettingsSecurity() {
     fetchLogs();
   }, []);
 
-  const handlePasswordChange = async (e) => {
-    e.preventDefault();
+  const handlePasswordChange = async () => {
     if (passwords.newPassword !== passwords.confirmPassword) {
       setPasswordMessage('New passwords do not match');
       return;
     }
-    setPasswordLoading(true);
     setPasswordMessage('');
     try {
       await api.put('/users/password', {
@@ -39,8 +37,6 @@ export default function SettingsSecurity() {
       setPasswords({ currentPassword: '', newPassword: '', confirmPassword: '' });
     } catch (error) {
       setPasswordMessage(error.response?.data?.message || 'Failed to update password');
-    } finally {
-      setPasswordLoading(false);
     }
   };
 
@@ -69,7 +65,7 @@ export default function SettingsSecurity() {
                 {passwordMessage}
               </div>
             )}
-            <form className="flex flex-col gap-4" onSubmit={handlePasswordChange}>
+            <form className="flex flex-col gap-4" onSubmit={e => e.preventDefault()}>
               <div className="flex flex-col gap-1">
                 <label className="text-label-sm font-label-sm text-on-surface-variant">Current Password</label>
                 <input 
@@ -98,9 +94,9 @@ export default function SettingsSecurity() {
                 />
               </div>
               <div className="mt-2">
-                <button disabled={passwordLoading} className="w-full bg-primary-container text-on-primary-container hover:bg-primary hover:text-white rounded-lg py-2 px-4 text-label-md font-label-md font-semibold transition-colors shadow-sm active:scale-95 border border-primary-fixed/20 disabled:opacity-50" type="submit">
-                  {passwordLoading ? 'Updating...' : 'Update Password'}
-                </button>
+                <AsyncButton onClick={handlePasswordChange} className="w-full bg-primary-container text-on-primary-container hover:bg-primary hover:text-white rounded-lg py-2 px-4 text-label-md font-label-md font-semibold transition-colors shadow-sm active:scale-95 border border-primary-fixed/20 cursor-pointer" type="submit">
+                  Update Password
+                </AsyncButton>
               </div>
             </form>
           </div>

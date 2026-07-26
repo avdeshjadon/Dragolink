@@ -51,9 +51,9 @@ docker-compose up -d --build backend
 ### Method B: Running Services Manually
 If you want to run the application manually (useful for active development or hot-reloading), follow these steps in order:
 
-**1. Start the Infrastructure (Database, Cache, Brokers)**
+**1. Start the Infrastructure (Brokers)**
 ```bash
-docker-compose up -d mysql redis zookeeper kafka
+docker-compose up -d zookeeper kafka
 ```
 
 **2. Start the Backend (Spring Boot)**

@@ -12,13 +12,10 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const handleSubmit = async () => {
     setError('');
     
     try {
@@ -26,8 +23,6 @@ export default function Register() {
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to create account');
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -52,7 +47,7 @@ export default function Register() {
             <p className="mt-2 text-sm text-text-secondary">Join Dragolink to master your links</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={e => e.preventDefault()} className="space-y-5">
             {error && (
               <motion.div 
                 initial={{ opacity: 0, y: -10 }} 
@@ -116,7 +111,7 @@ export default function Register() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full h-11 text-base mt-2" isLoading={isLoading}>
+            <Button type="submit" onClick={handleSubmit} className="w-full h-11 text-base mt-2">
               Create account
             </Button>
             

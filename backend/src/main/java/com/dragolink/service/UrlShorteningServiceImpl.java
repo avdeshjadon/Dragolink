@@ -55,6 +55,11 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
                 .customAlias(request.getCustomAlias() != null && !request.getCustomAlias().isEmpty() ? request.getCustomAlias() : null)
                 .title(request.getTitle())
                 .expiryDate(request.getExpiryDate())
+                .trackIp(request.getTrackIp() != null ? request.getTrackIp() : true)
+                .trackBrowser(request.getTrackBrowser() != null ? request.getTrackBrowser() : true)
+                .trackOs(request.getTrackOs() != null ? request.getTrackOs() : true)
+                .trackDevice(request.getTrackDevice() != null ? request.getTrackDevice() : true)
+                .trackReferrer(request.getTrackReferrer() != null ? request.getTrackReferrer() : true)
                 .active(true)
                 .clickCount(0)
                 .shortCode("") // Temporary
@@ -104,6 +109,12 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
 
         link.setTitle(request.getTitle());
         link.setExpiryDate(request.getExpiryDate());
+        
+        if (request.getTrackIp() != null) link.setTrackIp(request.getTrackIp());
+        if (request.getTrackBrowser() != null) link.setTrackBrowser(request.getTrackBrowser());
+        if (request.getTrackOs() != null) link.setTrackOs(request.getTrackOs());
+        if (request.getTrackDevice() != null) link.setTrackDevice(request.getTrackDevice());
+        if (request.getTrackReferrer() != null) link.setTrackReferrer(request.getTrackReferrer());
 
         return mapToResponse(shortLinkRepository.save(link));
     }
@@ -144,6 +155,11 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
                 .expiryDate(link.getExpiryDate())
                 .clickCount(link.getClickCount())
                 .createdAt(link.getCreatedAt())
+                .trackIp(link.isTrackIp())
+                .trackBrowser(link.isTrackBrowser())
+                .trackOs(link.isTrackOs())
+                .trackDevice(link.isTrackDevice())
+                .trackReferrer(link.isTrackReferrer())
                 .build();
     }
 

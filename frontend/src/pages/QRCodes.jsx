@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import QRCodeStyling from "qr-code-styling";
 import toast from "react-hot-toast";
 import { api } from "../lib/axios";
+import AsyncButton from "../components/AsyncButton";
 
 export default function QRCodes() {
   const [destinationUrl, setDestinationUrl] = useState(
@@ -19,7 +20,6 @@ export default function QRCodes() {
   const [previousLogoMode, setPreviousLogoMode] = useState("default");
 
   const qrRef = useRef(null);
-  const [isSaving, setIsSaving] = useState(false);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [savedShortCode, setSavedShortCode] = useState("");
 
@@ -125,7 +125,6 @@ export default function QRCodes() {
     }
 
     try {
-      setIsSaving(true);
       const res = await api.post('/links', { longUrl: destinationUrl, title: '[QR] Custom Code' });
       const shortCode = res.data.shortCode || res.data.customAlias || res.data.id;
       if (shortCode) {
@@ -138,8 +137,6 @@ export default function QRCodes() {
     } catch (err) {
       console.error(err);
       toast.error('Failed to save link for tracking');
-    } finally {
-      setIsSaving(false);
     }
   };
 
@@ -439,18 +436,13 @@ export default function QRCodes() {
 
             {/* Save & Download */}
             <div className="w-full bg-surface-container-low border border-outline-variant/10 rounded-lg p-4">
-              <button
+              <AsyncButton
                 onClick={handleSave}
-                disabled={isSaving}
                 className="w-full bg-primary text-white hover:bg-primary/90 text-label-md font-label-md py-2.5 rounded flex items-center justify-center gap-2 transition-colors shadow-sm border border-primary/20 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                {isSaving ? (
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                ) : (
-                  <span className="material-symbols-outlined text-[18px]">save</span>
-                )}
+                <span className="material-symbols-outlined text-[18px]">save</span>
                 Save this
-              </button>
+              </AsyncButton>
             </div>
           </div>
         </div>

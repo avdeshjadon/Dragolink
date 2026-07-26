@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../lib/axios';
+import AsyncButton from '../components/AsyncButton';
 
 export default function Campaigns() {
   const [campaigns, setCampaigns] = useState([]);
@@ -23,8 +24,7 @@ export default function Campaigns() {
     fetchCampaigns();
   }, []);
 
-  const handleCreateCampaign = async (e) => {
-    e.preventDefault();
+  const handleCreateCampaign = async () => {
     if (!newCampaignName.trim()) return;
     try {
       await api.post('/campaigns', {
@@ -34,7 +34,7 @@ export default function Campaigns() {
       setIsModalOpen(false);
       setNewCampaignName('');
       setNewCampaignDesc('');
-      fetchCampaigns();
+      await fetchCampaigns();
     } catch (error) {
       console.error("Failed to create campaign", error);
     }
@@ -118,7 +118,7 @@ export default function Campaigns() {
               </button>
             </div>
             
-            <form onSubmit={handleCreateCampaign} className="p-6 space-y-4">
+            <form onSubmit={e => e.preventDefault()} className="p-6 space-y-4">
               <div>
                 <label className="block text-label-sm font-label-md text-on-surface-variant mb-1">Campaign Name</label>
                 <input 
@@ -149,13 +149,14 @@ export default function Campaigns() {
                 >
                   Cancel
                 </button>
-                <button 
+                <AsyncButton 
                   type="submit" 
+                  onClick={handleCreateCampaign}
                   disabled={!newCampaignName.trim()}
                   className="px-6 py-2 bg-primary text-on-primary rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Create Campaign
-                </button>
+                </AsyncButton>
               </div>
             </form>
           </div>

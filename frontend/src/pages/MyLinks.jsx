@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import toast from 'react-hot-toast';
+import { Toaster, toast } from 'react-hot-toast';
+import MotionAlert from '../components/motion/MotionAlert';
+import MotionModal from '../components/motion/MotionModal';
 import { api } from '../lib/axios';
 import { QRCodeSVG } from 'qrcode.react';
+import AsyncButton from '../components/AsyncButton';
 
 export default function MyLinks() {
   const navigate = useNavigate();
@@ -22,22 +25,48 @@ export default function MyLinks() {
   const [editUrl, setEditUrl] = useState('');
   const [editTitle, setEditTitle] = useState('');
   const [editAlias, setEditAlias] = useState('');
+  
+  // Click Log Modal State
+  const [clickLogModalLink, setClickLogModalLink] = useState(null);
+  const [clickLogs, setClickLogs] = useState([]);
+  const [isClickLogLoading, setIsClickLogLoading] = useState(false);
 
   useEffect(() => {
     fetchLinks();
   }, []);
 
-  const fetchLinks = () => {
+  const fetchLinks = async () => {
     setLoading(true);
-    api.get('/links')
-      .then(res => {
-        setLinks(res.data.content || res.data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Failed to load links", err);
-        setLoading(false);
-      });
+    try {
+      const response = await api.get('/links');
+      setLinks(response.data.map(link => ({
+        ...link,
+        createdAt: new Date(link.createdAt).toLocaleDateString()
+      })));
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to load links');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchClickLogs = async (linkId) => {
+    try {
+      setIsClickLogLoading(true);
+      const response = await api.get(`/analytics/links/${linkId}`);
+      setClickLogs(response.data);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to load click logs');
+    } finally {
+      setIsClickLogLoading(false);
+    }
+  };
+
+  const openClickLogModal = (link) => {
+    setClickLogModalLink(link);
+    fetchClickLogs(link.id);
   };
 
   const displayedLinks = links.filter(link => {
@@ -321,6 +350,9 @@ export default function MyLinks() {
 
                 {/* Actions */}
                 <div className="flex items-center gap-4 ml-2">
+                  <button onClick={() => openClickLogModal(link)} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="Click Log / Info">
+                    <span className="material-symbols-outlined text-[20px]">info</span>
+                  </button>
                   <button onClick={() => navigate(`/analytics/${link.id}`)} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="Analytics">
                     <span className="material-symbols-outlined text-[20px]">bar_chart</span>
                   </button>
@@ -371,93 +403,133 @@ export default function MyLinks() {
       </div>
 
       {/* Delete Confirmation Modal */}
-      {deleteModalLink && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
-          <div className="bg-surface rounded-xl shadow-2xl p-6 w-full max-w-sm border border-outline-variant/20">
-            <h3 className="text-headline-md font-headline-md text-on-surface mb-2">Delete Link</h3>
-            <p className="text-body-md font-body-md text-on-surface-variant mb-6">
-              Are you sure you want to delete the link for <strong className="text-on-surface">{deleteModalLink.title || deleteModalLink.shortCode}</strong>? This action cannot be undone.
-            </p>
-            <div className="flex justify-end gap-3">
-              <button onClick={() => setDeleteModalLink(null)} className="px-4 py-2 text-label-md font-label-md text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors border border-outline-variant/30 cursor-pointer">
-                Cancel
-              </button>
-              <button onClick={() => handleDelete(deleteModalLink.id)} className="px-4 py-2 text-label-md font-label-md bg-error text-white rounded-lg hover:bg-error/90 transition-colors shadow-sm cursor-pointer">
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <MotionAlert
+        isOpen={!!deleteModalLink}
+        onClose={() => setDeleteModalLink(null)}
+        onConfirm={() => handleDelete(deleteModalLink?.id)}
+        title="Delete Link?"
+        description={
+          <>
+            Are you sure you want to delete <span className="font-bold text-on-surface">{deleteModalLink?.title || deleteModalLink?.shortCode}</span>? This action cannot be undone.
+          </>
+        }
+        confirmText="Delete"
+        isDestructive={true}
+        icon={<span className="material-symbols-outlined text-[32px]">warning</span>}
+      />
 
       {/* Bulk Delete Confirmation Modal */}
-      {isBulkDeleteModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
-          <div className="bg-surface rounded-xl shadow-2xl p-6 w-full max-w-sm border border-outline-variant/20 flex flex-col items-center animate-fade-in text-center">
-            <div className="w-16 h-16 rounded-full bg-error/10 flex items-center justify-center mb-4">
-              <span className="material-symbols-outlined text-[32px] text-error">delete_sweep</span>
-            </div>
-            <h3 className="text-headline-md font-headline-md text-on-surface mb-2">Delete {selectedLinks.length} Items?</h3>
-            <p className="text-body-md font-body-md text-on-surface-variant mb-6">
-              This will permanently delete the {selectedLinks.length} selected {activeTab === 'qr' ? 'QR Codes' : 'links'}. This action cannot be undone.
-            </p>
-            <div className="flex justify-center gap-3 w-full">
-              <button onClick={() => setIsBulkDeleteModalOpen(false)} className="flex-1 py-2.5 text-label-md font-label-md text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors border border-outline-variant/30 cursor-pointer">
-                Cancel
-              </button>
-              <button onClick={executeBulkDelete} className="flex-1 py-2.5 text-label-md font-label-md bg-error text-white rounded-lg hover:bg-error/90 transition-colors shadow-sm cursor-pointer">
-                Delete
-              </button>
-            </div>
+      <MotionAlert
+        isOpen={isBulkDeleteModalOpen}
+        onClose={() => setIsBulkDeleteModalOpen(false)}
+        onConfirm={executeBulkDelete}
+        title={`Delete ${selectedLinks.length} Items?`}
+        description={`This will permanently delete the ${selectedLinks.length} selected ${activeTab === 'qr' ? 'QR Codes' : 'links'}. This action cannot be undone.`}
+        confirmText="Delete"
+        isDestructive={true}
+        icon={<span className="material-symbols-outlined text-[32px]">delete_sweep</span>}
+      />
+
+      {/* Click Log Modal */}
+      <MotionModal
+        isOpen={!!clickLogModalLink}
+        onClose={() => setClickLogModalLink(null)}
+        title={
+          <div>
+            <h3 className="text-headline-sm font-headline-sm text-on-surface">Click Logs</h3>
+            <p className="text-body-sm text-on-surface-variant mt-1">Detailed tracking data for <span className="text-primary font-medium">{clickLogModalLink?.title || clickLogModalLink?.shortCode}</span></p>
           </div>
+        }
+        className="max-w-4xl"
+      >
+        <div className="bg-surface-container-lowest -mx-6 -mb-6 p-6 overflow-y-auto max-h-[60vh]">
+          {isClickLogLoading ? (
+            <div className="flex justify-center items-center h-40">
+              <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : clickLogs.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-40 text-on-surface-variant">
+              <span className="material-symbols-outlined text-[48px] mb-2 opacity-50">analytics</span>
+              <p>No clicks recorded yet.</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto rounded-lg border border-outline-variant/20 shadow-sm">
+              <table className="w-full text-left border-collapse min-w-[800px]">
+                <thead>
+                  <tr className="bg-surface-container-low text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant border-b border-outline-variant/20">
+                    <th className="px-4 py-3">Time</th>
+                    <th className="px-4 py-3">IP / Location</th>
+                    <th className="px-4 py-3">Browser</th>
+                    <th className="px-4 py-3">OS</th>
+                    <th className="px-4 py-3">Device</th>
+                    <th className="px-4 py-3">Referrer</th>
+                  </tr>
+                </thead>
+                <tbody className="text-body-sm font-body-sm text-on-surface divide-y divide-outline-variant/10">
+                  {clickLogs.map((log, idx) => (
+                    <tr key={idx} className="hover:bg-surface-container-lowest/50 transition-colors">
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        {new Date(log.clickedAt).toLocaleString()}
+                      </td>
+                      <td className="px-4 py-3 font-code-sm text-primary">{log.ipAddress}</td>
+                      <td className="px-4 py-3">{log.browser}</td>
+                      <td className="px-4 py-3">{log.operatingSystem}</td>
+                      <td className="px-4 py-3 capitalize">{log.deviceType}</td>
+                      <td className="px-4 py-3 truncate max-w-[150px]" title={log.referrer}>{log.referrer}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
-      )}
+      </MotionModal>
 
       {/* Edit Modal */}
-      {editModalLink && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
-          <div className="bg-surface rounded-xl shadow-2xl p-6 w-full max-w-md border border-outline-variant/20">
-            <h3 className="text-headline-md font-headline-md text-on-surface mb-4">Edit Link</h3>
-            <div className="space-y-4 mb-6">
-              <div>
-                <label className="block text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Destination URL</label>
-                <input 
-                  type="url" 
-                  value={editUrl}
-                  onChange={(e) => setEditUrl(e.target.value)}
-                  className="w-full bg-surface-container-lowest text-on-surface border border-outline-variant/50 rounded-lg px-4 py-2 font-code-sm text-code-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none shadow-sm" 
-                />
-              </div>
-              <div>
-                <label className="block text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Link Title</label>
-                <input 
-                  type="text" 
-                  value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
-                  className="w-full bg-surface-container-lowest text-on-surface border border-outline-variant/50 rounded-lg px-4 py-2 font-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none shadow-sm" 
-                />
-              </div>
-              <div>
-                <label className="block text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Custom Alias</label>
-                <input 
-                  type="text" 
-                  value={editAlias}
-                  onChange={(e) => setEditAlias(e.target.value)}
-                  className="w-full bg-surface-container-lowest text-on-surface border border-outline-variant/50 rounded-lg px-4 py-2 font-code-sm text-code-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none shadow-sm" 
-                />
-              </div>
-            </div>
-            <div className="flex justify-end gap-3">
-              <button onClick={() => setEditModalLink(null)} className="px-4 py-2 text-label-md font-label-md text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors border border-outline-variant/30 cursor-pointer">
-                Cancel
-              </button>
-              <button onClick={handleEditSubmit} className="px-4 py-2 text-label-md font-label-md bg-primary-container text-white rounded-lg hover:bg-inverse-primary transition-colors shadow-sm cursor-pointer">
-                Save Changes
-              </button>
-            </div>
+      <MotionModal
+        isOpen={!!editModalLink}
+        onClose={() => setEditModalLink(null)}
+        title="Edit Link"
+        className="max-w-md"
+      >
+        <div className="space-y-4 mb-6">
+          <div>
+            <label className="block text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Destination URL</label>
+            <input 
+              type="url" 
+              value={editUrl}
+              onChange={(e) => setEditUrl(e.target.value)}
+              className="w-full bg-surface-container-lowest text-on-surface border border-outline-variant/50 rounded-lg px-4 py-2 font-code-sm text-code-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none shadow-sm" 
+            />
+          </div>
+          <div>
+            <label className="block text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Link Title</label>
+            <input 
+              type="text" 
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              className="w-full bg-surface-container-lowest text-on-surface border border-outline-variant/50 rounded-lg px-4 py-2 font-body-md focus:border-primary focus:ring-1 focus:ring-primary outline-none shadow-sm" 
+            />
+          </div>
+          <div>
+            <label className="block text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Custom Alias</label>
+            <input 
+              type="text" 
+              value={editAlias}
+              onChange={(e) => setEditAlias(e.target.value)}
+              className="w-full bg-surface-container-lowest text-on-surface border border-outline-variant/50 rounded-lg px-4 py-2 font-code-sm text-code-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none shadow-sm" 
+            />
           </div>
         </div>
-      )}
+        <div className="flex justify-end gap-3 mt-6">
+          <button onClick={() => setEditModalLink(null)} className="px-4 py-2 text-label-md font-label-md text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors border border-outline-variant/30 cursor-pointer">
+            Cancel
+          </button>
+          <AsyncButton onClick={handleEditSubmit} className="px-4 py-2 text-label-md font-label-md bg-primary-container text-white rounded-lg hover:bg-inverse-primary transition-colors shadow-sm cursor-pointer">
+            Save Changes
+          </AsyncButton>
+        </div>
+      </MotionModal>
 
     </div>
   );

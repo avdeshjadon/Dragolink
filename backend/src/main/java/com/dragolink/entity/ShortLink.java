@@ -47,6 +47,21 @@ public class ShortLink {
     @Column(name = "click_count", nullable = false)
     private long clickCount = 0;
 
+    @Column(name = "track_ip", nullable = false)
+    private boolean trackIp = true;
+
+    @Column(name = "track_browser", nullable = false)
+    private boolean trackBrowser = true;
+
+    @Column(name = "track_os", nullable = false)
+    private boolean trackOs = true;
+
+    @Column(name = "track_device", nullable = false)
+    private boolean trackDevice = true;
+
+    @Column(name = "track_referrer", nullable = false)
+    private boolean trackReferrer = true;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 

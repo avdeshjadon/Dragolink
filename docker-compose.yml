@@ -1,44 +1,6 @@
 version: '3.8'
 
 services:
-  redis:
-    image: redis:7.0-alpine
-    container_name: dragolink-redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    networks:
-      - dragolink-network
-
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.4.0
-    container_name: dragolink-zookeeper
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    ports:
-      - "2181:2181"
-    networks:
-      - dragolink-network
-
-  kafka:
-    image: confluentinc/cp-kafka:7.4.0
-    container_name: dragolink-kafka
-    depends_on:
-      - zookeeper
-    ports:
-      - "9092:9092"
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    networks:
-      - dragolink-network
-
   backend:
     build:
       context: ./backend
@@ -46,17 +8,15 @@ services:
     container_name: dragolink-backend
     ports:
       - "8080:8080"
-    depends_on:
-      redis:
-        condition: service_started
-      kafka:
-        condition: service_started
     environment:
       - SPRING_DATASOURCE_URL
       - SPRING_DATASOURCE_USERNAME
       - SPRING_DATASOURCE_PASSWORD
-      - SPRING_DATA_REDIS_HOST=redis
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - REDIS_URL=${REDIS_URL}
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=${SPRING_KAFKA_BOOTSTRAP_SERVERS}
+      - SPRING_KAFKA_SECURITY_PROTOCOL=${SPRING_KAFKA_SECURITY_PROTOCOL}
+      - SPRING_KAFKA_SASL_MECHANISM=${SPRING_KAFKA_SASL_MECHANISM}
+      - SPRING_KAFKA_SASL_JAAS_CONFIG=${SPRING_KAFKA_SASL_JAAS_CONFIG}
       - APP_JWT_SECRET=${JWT_SECRET}
       - APP_JWT_EXPIRATIONMS=${JWT_EXPIRATION_MS:-86400000}
       - APP_BASE_URL
@@ -72,9 +32,6 @@ services:
       - "5173:80"
     networks:
       - dragolink-network
-
-volumes:
-  redis_data:
 
 networks:
   dragolink-network:

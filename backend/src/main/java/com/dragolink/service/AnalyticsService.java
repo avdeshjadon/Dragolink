@@ -86,6 +86,11 @@ public class AnalyticsService {
                 .expiryDate(link.getExpiryDate())
                 .clickCount(link.getClickCount())
                 .createdAt(link.getCreatedAt())
+                .trackIp(link.isTrackIp())
+                .trackBrowser(link.isTrackBrowser())
+                .trackOs(link.isTrackOs())
+                .trackDevice(link.isTrackDevice())
+                .trackReferrer(link.isTrackReferrer())
                 .build();
     }
 }

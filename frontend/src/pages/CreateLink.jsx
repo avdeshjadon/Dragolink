@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { api } from '../lib/axios';
+import AsyncButton from '../components/AsyncButton';
 
 export default function CreateLink() {
   const navigate = useNavigate();
@@ -10,7 +11,14 @@ export default function CreateLink() {
   const [alias, setAlias] = useState('');
   const [tags, setTags] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  
+  // Tracking Preferences
+  const [trackIp, setTrackIp] = useState(true);
+  const [trackBrowser, setTrackBrowser] = useState(true);
+  const [trackOs, setTrackOs] = useState(true);
+  const [trackDevice, setTrackDevice] = useState(true);
+  const [trackReferrer, setTrackReferrer] = useState(true);
+
   const [error, setError] = useState(null);
 
   const handleSubmit = async () => {
@@ -20,13 +28,16 @@ export default function CreateLink() {
     }
 
     try {
-      setIsLoading(true);
-
       const payload = {
         longUrl: url,
         title: title || undefined,
         customAlias: alias || undefined,
         expiryDate: expiryDate ? new Date(expiryDate).toISOString() : undefined,
+        trackIp,
+        trackBrowser,
+        trackOs,
+        trackDevice,
+        trackReferrer,
       };
 
       await api.post('/links', payload);
@@ -35,8 +46,6 @@ export default function CreateLink() {
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to create link');
       console.error(err);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -56,14 +65,13 @@ export default function CreateLink() {
           >
             Cancel
           </button>
-          <button 
+          <AsyncButton 
             onClick={handleSubmit} 
-            disabled={isLoading}
-            className="px-4 py-2 rounded-lg bg-primary-container text-white font-label-md text-label-md hover:bg-inverse-primary transition-colors flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+            className="px-4 py-2 rounded-lg bg-primary-container text-white font-label-md text-label-md hover:bg-inverse-primary transition-colors flex items-center gap-2 cursor-pointer"
           >
             <span className="material-symbols-outlined text-[18px]">bolt</span>
-            {isLoading ? 'Creating...' : 'Create Now'}
-          </button>
+            Create Now
+          </AsyncButton>
         </div>
       </div>
 
@@ -177,6 +185,50 @@ export default function CreateLink() {
               </div>
             </div>
           </section>
+
+          {/* Advanced Tracking */}
+          <section className="tonal-card rounded-xl p-4 md:p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-outline-variant/10 pb-2 mb-4">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary text-[20px]">troubleshoot</span>
+                <h3 className="font-headline-md text-[18px] text-on-surface">Advanced Tracking</h3>
+              </div>
+              <button 
+                onClick={() => {
+                  const newState = !(trackIp && trackBrowser && trackOs && trackDevice && trackReferrer);
+                  setTrackIp(newState); setTrackBrowser(newState); setTrackOs(newState); setTrackDevice(newState); setTrackReferrer(newState);
+                }}
+                className="text-label-sm font-label-sm text-primary hover:underline"
+              >
+                {trackIp && trackBrowser && trackOs && trackDevice && trackReferrer ? 'Deselect All' : 'Select All'}
+              </button>
+            </div>
+            
+            <p className="text-body-sm font-body-sm text-on-surface-variant mb-4">Choose what data to collect when someone clicks this link. You can view these details in the link's click log.</p>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                { id: 'ip', label: 'IP Address & Location', state: trackIp, setter: setTrackIp, icon: 'location_on' },
+                { id: 'browser', label: 'Browser Info', state: trackBrowser, setter: setTrackBrowser, icon: 'web' },
+                { id: 'os', label: 'Operating System', state: trackOs, setter: setTrackOs, icon: 'terminal' },
+                { id: 'device', label: 'Device Type', state: trackDevice, setter: setTrackDevice, icon: 'devices' },
+                { id: 'referrer', label: 'Referrer (Traffic Source)', state: trackReferrer, setter: setTrackReferrer, icon: 'share' },
+              ].map(opt => (
+                <label key={opt.id} className="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/20 bg-surface-container-lowest hover:bg-surface-container-low transition-colors cursor-pointer group">
+                  <input 
+                    type="checkbox" 
+                    checked={opt.state}
+                    onChange={(e) => opt.setter(e.target.checked)}
+                    className="lp-checkbox w-5 h-5 rounded border-outline-variant/30 text-primary focus:ring-primary/20 transition-all cursor-pointer"
+                  />
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary transition-colors">{opt.icon}</span>
+                    <span className="text-label-md font-label-md text-on-surface select-none">{opt.label}</span>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </section>
         </div>
 
         {/* Right Column: Preview & Sticky Actions */}
@@ -227,14 +279,13 @@ export default function CreateLink() {
 
             {/* Mobile Action Area */}
             <div className="md:hidden flex flex-col gap-2 mt-10">
-              <button 
+              <AsyncButton 
                 onClick={handleSubmit} 
-                disabled={isLoading}
-                className="w-full py-4 rounded-lg bg-primary-container text-white font-label-md text-label-md hover:bg-inverse-primary transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(21,128,61,0.3)] disabled:opacity-50 cursor-pointer"
+                className="w-full py-4 rounded-lg bg-primary-container text-white font-label-md text-label-md hover:bg-inverse-primary transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(21,128,61,0.3)] cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[18px]">bolt</span>
-                {isLoading ? 'Creating...' : 'Create Link'}
-              </button>
+                Create Link
+              </AsyncButton>
               <button 
                 onClick={() => navigate('/dashboard')}
                 className="w-full py-4 rounded-lg border border-outline-variant text-primary font-label-md text-label-md hover:bg-surface-container-highest transition-colors cursor-pointer"

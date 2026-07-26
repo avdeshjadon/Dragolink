@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../lib/axios';
+import AsyncButton from '../components/AsyncButton';
 
 export default function Team() {
   const [members, setMembers] = useState([]);
@@ -21,7 +22,7 @@ export default function Team() {
     if (!window.confirm("Are you sure you want to remove this member?")) return;
     try {
       await api.delete(`/team/${id}`);
-      fetchMembers();
+      await fetchMembers();
     } catch (error) {
       console.error("Failed to remove team member", error);
     }
@@ -117,13 +118,13 @@ export default function Team() {
                       <option value="MEMBER">MEMBER</option>
                       <option value="VIEWER">VIEWER</option>
                     </select>
-                    <button 
+                    <AsyncButton 
                       onClick={(e) => removeMember(member.id, e)}
                       className="text-on-surface-variant hover:text-error transition-colors p-1 opacity-0 group-hover:opacity-100 focus:opacity-100"
                       title="Remove Member"
                     >
                       <span className="material-symbols-outlined">person_remove</span>
-                    </button>
+                    </AsyncButton>
                   </div>
                 </div>
               ))
@@ -167,12 +168,12 @@ export default function Team() {
                       >
                         Resend
                       </button>
-                      <button 
+                      <AsyncButton 
                         onClick={(e) => removeMember(member.id, e)}
                         className="text-label-sm font-label-sm text-error hover:text-on-error hover:bg-error transition-colors px-2 py-1 rounded border border-error/20"
                       >
                         Revoke
-                      </button>
+                      </AsyncButton>
                     </div>
                   </div>
                 </div>

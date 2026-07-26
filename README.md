@@ -14,7 +14,7 @@ Dragolink is a powerful, full-stack URL shortener and analytics platform built w
 
 - **Backend:** Java 17, Spring Boot 3, Spring Security (JWT)
 - **Database:** MySQL
-- **Caching & Rate Limiting:** Redis
+- **Caching & Rate Limiting:** Upstash Redis
 - **Event Streaming:** Apache Kafka (for async analytics)
 - **Frontend:** React, Vite, Tailwind CSS v4, Recharts, React Router
 - **DevOps:** Docker, Docker Compose
@@ -25,7 +25,7 @@ Dragolink is a powerful, full-stack URL shortener and analytics platform built w
 [Frontend (React/Nginx)] ---> [Backend API (Spring Boot)]
                                     |        |       |
                                     v        v       v
-                              [ MySQL ]  [ Redis ] [ Kafka ] ---> [ Analytics Consumer (Spring Boot) ] ---> [ MySQL ]
+                              [ MySQL ]  [ Upstash ] [ Kafka ] ---> [ Analytics Consumer (Spring Boot) ] ---> [ MySQL ]
 ```
 
 ## How to Run Locally

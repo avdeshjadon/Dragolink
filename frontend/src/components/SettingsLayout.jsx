@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
 import { api } from '../lib/axios';
 import TopNavbar from './TopNavbar';
+import MotionPage from './motion/MotionPage';
 
 export default function SettingsLayout() {
   const location = useLocation();
@@ -52,7 +53,9 @@ export default function SettingsLayout() {
 
         {/* Dynamic Route Content */}
         <section className="flex-1">
-          <Outlet />
+          <MotionPage key={location.pathname}>
+            <Outlet />
+          </MotionPage>
         </section>
 
       </main>

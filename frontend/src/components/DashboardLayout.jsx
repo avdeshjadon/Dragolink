@@ -1,6 +1,7 @@
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import MotionPage from './motion/MotionPage';
 import { api } from '../lib/axios';
 import { useAuth } from '../context/AuthContext';
 import TopNavbar from './TopNavbar';
@@ -179,15 +180,9 @@ export default function DashboardLayout() {
 
         {/* Page Canvas */}
         <div className="p-4 md:p-6 lg:p-10 w-full max-w-7xl mx-auto">
-          <motion.div
-            key={location.pathname}
-            initial={{ opacity: 0, y: 8, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 4, scale: 0.99 }}
-            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          >
+          <MotionPage key={location.pathname}>
             <Outlet />
-          </motion.div>
+          </MotionPage>
         </div>
         
       </main>

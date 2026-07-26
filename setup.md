@@ -20,7 +20,7 @@ Before you begin, ensure you have the following installed on your system:
 
 ## Step 2: Running with Docker Compose (Recommended)
 
-The easiest way to run Dragolink is using Docker Compose, which will automatically build and start the backend, frontend, MySQL database, Redis, Zookeeper, and Kafka.
+The easiest way to run Dragolink is using Docker Compose, which will automatically build and start the backend, frontend, Zookeeper, and Kafka. (Note: Database and Redis are hosted remotely on TiDB and Upstash).
 
 1. Open a terminal in the root directory of the project.
 2. Run the following command:
@@ -48,13 +48,13 @@ Once all containers are up and healthy, you can access the platform:
 If you prefer to run the Backend and Frontend manually (for easier debugging and hot-reloading), follow these steps:
 
 ### 1. Start Infrastructure Only
-Start the database, Redis, and Kafka using Docker Compose:
+Start Zookeeper and Kafka using Docker Compose:
 ```bash
-docker-compose up -d mysql redis zookeeper kafka
+docker-compose up -d zookeeper kafka
 ```
 
 ### 2. Start the Backend (Spring Boot)
-Ensure `application.yml` is pointing to `localhost` for MySQL, Redis, and Kafka (it does by default).
+Ensure `application.yml` is pointing to `localhost` for Kafka (it does by default). For the Database and Redis, ensure your `.env` contains the remote TiDB and Upstash credentials.
 ```bash
 cd backend
 mvn clean package -DskipTests

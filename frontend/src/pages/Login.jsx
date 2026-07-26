@@ -11,13 +11,10 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const handleSubmit = async () => {
     setError('');
     
     try {
@@ -25,8 +22,6 @@ export default function Login() {
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Invalid email or password');
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -51,7 +46,7 @@ export default function Login() {
             <p className="mt-2 text-sm text-text-secondary">Log in to your account to continue</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={e => e.preventDefault()} className="space-y-5">
             {error && (
               <motion.div 
                 initial={{ opacity: 0, y: -10 }} 
@@ -102,7 +97,7 @@ export default function Login() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full h-11 text-base mt-2" isLoading={isLoading}>
+            <Button type="submit" onClick={handleSubmit} className="w-full h-11 text-base mt-2">
               Sign in
             </Button>
             

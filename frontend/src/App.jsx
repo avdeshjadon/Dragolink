@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { Toaster } from 'react-hot-toast';
+import MotionPage from './components/motion/MotionPage';
 import SmoothScroll from './components/SmoothScroll';
 import { useAuth } from './context/AuthContext';
 import Landing from './pages/Landing';
@@ -62,36 +63,27 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
   return children;
 };
 
-// Layout for Auth & Landing pages (No global Navbar, they have their own)
 const PublicLayout = () => {
   const location = useLocation();
   return (
     <div className="min-h-screen bg-bg-light flex flex-col">
       <PublicNavbar />
-      <AnimatePresence mode="wait">
-        <motion.main 
-          key={location.pathname}
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -15 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-          className="flex-1"
-        >
+      <main className="flex-1">
+        <MotionPage key={location.pathname}>
           <Outlet />
-        </motion.main>
-      </AnimatePresence>
+        </MotionPage>
+      </main>
       <PublicFooter />
     </div>
   );
 };
 
-function App() {
+function AnimatedRoutes() {
+  const location = useLocation();
+  
   return (
-    <SmoothScroll>
-      <Toaster position="top-right" />
-      <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Landing />} />
           <Route path="/product" element={<Product />} />
@@ -141,6 +133,7 @@ function App() {
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/analytics/:id" element={<Analytics />} />
         </Route>
+        
         {/* Settings Routes wrapped in SettingsLayout */}
         <Route element={
           <ProtectedRoute>
@@ -151,7 +144,18 @@ function App() {
           <Route path="/settings/security" element={<SettingsSecurity />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </AnimatePresence>
+  );
+}
+
+function App() {
+  return (
+    <SmoothScroll>
+      <Toaster position="top-right" />
+      <BrowserRouter>
+        <ScrollToTop />
+        <AnimatedRoutes />
+      </BrowserRouter>
     </SmoothScroll>
   );
 }

@@ -18,6 +18,12 @@ public class ShortLinkResponse {
     private long clickCount;
     private LocalDateTime createdAt;
     
+    private boolean trackIp;
+    private boolean trackBrowser;
+    private boolean trackOs;
+    private boolean trackDevice;
+    private boolean trackReferrer;
+    
     public String getShortUrl(String baseUrl) {
         return baseUrl + (customAlias != null ? customAlias : shortCode);
     }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../lib/axios';
+import AsyncButton from '../components/AsyncButton';
 
 export default function SettingsProfile() {
   const [formData, setFormData] = useState({
@@ -9,7 +10,6 @@ export default function SettingsProfile() {
     timezone: 'est'
   });
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -35,9 +35,7 @@ export default function SettingsProfile() {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  const handleSave = async (e) => {
-    e.preventDefault();
-    setSaving(true);
+  const handleSave = async () => {
     setMessage('');
     try {
       await api.put('/users/profile', {
@@ -49,8 +47,6 @@ export default function SettingsProfile() {
     } catch (error) {
       console.error("Failed to update profile", error);
       setMessage('Failed to update profile.');
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -88,7 +84,7 @@ export default function SettingsProfile() {
       {loading ? (
         <div className="py-10 text-center text-on-surface-variant">Loading profile...</div>
       ) : (
-      <form className="flex flex-col gap-6 max-w-2xl" onSubmit={handleSave}>
+      <form className="flex flex-col gap-6 max-w-2xl" onSubmit={(e) => e.preventDefault()}>
         {message && (
           <div className={`p-4 rounded-md ${message.includes('success') ? 'bg-primary-container text-on-primary-container' : 'bg-error-container text-on-error-container'}`}>
             {message}
@@ -157,11 +153,10 @@ export default function SettingsProfile() {
         
         <div className="h-[1px] w-full bg-outline-variant/10 my-4"></div>
         
-        {/* Actions */}
         <div className="flex justify-end gap-4">
-          <button type="submit" disabled={saving} className="bg-primary-container text-on-primary-container font-label-md text-label-md px-6 py-2 rounded-md hover:bg-primary hover:text-white transition-colors duration-200 shadow-sm border border-primary-fixed/20 active:scale-95 disabled:opacity-50">
-            {saving ? 'Saving...' : 'Save Changes'}
-          </button>
+          <AsyncButton type="submit" onClick={handleSave} className="bg-primary-container text-on-primary-container font-label-md text-label-md px-6 py-2 rounded-md hover:bg-primary hover:text-white transition-colors duration-200 shadow-sm border border-primary-fixed/20 active:scale-95 cursor-pointer">
+            Save Changes
+          </AsyncButton>
         </div>
       </form>
       )}
