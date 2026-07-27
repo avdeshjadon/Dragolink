@@ -84,6 +84,7 @@ public class RedirectServiceImpl implements RedirectService {
                 // Ignore Kafka errors so redirect doesn't fail
             }
         });
+    }
 
     private String getClientIp(HttpServletRequest request) {
         String remoteAddr = request.getHeader("X-FORWARDED-FOR");
