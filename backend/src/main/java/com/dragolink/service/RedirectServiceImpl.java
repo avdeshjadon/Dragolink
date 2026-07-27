@@ -25,6 +25,7 @@ public class RedirectServiceImpl implements RedirectService {
     private final StringRedisTemplate redisTemplate;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
+    private final com.dragolink.event.AnalyticsConsumer analyticsConsumer;
 
     private static final String CACHE_PREFIX = "shortlink:";
     private static final String TOPIC = "link-click-events";
@@ -79,9 +80,10 @@ public class RedirectServiceImpl implements RedirectService {
         event.put("referrer", request.getHeader("Referer"));
         java.util.concurrent.CompletableFuture.runAsync(() -> {
             try {
-                kafkaTemplate.send(TOPIC, String.valueOf(linkId), objectMapper.writeValueAsString(event));
+                // Call consumer directly instead of Kafka to ensure analytics are saved
+                analyticsConsumer.consume(objectMapper.writeValueAsString(event));
             } catch (Exception e) {
-                // Ignore Kafka errors so redirect doesn't fail
+                // Ignore errors so redirect doesn't fail
             }
         });
     }
