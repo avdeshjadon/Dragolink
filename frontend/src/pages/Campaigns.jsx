@@ -39,6 +39,16 @@ export default function Campaigns() {
       console.error("Failed to create campaign", error);
     }
   };
+
+  const handleDeleteCampaign = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this campaign? The links will not be deleted but they will be unassigned from this campaign.')) return;
+    try {
+      await api.delete(`/campaigns/${id}`);
+      await fetchCampaigns();
+    } catch (error) {
+      console.error("Failed to delete campaign", error);
+    }
+  };
   return (
     <div className="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full flex flex-col">
       {/* Header & Controls */}
@@ -69,9 +79,18 @@ export default function Campaigns() {
                 <div className="w-10 h-10 rounded-lg bg-primary-container text-on-primary-container flex items-center justify-center">
                   <span className="material-symbols-outlined">campaign</span>
                 </div>
-                <span className="text-label-sm font-label-sm text-on-surface-variant">
-                  {new Date(campaign.createdAt).toLocaleDateString()}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-label-sm font-label-sm text-on-surface-variant">
+                    {new Date(campaign.createdAt).toLocaleDateString()}
+                  </span>
+                  <button 
+                    onClick={() => handleDeleteCampaign(campaign.id)}
+                    className="text-error hover:bg-error/10 p-1.5 rounded-md transition-colors flex items-center justify-center"
+                    title="Delete Campaign"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">delete</span>
+                  </button>
+                </div>
               </div>
               <h3 className="text-title-lg font-title-lg text-on-surface mb-2">{campaign.name}</h3>
               <p className="text-body-md font-body-md text-on-surface-variant line-clamp-2 mb-6 flex-1">

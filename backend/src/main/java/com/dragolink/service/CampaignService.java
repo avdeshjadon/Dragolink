@@ -45,6 +45,21 @@ public class CampaignService {
         return mapToDto(campaign);
     }
 
+    @Transactional
+    public void deleteCampaign(Long id, UserDetails userDetails) {
+        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
+        Campaign campaign = campaignRepository.findByIdAndUser(id, user)
+                .orElseThrow(() -> new RuntimeException("Campaign not found or unauthorized"));
+                
+        List<ShortLink> links = shortLinkRepository.findByCampaignId(campaign.getId());
+        for (ShortLink link : links) {
+            link.setCampaign(null);
+            shortLinkRepository.save(link);
+        }
+        
+        campaignRepository.delete(campaign);
+    }
+
     private CampaignDto mapToDto(Campaign campaign) {
         List<ShortLink> links = shortLinkRepository.findByUserIdOrderByCreatedAtDesc(campaign.getUser().getId())
             .stream()

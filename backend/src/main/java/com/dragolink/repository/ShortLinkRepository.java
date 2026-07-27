@@ -13,6 +13,7 @@ public interface ShortLinkRepository extends JpaRepository<ShortLink, Long> {
     Optional<ShortLink> findByShortCode(String shortCode);
     Optional<ShortLink> findByCustomAlias(String customAlias);
     List<ShortLink> findByUserIdOrderByCreatedAtDesc(Long userId);
+    List<ShortLink> findByCampaignId(Long campaignId);
     long countByUserId(Long userId);
     
     boolean existsByCustomAlias(String customAlias);

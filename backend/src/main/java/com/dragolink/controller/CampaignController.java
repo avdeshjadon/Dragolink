@@ -28,4 +28,10 @@ public class CampaignController {
     public ResponseEntity<CampaignDto> createCampaign(@Valid @RequestBody CampaignRequestDto request, @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(campaignService.createCampaign(request, userDetails));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCampaign(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        campaignService.deleteCampaign(id, userDetails);
+        return ResponseEntity.noContent().build();
+    }
 }
