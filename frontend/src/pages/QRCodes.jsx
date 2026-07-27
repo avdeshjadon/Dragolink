@@ -119,7 +119,7 @@ export default function QRCodes() {
     }
     
     // Check if it's already a dragolink URL
-    if (destinationUrl.includes(import.meta.env.VITE_APP_URL || 'localhost:8080')) {
+    if (destinationUrl.includes(import.meta.env.VITE_APP_URL)) {
         setShowDownloadModal(true);
         return;
     }
@@ -129,7 +129,7 @@ export default function QRCodes() {
       const shortCode = res.data.shortCode || res.data.customAlias || res.data.id;
       if (shortCode) {
         setSavedShortCode(shortCode);
-        const shortUrl = `${import.meta.env.VITE_APP_URL || 'http://localhost:8080'}/${shortCode}`;
+        const shortUrl = `${import.meta.env.VITE_APP_URL}/${shortCode}`;
         setDestinationUrl(shortUrl);
         toast.success('Link saved for tracking!');
       }

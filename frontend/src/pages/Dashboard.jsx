@@ -177,7 +177,7 @@ export default function Dashboard() {
                         </div>
                         {link.title || link.shortCode}
                       </td>
-                      <td className="p-4"><span className="font-code-sm text-code-sm text-primary">{import.meta.env.VITE_APP_URL || 'http://localhost:8080'}/{link.shortCode}</span></td>
+                      <td className="p-4"><span className="font-code-sm text-code-sm text-primary">{import.meta.env.VITE_APP_URL}/{link.shortCode}</span></td>
                       <td className="p-4 text-right text-on-surface-variant">{link.clickCount?.toLocaleString()}</td>
                     </tr>
                   ))

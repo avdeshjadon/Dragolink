@@ -92,7 +92,7 @@ export default function MyLinks() {
   };
 
   const handleCopy = (shortCode) => {
-    const url = `${import.meta.env.VITE_APP_URL || 'http://localhost:8080'}/${shortCode}`;
+    const url = `${import.meta.env.VITE_APP_URL}/${shortCode}`;
     navigator.clipboard.writeText(url).then(() => {
       toast.success('Link copied to clipboard!');
     });
@@ -296,7 +296,7 @@ export default function MyLinks() {
                 <div className="flex flex-1 items-center gap-5 min-w-0">
                   <div className="w-20 h-20 bg-white rounded-xl border border-outline-variant/20 p-2 shrink-0 flex items-center justify-center shadow-sm relative overflow-hidden group-hover:shadow-md transition-shadow">
                     <QRCodeSVG 
-                      value={`${import.meta.env.VITE_APP_URL || 'http://localhost:8080'}/${link.shortCode}`} 
+                      value={`${import.meta.env.VITE_APP_URL}/${link.shortCode}`} 
                       size={64} 
                     />
                   </div>
@@ -324,7 +324,7 @@ export default function MyLinks() {
                     onClick={() => handleCopy(link.shortCode)}
                     title="Copy to clipboard"
                   >
-                    <span className="text-code-sm font-code-sm text-on-surface truncate flex-1">{import.meta.env.VITE_APP_URL || 'http://localhost:8080'}/{link.shortCode}</span>
+                    <span className="text-code-sm font-code-sm text-on-surface truncate flex-1">{import.meta.env.VITE_APP_URL}/{link.shortCode}</span>
                     <span className="material-symbols-outlined text-[14px] text-on-surface-variant opacity-50 group-hover/copy:opacity-100 group-hover/copy:text-primary transition-opacity shrink-0">content_copy</span>
                   </div>
                 )}
