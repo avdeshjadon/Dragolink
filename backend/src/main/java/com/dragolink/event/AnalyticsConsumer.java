@@ -23,7 +23,6 @@ public class AnalyticsConsumer {
     private final ShortLinkRepository shortLinkRepository;
     private final ObjectMapper objectMapper;
 
-    @KafkaListener(topics = "link-click-events", groupId = "dragolink-group")
     @org.springframework.transaction.annotation.Transactional
     public void consume(String message) {
         try {

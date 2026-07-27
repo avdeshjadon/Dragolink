@@ -23,7 +23,6 @@ public class RedirectServiceImpl implements RedirectService {
 
     private final ShortLinkRepository shortLinkRepository;
     private final StringRedisTemplate redisTemplate;
-    private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
     private final com.dragolink.event.AnalyticsConsumer analyticsConsumer;
 
