@@ -8,8 +8,6 @@ import com.dragolink.repository.ClickAnalyticsRepository;
 import com.dragolink.repository.ShortLinkRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nl.basjes.parse.useragent.UserAgent;
-import nl.basjes.parse.useragent.UserAgentAnalyzer;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +22,6 @@ public class AnalyticsConsumer {
     private final ClickAnalyticsRepository clickAnalyticsRepository;
     private final ShortLinkRepository shortLinkRepository;
     private final ObjectMapper objectMapper;
-    private final UserAgentAnalyzer uaa = UserAgentAnalyzer.newBuilder().hideMatcherLoadStats().withCache(10000).build();
 
     @KafkaListener(topics = "link-click-events", groupId = "dragolink-group")
     public void consume(String message) {
@@ -36,14 +33,12 @@ public class AnalyticsConsumer {
             ShortLink link = shortLinkRepository.findById(linkId).orElse(null);
             if (link == null) return;
 
-            UserAgent userAgent = uaa.parse(userAgentStr);
-
             ClickAnalytics analytics = ClickAnalytics.builder()
                     .shortLink(link)
                     .ipAddress(link.isTrackIp() ? (String) event.get("ipAddress") : "Anonymous")
-                    .browser(link.isTrackBrowser() ? userAgent.getValue(UserAgent.AGENT_NAME) : "Anonymous")
-                    .operatingSystem(link.isTrackOs() ? userAgent.getValue(UserAgent.OPERATING_SYSTEM_NAME) : "Anonymous")
-                    .deviceType(link.isTrackDevice() ? userAgent.getValue(UserAgent.DEVICE_CLASS) : "Anonymous")
+                    .browser(link.isTrackBrowser() ? getBrowser(userAgentStr) : "Anonymous")
+                    .operatingSystem(link.isTrackOs() ? getOs(userAgentStr) : "Anonymous")
+                    .deviceType(link.isTrackDevice() ? getDevice(userAgentStr) : "Anonymous")
                     .referrer(link.isTrackReferrer() ? (String) event.get("referrer") : "Anonymous")
                     .clickedAt(LocalDateTime.parse((String) event.get("clickedAt")))
                     .build();
@@ -54,5 +49,31 @@ public class AnalyticsConsumer {
         } catch (Exception e) {
             log.error("Error processing click event", e);
         }
+    }
+
+    private String getBrowser(String ua) {
+        if (ua == null) return "Unknown";
+        if (ua.contains("Edg/")) return "Edge";
+        if (ua.contains("Chrome/")) return "Chrome";
+        if (ua.contains("Firefox/")) return "Firefox";
+        if (ua.contains("Safari/") && !ua.contains("Chrome/")) return "Safari";
+        return "Other";
+    }
+
+    private String getOs(String ua) {
+        if (ua == null) return "Unknown";
+        if (ua.contains("Windows")) return "Windows";
+        if (ua.contains("Mac OS X")) return "Mac OS";
+        if (ua.contains("Android")) return "Android";
+        if (ua.contains("Linux")) return "Linux";
+        if (ua.contains("iPhone") || ua.contains("iPad")) return "iOS";
+        return "Other";
+    }
+
+    private String getDevice(String ua) {
+        if (ua == null) return "Unknown";
+        if (ua.contains("Mobile") || ua.contains("Android") || ua.contains("iPhone")) return "Mobile";
+        if (ua.contains("iPad") || ua.contains("Tablet")) return "Tablet";
+        return "Desktop";
     }
 }

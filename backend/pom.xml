@@ -87,12 +87,7 @@
             <version>3.5.2</version>
         </dependency>
 
-        <!-- User Agent Parser -->
-        <dependency>
-            <groupId>nl.basjes.parse.useragent</groupId>
-            <artifactId>yauaa</artifactId>
-            <version>7.23.0</version>
-        </dependency>
+        <!-- Removed Yauaa due to high memory consumption on free tier -->
 
         <!-- Utilities -->
         <dependency>
