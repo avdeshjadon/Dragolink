@@ -24,6 +24,7 @@ public class AnalyticsConsumer {
     private final ObjectMapper objectMapper;
 
     @KafkaListener(topics = "link-click-events", groupId = "dragolink-group")
+    @org.springframework.transaction.annotation.Transactional
     public void consume(String message) {
         try {
             Map<String, Object> event = objectMapper.readValue(message, new TypeReference<>() {});
