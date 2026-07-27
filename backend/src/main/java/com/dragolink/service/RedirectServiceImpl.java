@@ -77,10 +77,13 @@ public class RedirectServiceImpl implements RedirectService {
         event.put("ipAddress", getClientIp(request));
         event.put("userAgent", request.getHeader("User-Agent"));
         event.put("referrer", request.getHeader("Referer"));
-        event.put("clickedAt", LocalDateTime.now().toString());
-
-        kafkaTemplate.send(TOPIC, String.valueOf(linkId), objectMapper.writeValueAsString(event));
-    }
+        java.util.concurrent.CompletableFuture.runAsync(() -> {
+            try {
+                kafkaTemplate.send(TOPIC, String.valueOf(linkId), objectMapper.writeValueAsString(event));
+            } catch (Exception e) {
+                // Ignore Kafka errors so redirect doesn't fail
+            }
+        });
 
     private String getClientIp(HttpServletRequest request) {
         String remoteAddr = request.getHeader("X-FORWARDED-FOR");
