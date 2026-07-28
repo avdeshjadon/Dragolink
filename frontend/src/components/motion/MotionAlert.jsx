@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { TRANSITIONS, VARIANTS } from '../../constants/motion';
 import AsyncButton from '../AsyncButton'; // Assuming AsyncButton is one level up or adjust import
@@ -14,10 +15,10 @@ export default function MotionAlert({
   isDestructive = false,
   icon
 }) {
-  return (
+  const content = (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -62,4 +63,7 @@ export default function MotionAlert({
       )}
     </AnimatePresence>
   );
+
+  if (typeof document === 'undefined') return null;
+  return createPortal(content, document.body);
 }
