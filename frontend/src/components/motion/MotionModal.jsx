@@ -55,7 +55,7 @@ export default function MotionModal({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={TRANSITIONS.SPRING}
-              className={`bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/20 overflow-hidden w-full max-h-full flex flex-col pointer-events-auto min-h-0 ${className.includes('max-w-') ? '' : 'max-w-lg'} ${className}`}
+              className={`bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/20 overflow-hidden w-full max-h-[90vh] flex flex-col pointer-events-auto min-h-0 ${className.includes('max-w-') ? '' : 'max-w-lg'} ${className}`}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
@@ -76,7 +76,7 @@ export default function MotionModal({
               )}
               
               {/* Content */}
-              <div className="p-4 sm:p-6 overflow-y-auto flex-1 min-h-0">
+              <div className="p-4 sm:p-6 overflow-y-auto flex-1 min-h-0 overscroll-contain">
                 {children}
               </div>
 
