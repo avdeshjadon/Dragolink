@@ -25,9 +25,12 @@ spring:
   kafka:
     bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     properties:
-      security.protocol: ${SPRING_KAFKA_SECURITY_PROTOCOL:PLAINTEXT}
+      security.protocol: ${SPRING_KAFKA_SECURITY_PROTOCOL:SASL_SSL}
       sasl.mechanism: ${SPRING_KAFKA_SASL_MECHANISM:PLAIN}
       sasl.jaas.config: ${SPRING_KAFKA_SASL_JAAS_CONFIG:}
+    ssl:
+      trust-store-type: PEM
+      trust-store-certificates: classpath:ca.pem
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
