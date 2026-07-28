@@ -45,10 +45,11 @@ export default function MotionModal({
             exit={{ opacity: 0 }}
             transition={TRANSITIONS.EASE_OUT}
             onClick={onClose}
-            className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-md"
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-md"
+            style={{ zIndex: 100 }}
           />
           
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 pointer-events-none">
+          <div className="fixed inset-0 flex items-center justify-center p-4 sm:p-6 pointer-events-none" style={{ zIndex: 100 }}>
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
