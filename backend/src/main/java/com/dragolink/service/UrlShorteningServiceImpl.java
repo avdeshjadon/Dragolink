@@ -12,6 +12,7 @@ import com.dragolink.repository.ShortLinkRepository;
 import com.dragolink.repository.UserRepository;
 import com.dragolink.util.Base62Util;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,9 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
     private final UserRepository userRepository;
     private final BlockedDomainRepository blockedDomainRepository;
     private final ClickAnalyticsRepository clickAnalyticsRepository;
+    private final StringRedisTemplate redisTemplate;
+
+    private static final String CACHE_PREFIX = "shortlink:";
 
     @Override
     @Transactional
@@ -116,6 +120,7 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
         if (request.getTrackDevice() != null) link.setTrackDevice(request.getTrackDevice());
         if (request.getTrackReferrer() != null) link.setTrackReferrer(request.getTrackReferrer());
 
+        evictCache(link);
         return mapToResponse(shortLinkRepository.save(link));
     }
 
@@ -123,6 +128,7 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
     @Transactional
     public void deleteLink(Long id, UserDetails userDetails) {
         ShortLink link = getOwnedLink(id, userDetails);
+        evictCache(link);
         clickAnalyticsRepository.deleteByShortLinkId(link.getId());
         shortLinkRepository.delete(link);
     }
@@ -132,7 +138,17 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
     public ShortLinkResponse toggleLinkStatus(Long id, UserDetails userDetails) {
         ShortLink link = getOwnedLink(id, userDetails);
         link.setActive(!link.isActive());
+        evictCache(link);
         return mapToResponse(shortLinkRepository.save(link));
+    }
+
+    private void evictCache(ShortLink link) {
+        if (link.getShortCode() != null) {
+            redisTemplate.delete(CACHE_PREFIX + link.getShortCode());
+        }
+        if (link.getCustomAlias() != null) {
+            redisTemplate.delete(CACHE_PREFIX + link.getCustomAlias());
+        }
     }
 
     private ShortLink getOwnedLink(Long id, UserDetails userDetails) {
