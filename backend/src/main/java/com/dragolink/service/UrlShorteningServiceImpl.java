@@ -77,9 +77,10 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
                 .shortCode("") // Temporary
                 .build();
 
+        final ShortLink finalShortLink = shortLink;
         if (request.getRoutingRules() != null && !request.getRoutingRules().isEmpty()) {
             List<RoutingRule> rules = request.getRoutingRules().stream().map(r -> RoutingRule.builder()
-                    .shortLink(shortLink)
+                    .shortLink(finalShortLink)
                     .type(r.getType())
                     .conditionValue(r.getConditionValue())
                     .destinationUrl(r.getDestinationUrl())
