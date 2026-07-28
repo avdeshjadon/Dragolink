@@ -198,6 +198,39 @@ export default function MyLinks() {
     toast.success('Logs downloaded successfully!');
   };
 
+  const handleExportLinks = () => {
+    if (!filteredLinks || filteredLinks.length === 0) return;
+
+    const headers = ['Title', 'Long URL', 'Short Code', 'Custom Alias', 'Status', 'Click Count', 'Created At', 'Expires At'];
+    
+    const rows = filteredLinks.map(link => {
+      const createdAt = new Date(link.createdAt).toLocaleString();
+      const expiresAt = link.expiryDate ? new Date(link.expiryDate).toLocaleString() : 'Never';
+      
+      return [
+        `"${link.title || ''}"`,
+        `"${link.longUrl || ''}"`,
+        `"${link.shortCode || ''}"`,
+        `"${link.customAlias || ''}"`,
+        `"${link.active ? 'Active' : 'Inactive'}"`,
+        `"${link.clickCount || 0}"`,
+        `"${createdAt}"`,
+        `"${expiresAt}"`
+      ].join(',');
+    });
+
+    const csvContent = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const downloadLink = document.createElement('a');
+    downloadLink.href = url;
+    downloadLink.setAttribute('download', `dragolink-export-${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+    toast.success('Links exported successfully!');
+  };
+
   return (
     <div className="flex flex-col h-full bg-background font-sans relative">
       
@@ -280,7 +313,10 @@ export default function MyLinks() {
               </div>
             </div>
             <div className="flex items-center gap-2 w-full sm:w-auto">
-              <button className="hidden sm:flex bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface text-label-md font-label-md py-1.5 px-3 rounded-lg items-center gap-2 transition-colors cursor-pointer">
+              <button 
+                onClick={handleExportLinks}
+                className="hidden sm:flex bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface text-label-md font-label-md py-1.5 px-3 rounded-lg items-center gap-2 transition-colors cursor-pointer"
+              >
                 <span className="material-symbols-outlined text-[16px]">download</span>
                 Export
               </button>
