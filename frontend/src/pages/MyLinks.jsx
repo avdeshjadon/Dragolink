@@ -440,9 +440,9 @@ export default function MyLinks() {
             <p className="text-body-sm text-on-surface-variant mt-1">Detailed tracking data for <span className="text-primary font-medium">{clickLogModalLink?.title || clickLogModalLink?.customAlias || clickLogModalLink?.shortCode}</span></p>
           </div>
         }
-        className="max-w-4xl"
+        className="max-w-6xl w-full"
       >
-        <div className="bg-surface-container-lowest -mx-6 -mb-6 p-6 overflow-y-auto max-h-[70vh]">
+        <div className="bg-surface-container-lowest -mx-6 -mb-6 p-6 overflow-y-auto max-h-[85vh]">
           {isClickLogLoading ? (
             <div className="flex justify-center items-center h-40">
               <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -588,7 +588,7 @@ export default function MyLinks() {
           <button onClick={() => setEditModalLink(null)} className="px-4 py-2 text-label-md font-label-md text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors border border-outline-variant/30 cursor-pointer">
             Cancel
           </button>
-          <AsyncButton onClick={handleEditSubmit} className="px-4 py-2 text-label-md font-label-md bg-primary-container text-white rounded-lg hover:bg-inverse-primary transition-colors shadow-sm cursor-pointer">
+          <AsyncButton onClick={handleEditSubmit} className="px-4 py-2 text-label-md font-label-md bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-sm cursor-pointer">
             Save Changes
           </AsyncButton>
         </div>
