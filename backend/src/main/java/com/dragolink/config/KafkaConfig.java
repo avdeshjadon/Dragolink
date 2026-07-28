@@ -11,7 +11,7 @@ public class KafkaConfig {
     @Bean
     public NewTopic linkClickEventsTopic() {
         return TopicBuilder.name("link-click-events")
-                .partitions(3)
+                .partitions(1)
                 .replicas(1)
                 .build();
     }
