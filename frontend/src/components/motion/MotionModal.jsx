@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { TRANSITIONS } from '../../constants/motion';
 
@@ -33,7 +34,7 @@ export default function MotionModal({
     };
   }, [isOpen]);
 
-  return (
+  const content = (
     <AnimatePresence>
       {isOpen && (
         <>
@@ -44,10 +45,10 @@ export default function MotionModal({
             exit={{ opacity: 0 }}
             transition={TRANSITIONS.EASE_OUT}
             onClick={onClose}
-            className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md"
+            className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-md"
           />
           
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 pointer-events-none">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 pointer-events-none">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -90,4 +91,7 @@ export default function MotionModal({
       )}
     </AnimatePresence>
   );
+
+  if (typeof document === 'undefined') return null;
+  return createPortal(content, document.body);
 }
