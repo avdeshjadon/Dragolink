@@ -589,7 +589,7 @@ export default function MyLinks() {
         className="max-w-6xl w-full"
         hideCloseButton={true}
       >
-        <div className="bg-surface-container-lowest -mx-6 -mb-6 p-6 overflow-y-auto max-h-[85vh]">
+        <div className="flex flex-col">
           <div className="mb-6 pb-4 border-b border-outline-variant/10">
             <p className="text-label-lg text-on-surface-variant">Detailed tracking data for <span className="text-primary font-medium">{clickLogModalLink?.title || clickLogModalLink?.customAlias || clickLogModalLink?.shortCode}</span></p>
           </div>

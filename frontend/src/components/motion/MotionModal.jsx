@@ -38,12 +38,12 @@ export default function MotionModal({
         <>
           {/* Backdrop */}
           <motion.div
-            initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-            animate={{ opacity: 1, backdropFilter: 'blur(4px)' }}
-            exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={TRANSITIONS.EASE_OUT}
             onClick={onClose}
-            className="fixed inset-0 z-50 bg-slate-900/40"
+            className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md"
           />
           
           {/* Modal Container */}
@@ -53,12 +53,12 @@ export default function MotionModal({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={TRANSITIONS.SPRING}
-              className={`bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/20 overflow-hidden w-full pointer-events-auto ${className.includes('max-w-') ? '' : 'max-w-lg'} ${className}`}
+              className={`bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/20 overflow-hidden w-full max-h-full flex flex-col pointer-events-auto ${className.includes('max-w-') ? '' : 'max-w-lg'} ${className}`}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
               {(title || !hideCloseButton) && (
-                <div className="flex items-center justify-between px-6 py-4 border-b border-outline-variant/20">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-outline-variant/20 shrink-0">
                   {title ? <h3 className="text-lg font-semibold text-on-surface">{title}</h3> : <div />}
                   {!hideCloseButton && (
                     <button
@@ -74,7 +74,7 @@ export default function MotionModal({
               )}
               
               {/* Content */}
-              <div className="p-6">
+              <div className="p-6 overflow-y-auto flex-1">
                 {children}
               </div>
             </motion.div>
