@@ -53,17 +53,17 @@ export default function MotionModal({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={TRANSITIONS.SPRING}
-              className={`bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden w-full max-w-lg pointer-events-auto ${className}`}
+              className={`bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/20 overflow-hidden w-full pointer-events-auto ${className.includes('max-w-') ? '' : 'max-w-lg'} ${className}`}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
               {(title || !hideCloseButton) && (
-                <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-                  {title ? <h3 className="text-lg font-semibold text-slate-900">{title}</h3> : <div />}
+                <div className="flex items-center justify-between px-6 py-4 border-b border-outline-variant/20">
+                  {title ? <h3 className="text-lg font-semibold text-on-surface">{title}</h3> : <div />}
                   {!hideCloseButton && (
                     <button
                       onClick={onClose}
-                      className="p-2 -mr-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-full transition-colors"
+                      className="p-2 -mr-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-full transition-colors cursor-pointer"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
