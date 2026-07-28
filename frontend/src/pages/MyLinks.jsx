@@ -588,6 +588,34 @@ export default function MyLinks() {
         title="Click Logs"
         className="max-w-6xl w-full"
         hideCloseButton={true}
+        footer={
+          <div className="flex flex-wrap justify-between items-center gap-3 w-full">
+            {clickLogs.length > 0 ? (
+              <button 
+                onClick={() => setIsClearAllLogsModalOpen(true)} 
+                className="px-5 py-2 bg-error/10 hover:bg-error/20 text-error rounded-lg font-label-md transition-colors cursor-pointer flex items-center gap-2"
+              >
+                <span className="material-symbols-outlined text-[18px]">delete_sweep</span>
+                Clear All Logs
+              </button>
+            ) : <div />}
+            <div className="flex gap-3">
+              <button 
+                onClick={downloadLogsCSV} 
+                className="px-6 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg font-label-md transition-colors cursor-pointer flex items-center gap-2"
+              >
+                <span className="material-symbols-outlined text-[18px]">download</span>
+                Export CSV
+              </button>
+              <button 
+                onClick={() => setClickLogModalLink(null)} 
+                className="px-6 py-2 bg-surface-container-high hover:bg-surface-container-highest text-on-surface rounded-lg font-label-md transition-colors cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        }
       >
         <div className="flex flex-col">
           <div className="mb-6 pb-4 border-b border-outline-variant/10">
@@ -799,33 +827,6 @@ export default function MyLinks() {
               </AnimatePresence>
             </div>
           )}
-          
-          <div className="mt-6 flex flex-wrap justify-between items-center gap-3">
-            {clickLogs.length > 0 ? (
-              <button 
-                onClick={() => setIsClearAllLogsModalOpen(true)} 
-                className="px-5 py-2 bg-error/10 hover:bg-error/20 text-error rounded-lg font-label-md transition-colors cursor-pointer flex items-center gap-2"
-              >
-                <span className="material-symbols-outlined text-[18px]">delete_sweep</span>
-                Clear All Logs
-              </button>
-            ) : <div />}
-            <div className="flex gap-3">
-              <button 
-                onClick={downloadLogsCSV} 
-                className="px-6 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg font-label-md transition-colors cursor-pointer flex items-center gap-2"
-              >
-                <span className="material-symbols-outlined text-[18px]">download</span>
-                Export CSV
-              </button>
-              <button 
-                onClick={() => setClickLogModalLink(null)} 
-                className="px-6 py-2 bg-surface-container-high hover:bg-surface-container-highest text-on-surface rounded-lg font-label-md transition-colors cursor-pointer"
-              >
-                Close
-              </button>
-            </div>
-          </div>
         </div>
       </MotionModal>
 
