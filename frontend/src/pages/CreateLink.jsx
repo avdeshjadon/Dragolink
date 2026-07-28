@@ -281,7 +281,6 @@ export default function CreateLink() {
                   )}
                 </div>
               </div>
-              </div>
             </div>
           </section>
 
