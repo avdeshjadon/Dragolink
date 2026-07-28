@@ -686,7 +686,7 @@ export default function MyLinks() {
               <p className="text-label-md">No clicks recorded yet.</p>
             </div>
           ) : (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 max-h-[60vh] overflow-y-auto pr-2">
               <AnimatePresence>
                 {clickLogs.map((log, idx) => {
                   const isExpanded = expandedLogId === (log.id || idx);
