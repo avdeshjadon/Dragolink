@@ -30,7 +30,7 @@ spring:
       sasl.jaas.config: ${SPRING_KAFKA_SASL_JAAS_CONFIG:}
     ssl:
       trust-store-type: PEM
-      trust-store-certificates: classpath:ca.pem
+      trust-store-location: ${KAFKA_CA_CERT_PATH:file:src/main/resources/ca.pem}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
