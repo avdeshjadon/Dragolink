@@ -434,15 +434,13 @@ export default function MyLinks() {
       <MotionModal
         isOpen={!!clickLogModalLink}
         onClose={() => setClickLogModalLink(null)}
-        title={
-          <div>
-            <h3 className="text-headline-sm font-headline-sm text-on-surface">Click Logs</h3>
-            <p className="text-body-sm text-on-surface-variant mt-1">Detailed tracking data for <span className="text-primary font-medium">{clickLogModalLink?.title || clickLogModalLink?.customAlias || clickLogModalLink?.shortCode}</span></p>
-          </div>
-        }
+        title="Click Logs"
         className="max-w-6xl w-full"
       >
         <div className="bg-surface-container-lowest -mx-6 -mb-6 p-6 overflow-y-auto max-h-[85vh]">
+          <div className="mb-6 pb-4 border-b border-outline-variant/10">
+            <p className="text-label-lg text-on-surface-variant">Detailed tracking data for <span className="text-primary font-medium">{clickLogModalLink?.title || clickLogModalLink?.customAlias || clickLogModalLink?.shortCode}</span></p>
+          </div>
           {isClickLogLoading ? (
             <div className="flex justify-center items-center h-40">
               <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -464,7 +462,7 @@ export default function MyLinks() {
                       </div>
                       <div>
                         <p className="text-headline-sm font-headline-sm text-on-surface mb-1">
-                          {new Date(log.clickedAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
+                          {new Date(log.clickedAt + (!log.clickedAt.endsWith('Z') ? 'Z' : '')).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
                         </p>
                         <div className="flex flex-wrap items-center gap-2 text-label-sm text-on-surface-variant">
                           <span className="font-code-sm px-2 py-0.5 bg-surface-container rounded-md text-primary font-medium">{log.ipAddress}</span>
@@ -545,6 +543,15 @@ export default function MyLinks() {
               ))}
             </div>
           )}
+          
+          <div className="mt-6 flex justify-end">
+            <button 
+              onClick={() => setClickLogModalLink(null)} 
+              className="px-6 py-2 bg-surface-container-high hover:bg-surface-container-highest text-on-surface rounded-lg font-label-md transition-colors cursor-pointer"
+            >
+              Close
+            </button>
+          </div>
         </div>
       </MotionModal>
 
