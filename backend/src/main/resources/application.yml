@@ -31,12 +31,6 @@ spring:
     ssl:
       trust-store-type: PEM
       trust-store-location: ${KAFKA_CA_CERT_PATH:file:src/main/resources/ca.pem}
-    admin:
-      properties:
-        security.protocol: SSL
-      ssl:
-        trust-store-type: PEM
-        trust-store-location: ${KAFKA_CA_CERT_PATH:file:src/main/resources/ca.pem}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
