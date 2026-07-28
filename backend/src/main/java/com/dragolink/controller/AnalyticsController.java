@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.List;
 
@@ -30,5 +31,17 @@ public class AnalyticsController {
     @GetMapping("/links/{linkId}")
     public ResponseEntity<List<ClickDetailsDto>> getLinkAnalytics(@PathVariable Long linkId, @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(analyticsService.getLinkAnalytics(linkId, userDetails));
+    }
+
+    @DeleteMapping("/links/{linkId}/logs/{logId}")
+    public ResponseEntity<Void> deleteClickLog(@PathVariable Long linkId, @PathVariable Long logId, @AuthenticationPrincipal UserDetails userDetails) {
+        analyticsService.deleteClickLog(linkId, logId, userDetails);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/links/{linkId}/logs")
+    public ResponseEntity<Void> deleteAllClickLogs(@PathVariable Long linkId, @AuthenticationPrincipal UserDetails userDetails) {
+        analyticsService.deleteAllClickLogs(linkId, userDetails);
+        return ResponseEntity.ok().build();
     }
 }

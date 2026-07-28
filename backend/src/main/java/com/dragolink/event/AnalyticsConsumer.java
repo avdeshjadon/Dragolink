@@ -67,13 +67,15 @@ public class AnalyticsConsumer {
                 }
             }
 
+            String referrerStr = (String) event.get("referrer");
+
             ClickAnalytics analytics = ClickAnalytics.builder()
                     .shortLink(link)
                     .ipAddress(ip)
                     .browser(link.isTrackBrowser() ? getBrowser(userAgentStr) : "Anonymous")
                     .operatingSystem(link.isTrackOs() ? getOs(userAgentStr) : "Anonymous")
                     .deviceType(link.isTrackDevice() ? getDevice(userAgentStr) : "Anonymous")
-                    .referrer(link.isTrackReferrer() ? (String) event.get("referrer") : "Anonymous")
+                    .referrer(link.isTrackReferrer() ? referrerStr : "Anonymous")
                     .clickedAt(LocalDateTime.parse((String) event.get("clickedAt")))
                     .country(country)
                     .region(region)
@@ -83,6 +85,18 @@ public class AnalyticsConsumer {
                     .longitude(longitude)
                     .timezone(timezone)
                     .isp(isp)
+                    .userAgent(userAgentStr)
+                    .language((String) event.get("language"))
+                    .isBot(isBot(userAgentStr))
+                    .browserVersion(getBrowserVersion(userAgentStr))
+                    .osVersion(getOsVersion(userAgentStr))
+                    .qrScan(Boolean.TRUE.equals(event.get("qrScan")))
+                    .referrerChannel(getReferrerChannel(referrerStr))
+                    .utmSource((String) event.get("utmSource"))
+                    .utmMedium((String) event.get("utmMedium"))
+                    .utmCampaign((String) event.get("utmCampaign"))
+                    .utmTerm((String) event.get("utmTerm"))
+                    .utmContent((String) event.get("utmContent"))
                     .build();
 
             clickAnalyticsRepository.save(analytics);
@@ -117,5 +131,60 @@ public class AnalyticsConsumer {
         if (ua.contains("Mobile") || ua.contains("Android") || ua.contains("iPhone")) return "Mobile";
         if (ua.contains("iPad") || ua.contains("Tablet")) return "Tablet";
         return "Desktop";
+    }
+
+    private boolean isBot(String ua) {
+        if (ua == null) return false;
+        String lowerUa = ua.toLowerCase();
+        return lowerUa.contains("bot") || lowerUa.contains("crawler") || lowerUa.contains("spider") 
+            || lowerUa.contains("slackbot") || lowerUa.contains("whatsapp") || lowerUa.contains("twitterbot")
+            || lowerUa.contains("facebookexternalhit") || lowerUa.contains("discordbot") 
+            || lowerUa.contains("telegrambot");
+    }
+
+    private String getBrowserVersion(String ua) {
+        if (ua == null) return null;
+        try {
+            if (ua.contains("Chrome/")) {
+                return ua.split("Chrome/")[1].split(" ")[0];
+            } else if (ua.contains("Firefox/")) {
+                return ua.split("Firefox/")[1].split(" ")[0];
+            } else if (ua.contains("Version/") && ua.contains("Safari")) {
+                return ua.split("Version/")[1].split(" ")[0];
+            } else if (ua.contains("Edg/")) {
+                return ua.split("Edg/")[1].split(" ")[0];
+            }
+        } catch (Exception e) {
+            // Ignore parse errors
+        }
+        return null;
+    }
+
+    private String getOsVersion(String ua) {
+        if (ua == null) return null;
+        try {
+            if (ua.contains("Mac OS X ")) {
+                return ua.split("Mac OS X ")[1].split("\\)")[0].replace("_", ".");
+            } else if (ua.contains("Windows NT ")) {
+                return ua.split("Windows NT ")[1].split(";")[0];
+            } else if (ua.contains("Android ")) {
+                return ua.split("Android ")[1].split(";")[0];
+            } else if (ua.contains("OS ") && ua.contains("like Mac OS X")) {
+                return ua.split("OS ")[1].split(" like")[0].replace("_", ".");
+            }
+        } catch (Exception e) {
+            // Ignore parse errors
+        }
+        return null;
+    }
+
+    private String getReferrerChannel(String referrer) {
+        if (referrer == null || referrer.isEmpty()) return "Direct";
+        String lower = referrer.toLowerCase();
+        if (lower.contains("google.") || lower.contains("bing.") || lower.contains("yahoo.") || lower.contains("duckduckgo.")) return "Search";
+        if (lower.contains("facebook.") || lower.contains("twitter.") || lower.contains("t.co") || lower.contains("linkedin.") 
+            || lower.contains("instagram.") || lower.contains("reddit.")) return "Social";
+        if (lower.contains("mail.") || lower.contains("outlook.") || lower.contains("gmail.")) return "Email";
+        return "Referral";
     }
 }

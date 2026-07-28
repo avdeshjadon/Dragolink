@@ -63,4 +63,40 @@ public class ClickAnalytics {
 
     @Column(length = 255)
     private String isp;
+
+    @Column(name = "user_agent", length = 500)
+    private String userAgent;
+
+    @Column(length = 50)
+    private String language;
+
+    @Column(name = "is_bot")
+    private Boolean isBot;
+
+    @Column(name = "browser_version", length = 50)
+    private String browserVersion;
+
+    @Column(name = "os_version", length = 50)
+    private String osVersion;
+
+    @Column(name = "qr_scan")
+    private Boolean qrScan;
+
+    @Column(name = "referrer_channel", length = 50)
+    private String referrerChannel;
+
+    @Column(name = "utm_source", length = 100)
+    private String utmSource;
+
+    @Column(name = "utm_medium", length = 100)
+    private String utmMedium;
+
+    @Column(name = "utm_campaign", length = 100)
+    private String utmCampaign;
+
+    @Column(name = "utm_term", length = 255)
+    private String utmTerm;
+
+    @Column(name = "utm_content", length = 255)
+    private String utmContent;
 }

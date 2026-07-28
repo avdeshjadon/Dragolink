@@ -66,6 +66,7 @@ public class AnalyticsService {
         return clickAnalyticsRepository.findByShortLinkIdOrderByClickedAtDesc(linkId)
                 .stream()
                 .map(ca -> ClickDetailsDto.builder()
+                        .id(ca.getId())
                         .ipAddress(ca.getIpAddress())
                         .browser(ca.getBrowser())
                         .operatingSystem(ca.getOperatingSystem())
@@ -80,8 +81,54 @@ public class AnalyticsService {
                         .longitude(ca.getLongitude())
                         .timezone(ca.getTimezone())
                         .isp(ca.getIsp())
+                        .userAgent(ca.getUserAgent())
+                        .language(ca.getLanguage())
+                        .isBot(ca.getIsBot())
+                        .browserVersion(ca.getBrowserVersion())
+                        .osVersion(ca.getOsVersion())
+                        .qrScan(ca.getQrScan())
+                        .referrerChannel(ca.getReferrerChannel())
+                        .utmSource(ca.getUtmSource())
+                        .utmMedium(ca.getUtmMedium())
+                        .utmCampaign(ca.getUtmCampaign())
+                        .utmTerm(ca.getUtmTerm())
+                        .utmContent(ca.getUtmContent())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public void deleteClickLog(Long linkId, Long logId, UserDetails userDetails) {
+        User user = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        ShortLink link = shortLinkRepository.findById(linkId)
+                .orElseThrow(() -> new ResourceNotFoundException("Link not found"));
+        
+        if (!link.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Unauthorized access to link");
+        }
+        
+        com.dragolink.entity.ClickAnalytics log = clickAnalyticsRepository.findById(logId)
+                .orElseThrow(() -> new ResourceNotFoundException("Log not found"));
+                
+        if (!log.getShortLink().getId().equals(linkId)) {
+            throw new RuntimeException("Log does not belong to this link");
+        }
+        
+        clickAnalyticsRepository.delete(log);
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    public void deleteAllClickLogs(Long linkId, UserDetails userDetails) {
+        User user = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        ShortLink link = shortLinkRepository.findById(linkId)
+                .orElseThrow(() -> new ResourceNotFoundException("Link not found"));
+                
+        if (!link.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Unauthorized access to link");
+        }
+        
+        clickAnalyticsRepository.deleteByShortLinkId(linkId);
     }
     
     private ShortLinkResponse mapToResponse(ShortLink link) {

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class ClickDetailsDto {
+    private Long id;
     private String ipAddress;
     private String browser;
     private String operatingSystem;
@@ -22,4 +23,17 @@ public class ClickDetailsDto {
     private Double longitude;
     private String timezone;
     private String isp;
+
+    private String userAgent;
+    private String language;
+    private Boolean isBot;
+    private String browserVersion;
+    private String osVersion;
+    private Boolean qrScan;
+    private String referrerChannel;
+    private String utmSource;
+    private String utmMedium;
+    private String utmCampaign;
+    private String utmTerm;
+    private String utmContent;
 }

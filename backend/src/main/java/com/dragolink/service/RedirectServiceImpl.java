@@ -77,6 +77,13 @@ public class RedirectServiceImpl implements RedirectService {
         event.put("ipAddress", getClientIp(request));
         event.put("userAgent", request.getHeader("User-Agent"));
         event.put("referrer", request.getHeader("Referer"));
+        event.put("language", request.getHeader("Accept-Language"));
+        event.put("qrScan", "1".equals(request.getParameter("qr")) || "true".equalsIgnoreCase(request.getParameter("qr")));
+        event.put("utmSource", request.getParameter("utm_source"));
+        event.put("utmMedium", request.getParameter("utm_medium"));
+        event.put("utmCampaign", request.getParameter("utm_campaign"));
+        event.put("utmTerm", request.getParameter("utm_term"));
+        event.put("utmContent", request.getParameter("utm_content"));
         event.put("clickedAt", LocalDateTime.now().toString());
         java.util.concurrent.CompletableFuture.runAsync(() -> {
             try {

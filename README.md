@@ -1,6 +1,6 @@
-# Dragolink – URL Shortener & Analytics Platform
+# Dragolink - URL Shortener and Analytics Platform
 
-Dragolink is a powerful, full-stack URL shortener and analytics platform built with Spring Boot and React.
+Dragolink is a powerful, full-stack URL shortener and analytics platform built with Spring Boot and React. It is a completely cloud-based and production-ready application.
 
 ## Features
 
@@ -13,46 +13,20 @@ Dragolink is a powerful, full-stack URL shortener and analytics platform built w
 ## Tech Stack
 
 - **Backend:** Java 17, Spring Boot 3, Spring Security (JWT)
-- **Database:** MySQL
-- **Caching & Rate Limiting:** Upstash Redis
-- **Event Streaming:** Apache Kafka (for async analytics)
+- **Database:** TiDB (Cloud MySQL)
+- **Caching and Rate Limiting:** Upstash Redis
+- **Event Streaming:** Upstash Kafka (for async analytics)
 - **Frontend:** React, Vite, Tailwind CSS v4, Recharts, React Router
-- **DevOps:** Docker, Docker Compose
+- **Hosting:** Fully cloud-based infrastructure
 
 ## Architecture Overview
 
 ```text
-[Frontend (React/Nginx)] ---> [Backend API (Spring Boot)]
+[Frontend (Cloud Hosted)] ---> [Backend API (Spring Boot)]
                                     |        |       |
                                     v        v       v
-                              [ MySQL ]  [ Upstash ] [ Kafka ] ---> [ Analytics Consumer (Spring Boot) ] ---> [ MySQL ]
+                              [ TiDB ]  [ Redis ] [ Kafka ] ---> [ Analytics Consumer ] ---> [ TiDB ]
 ```
-
-## How to Run Locally
-
-### Prerequisites
-- Docker and Docker Compose
-- Maven (optional, if running backend locally)
-- Node.js 18+ (optional, if running frontend locally)
-
-### Using Docker Compose (Recommended)
-
-1. Clone the repository and navigate to the root directory.
-2. Build and start all services using Docker Compose:
-
-   ```bash
-   docker-compose up -d --build
-   ```
-
-3. Wait a few seconds for MySQL and Kafka to initialize.
-4. Access the frontend application at: `http://localhost:5173`
-5. The backend API runs at: `http://localhost:8080`
-
-### Accessing Endpoints
-
-- **Frontend Application:** `http://localhost:5173`
-- **Backend API:** `http://localhost:8080/api/...`
-- **Short Link Redirect:** `http://localhost:8080/{shortCode}`
 
 ## API Endpoints Summary
 
@@ -79,13 +53,9 @@ Dragolink is a powerful, full-stack URL shortener and analytics platform built w
 - `GET /api/admin/blocked-domains` - Get all blocked domains
 - `DELETE /api/admin/blocked-domains/{id}` - Remove a blocked domain
 
-## Environment Variables
-
-The `docker-compose.yml` configures all environment variables internally. If you want to customize them, look in `backend/src/main/resources/application.yml` and `docker-compose.yml`.
-
 ## Future Improvements
 
 - Add geo-location tracking for clicks using an open-source GeoIP database.
 - Implement user tiers and advanced rate limiting logic.
-- Add OAuth2 login (Google, GitHub).
+- Add OAuth2 login.
 - Split the monolithic backend into smaller microservices (Auth, Core, Analytics).
