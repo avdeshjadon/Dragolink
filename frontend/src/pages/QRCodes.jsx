@@ -7,7 +7,7 @@ import AsyncButton from "../components/AsyncButton";
 
 export default function QRCodes() {
   const [destinationUrl, setDestinationUrl] = useState(
-    "https://dragolink.io/campaign-x",
+    "https://dragolink.vercel.app/campaign-x",
   );
   const [fgColor, setFgColor] = useState("#041711");
   const [bgColor, setBgColor] = useState("#FFFFFF");
@@ -29,7 +29,7 @@ export default function QRCodes() {
         width: 256,
         height: 256,
         margin: 5,
-        data: "https://dragolink.io/campaign-x",
+        data: "https://dragolink.vercel.app/campaign-x",
         qrOptions: {
           errorCorrectionLevel: "H", // High error correction to ensure scannability with embedded logo
         },
@@ -71,7 +71,7 @@ export default function QRCodes() {
 
   useEffect(() => {
     qrCode.update({
-      data: destinationUrl || "https://dragolink.io",
+      data: destinationUrl || "https://dragolink.vercel.app",
       dotsOptions: {
         color: fgColor,
         type: patternStyle,

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "short_links")
@@ -25,6 +27,10 @@ public class ShortLink {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "campaign_id")
     private Campaign campaign;
+
+    @OneToMany(mappedBy = "shortLink", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<RoutingRule> routingRules = new ArrayList<>();
 
     @Column(name = "long_url", nullable = false, length = 2048)
     private String longUrl;
@@ -68,6 +74,21 @@ public class ShortLink {
     @Column(name = "track_referrer", nullable = false)
     @Builder.Default
     private boolean trackReferrer = true;
+
+    @Column(name = "utm_source", length = 100)
+    private String utmSource;
+
+    @Column(name = "utm_medium", length = 100)
+    private String utmMedium;
+
+    @Column(name = "utm_campaign", length = 100)
+    private String utmCampaign;
+
+    @Column(name = "utm_term", length = 255)
+    private String utmTerm;
+
+    @Column(name = "utm_content", length = 255)
+    private String utmContent;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

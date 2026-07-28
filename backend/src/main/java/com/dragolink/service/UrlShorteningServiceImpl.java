@@ -2,6 +2,8 @@ package com.dragolink.service;
 
 import com.dragolink.dto.ShortLinkRequest;
 import com.dragolink.dto.ShortLinkResponse;
+import com.dragolink.entity.RoutingRule;
+import com.dragolink.entity.RoutingRuleType;
 import com.dragolink.entity.ShortLink;
 import com.dragolink.entity.User;
 import com.dragolink.exception.BadRequestException;
@@ -18,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,10 +67,25 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
                 .trackOs(request.getTrackOs() != null ? request.getTrackOs() : true)
                 .trackDevice(request.getTrackDevice() != null ? request.getTrackDevice() : true)
                 .trackReferrer(request.getTrackReferrer() != null ? request.getTrackReferrer() : true)
+                .utmSource(request.getUtmSource())
+                .utmMedium(request.getUtmMedium())
+                .utmCampaign(request.getUtmCampaign())
+                .utmTerm(request.getUtmTerm())
+                .utmContent(request.getUtmContent())
                 .active(true)
                 .clickCount(0)
                 .shortCode("") // Temporary
                 .build();
+
+        if (request.getRoutingRules() != null && !request.getRoutingRules().isEmpty()) {
+            List<RoutingRule> rules = request.getRoutingRules().stream().map(r -> RoutingRule.builder()
+                    .shortLink(shortLink)
+                    .type(r.getType())
+                    .conditionValue(r.getConditionValue())
+                    .destinationUrl(r.getDestinationUrl())
+                    .build()).collect(Collectors.toList());
+            shortLink.setRoutingRules(rules);
+        }
 
         shortLink = shortLinkRepository.save(shortLink);
         
@@ -119,6 +137,23 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
         if (request.getTrackOs() != null) link.setTrackOs(request.getTrackOs());
         if (request.getTrackDevice() != null) link.setTrackDevice(request.getTrackDevice());
         if (request.getTrackReferrer() != null) link.setTrackReferrer(request.getTrackReferrer());
+
+        link.setUtmSource(request.getUtmSource());
+        link.setUtmMedium(request.getUtmMedium());
+        link.setUtmCampaign(request.getUtmCampaign());
+        link.setUtmTerm(request.getUtmTerm());
+        link.setUtmContent(request.getUtmContent());
+
+        if (request.getRoutingRules() != null) {
+            link.getRoutingRules().clear();
+            List<RoutingRule> rules = request.getRoutingRules().stream().map(r -> RoutingRule.builder()
+                    .shortLink(link)
+                    .type(r.getType())
+                    .conditionValue(r.getConditionValue())
+                    .destinationUrl(r.getDestinationUrl())
+                    .build()).collect(Collectors.toList());
+            link.getRoutingRules().addAll(rules);
+        }
 
         evictCache(link);
         return mapToResponse(shortLinkRepository.save(link));

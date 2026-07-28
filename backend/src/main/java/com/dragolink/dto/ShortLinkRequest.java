@@ -6,6 +6,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class ShortLinkRequest {
@@ -25,4 +26,12 @@ public class ShortLinkRequest {
     private Boolean trackOs = true;
     private Boolean trackDevice = true;
     private Boolean trackReferrer = true;
+
+    private String utmSource;
+    private String utmMedium;
+    private String utmCampaign;
+    private String utmTerm;
+    private String utmContent;
+
+    private List<RoutingRuleRequest> routingRules;
 }

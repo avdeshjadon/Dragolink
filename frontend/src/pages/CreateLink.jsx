@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { api } from '../lib/axios';
@@ -11,6 +11,51 @@ export default function CreateLink() {
   const [alias, setAlias] = useState('');
   const [tags, setTags] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
+  const [aliasSuggestions, setAliasSuggestions] = useState([]);
+
+  // Generate alias suggestions based on destination URL
+  useEffect(() => {
+    if (!url) {
+      setAliasSuggestions([]);
+      return;
+    }
+    try {
+      const urlObj = new URL(url);
+      let path = urlObj.pathname;
+      let hostname = urlObj.hostname.replace('www.', '').split('.')[0];
+      
+      if (path.endsWith('/')) path = path.slice(0, -1);
+      const segments = path.split('/').filter(Boolean);
+      const lastSegment = segments[segments.length - 1] || '';
+      const cleanSegment = lastSegment.split('.')[0].replace(/[^a-zA-Z0-9-]/g, '-').toLowerCase();
+      
+      const suggestions = new Set();
+      
+      if (cleanSegment && cleanSegment.length > 2) {
+         suggestions.add(cleanSegment);
+         const words = cleanSegment.split('-');
+         if (words.length > 1) {
+            suggestions.add(`${words[0]}-${words[1]}`);
+         }
+      }
+      
+      if (hostname && hostname.length > 2 && hostname !== 'localhost') {
+         if (cleanSegment) {
+            suggestions.add(`${hostname}-${cleanSegment.split('-')[0]}`);
+         } else {
+            suggestions.add(hostname);
+         }
+      }
+      
+      while (suggestions.size < 3) {
+         suggestions.add(Math.random().toString(36).substring(2, 6));
+      }
+      
+      setAliasSuggestions(Array.from(suggestions).slice(0, 3));
+    } catch (e) {
+      setAliasSuggestions([]);
+    }
+  }, [url]);
   
   // Tracking Preferences
   const [trackIp, setTrackIp] = useState(true);
@@ -18,6 +63,30 @@ export default function CreateLink() {
   const [trackOs, setTrackOs] = useState(true);
   const [trackDevice, setTrackDevice] = useState(true);
   const [trackReferrer, setTrackReferrer] = useState(true);
+
+  // UTM Parameters
+  const [utmSource, setUtmSource] = useState('');
+  const [utmMedium, setUtmMedium] = useState('');
+  const [utmCampaign, setUtmCampaign] = useState('');
+  const [utmTerm, setUtmTerm] = useState('');
+  const [utmContent, setUtmContent] = useState('');
+
+  // Routing Rules
+  const [routingRules, setRoutingRules] = useState([]);
+  
+  const addRoutingRule = () => {
+    setRoutingRules([...routingRules, { type: 'OS', conditionValue: '', destinationUrl: '' }]);
+  };
+  
+  const updateRoutingRule = (index, field, value) => {
+    const newRules = [...routingRules];
+    newRules[index][field] = value;
+    setRoutingRules(newRules);
+  };
+
+  const removeRoutingRule = (index) => {
+    setRoutingRules(routingRules.filter((_, i) => i !== index));
+  };
 
   const [error, setError] = useState(null);
 
@@ -38,6 +107,12 @@ export default function CreateLink() {
         trackOs,
         trackDevice,
         trackReferrer,
+        utmSource: utmSource || undefined,
+        utmMedium: utmMedium || undefined,
+        utmCampaign: utmCampaign || undefined,
+        utmTerm: utmTerm || undefined,
+        utmContent: utmContent || undefined,
+        routingRules: routingRules.filter(r => r.conditionValue && r.destinationUrl)
       };
 
       await api.post('/links', payload);
@@ -75,11 +150,11 @@ export default function CreateLink() {
         </div>
       </div>
 
-      {/* Split View Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
+      {/* Form Layout */}
+      <div className="max-w-3xl mx-auto w-full pb-8">
         
-        {/* Left Column: Form */}
-        <div className="lg:col-span-7 xl:col-span-8 space-y-6">
+        {/* Form Container */}
+        <div className="space-y-6">
           
           {/* Destination & Basic Info */}
           <section className="tonal-card rounded-xl p-4 md:p-6 space-y-4">
@@ -134,9 +209,9 @@ export default function CreateLink() {
             {/* Custom Alias */}
             <div>
               <label className="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Custom Alias</label>
-              <div className="flex flex-col sm:flex-row rounded-lg overflow-hidden border border-outline-variant focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+              <div className="flex flex-col sm:flex-row rounded-lg overflow-hidden border border-outline-variant focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all mb-2">
                 <span className="px-4 py-2 bg-surface-container-highest text-on-surface-variant font-code-sm text-code-sm border-r border-outline-variant/50 flex items-center">
-                  dragolink.io/
+                  dragolink.vercel.app/
                 </span>
                 <input 
                   type="text" 
@@ -145,10 +220,33 @@ export default function CreateLink() {
                   className="flex-1 bg-surface-container-low text-on-surface px-4 py-2 font-code-sm text-code-sm focus:outline-none" 
                   placeholder="my-custom-alias"
                 />
-                <button className="px-2 py-2 bg-surface-container-highest text-outline hover:text-primary transition-colors border-l border-outline-variant/50">
+                <button 
+                  onClick={() => setAlias(Math.random().toString(36).substring(2, 8))}
+                  type="button"
+                  className="px-2 py-2 bg-surface-container-highest text-outline hover:text-primary transition-colors border-l border-outline-variant/50 cursor-pointer"
+                >
                   <span className="material-symbols-outlined text-[18px]">autorenew</span>
                 </button>
               </div>
+              
+              {/* Alias Suggestions */}
+              {aliasSuggestions.length > 0 && (
+                <div className="flex flex-wrap items-center gap-2 mt-2">
+                  <span className="text-[11px] text-on-surface-variant uppercase tracking-wider font-label-sm flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[12px]">auto_awesome</span> Suggestions:
+                  </span>
+                  {aliasSuggestions.map((suggestion, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setAlias(suggestion)}
+                      className="px-3 py-1 rounded-full border border-outline-variant/30 bg-surface-container-lowest text-on-surface-variant text-[12px] hover:border-primary hover:text-primary transition-colors cursor-pointer"
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
             
             {/* Expiration & Tags */}
@@ -183,117 +281,184 @@ export default function CreateLink() {
                   )}
                 </div>
               </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Dynamic Routing */}
+          <section className="tonal-card rounded-xl p-4 md:p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-outline-variant/10 pb-2 mb-4">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary text-[20px]">alt_route</span>
+                <h3 className="font-headline-md text-[18px] text-on-surface">Dynamic Routing</h3>
+              </div>
+            </div>
+            
+            <div className="space-y-3">
+              {routingRules.map((rule, index) => (
+                <div key={index} className="flex flex-col sm:flex-row gap-2 items-start sm:items-center bg-surface-container-low p-3 rounded-lg border border-outline-variant/30 relative">
+                  <div className="flex gap-2 w-full sm:w-auto">
+                    <select
+                      value={rule.type}
+                      onChange={(e) => updateRoutingRule(index, 'type', e.target.value)}
+                      className="premium-input rounded-lg px-2 py-1.5 font-code-sm text-[13px] text-on-surface-variant bg-surface-container-highest border-none"
+                    >
+                      <option value="OS">OS</option>
+                      <option value="DEVICE">Device</option>
+                    </select>
+                    <input
+                      type="text"
+                      placeholder={rule.type === 'OS' ? 'e.g. iOS, Android' : 'e.g. Mobile, Desktop'}
+                      value={rule.conditionValue}
+                      onChange={(e) => updateRoutingRule(index, 'conditionValue', e.target.value)}
+                      className="premium-input flex-1 sm:w-32 rounded-lg px-3 py-1.5 font-body-sm text-[13px]"
+                    />
+                  </div>
+                  <span className="text-on-surface-variant text-[12px] hidden sm:block">➔</span>
+                  <input
+                    type="url"
+                    placeholder="Destination URL"
+                    value={rule.destinationUrl}
+                    onChange={(e) => updateRoutingRule(index, 'destinationUrl', e.target.value)}
+                    className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeRoutingRule(index)}
+                    className="absolute top-2 right-2 sm:static p-1 text-error/70 hover:text-error hover:bg-error/10 rounded transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">close</span>
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addRoutingRule}
+                className="flex items-center gap-1 text-[13px] font-label-sm text-primary hover:text-primary/80 transition-colors"
+              >
+                <span className="material-symbols-outlined text-[16px]">add</span>
+                Add Routing Rule
+              </button>
+            </div>
+          </section>
+
+          {/* UTM Parameters */}
+          <section className="tonal-card rounded-xl p-4 md:p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-outline-variant/10 pb-2 mb-4">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary text-[20px]">campaign</span>
+                <h3 className="font-headline-md text-[18px] text-on-surface">UTM Parameters</h3>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div>
+                <label className="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Source</label>
+                <input 
+                  type="text" 
+                  value={utmSource}
+                  onChange={(e) => setUtmSource(e.target.value)}
+                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px]" 
+                  placeholder="google, newsletter" 
+                />
+              </div>
+              <div>
+                <label className="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Medium</label>
+                <input 
+                  type="text" 
+                  value={utmMedium}
+                  onChange={(e) => setUtmMedium(e.target.value)}
+                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px]" 
+                  placeholder="cpc, email" 
+                />
+              </div>
+              <div>
+                <label className="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Campaign</label>
+                <input 
+                  type="text" 
+                  value={utmCampaign}
+                  onChange={(e) => setUtmCampaign(e.target.value)}
+                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px]" 
+                  placeholder="spring_sale" 
+                />
+              </div>
+              <div>
+                <label className="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Term</label>
+                <input 
+                  type="text" 
+                  value={utmTerm}
+                  onChange={(e) => setUtmTerm(e.target.value)}
+                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px]" 
+                  placeholder="running+shoes" 
+                />
+              </div>
+              <div>
+                <label className="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Content</label>
+                <input 
+                  type="text" 
+                  value={utmContent}
+                  onChange={(e) => setUtmContent(e.target.value)}
+                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px]" 
+                  placeholder="logolink" 
+                />
+              </div>
             </div>
           </section>
 
           {/* Advanced Tracking */}
-          <section className="tonal-card rounded-xl p-4 md:p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-outline-variant/10 pb-2 mb-4">
+          <section className="mt-8 space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-1 border-b border-outline-variant/20 mb-3 gap-2">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary text-[20px]">troubleshoot</span>
-                <h3 className="font-headline-md text-[18px] text-on-surface">Advanced Tracking</h3>
+                <span className="material-symbols-outlined text-primary text-[18px]">tune</span>
+                <h3 className="font-label-lg text-[14px] text-on-surface uppercase tracking-wider">Tracking Options</h3>
               </div>
               <button 
                 onClick={() => {
                   const newState = !(trackIp && trackBrowser && trackOs && trackDevice && trackReferrer);
                   setTrackIp(newState); setTrackBrowser(newState); setTrackOs(newState); setTrackDevice(newState); setTrackReferrer(newState);
                 }}
-                className="text-label-sm font-label-sm text-primary hover:underline"
+                className="text-[12px] font-label-sm text-primary hover:text-primary/80 transition-colors"
               >
                 {trackIp && trackBrowser && trackOs && trackDevice && trackReferrer ? 'Deselect All' : 'Select All'}
               </button>
             </div>
             
-            <p className="text-body-sm font-body-sm text-on-surface-variant mb-4">Choose what data to collect when someone clicks this link. You can view these details in the link's click log.</p>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-wrap gap-3">
               {[
-                { id: 'ip', label: 'IP Address & Location', state: trackIp, setter: setTrackIp, icon: 'location_on' },
-                { id: 'browser', label: 'Browser Info', state: trackBrowser, setter: setTrackBrowser, icon: 'web' },
-                { id: 'os', label: 'Operating System', state: trackOs, setter: setTrackOs, icon: 'terminal' },
-                { id: 'device', label: 'Device Type', state: trackDevice, setter: setTrackDevice, icon: 'devices' },
-                { id: 'referrer', label: 'Referrer (Traffic Source)', state: trackReferrer, setter: setTrackReferrer, icon: 'share' },
+                { id: 'ip', label: 'IP & Location', state: trackIp, setter: setTrackIp },
+                { id: 'browser', label: 'Browser', state: trackBrowser, setter: setTrackBrowser },
+                { id: 'os', label: 'OS', state: trackOs, setter: setTrackOs },
+                { id: 'device', label: 'Device', state: trackDevice, setter: setTrackDevice },
+                { id: 'referrer', label: 'Referrer', state: trackReferrer, setter: setTrackReferrer },
               ].map(opt => (
-                <label key={opt.id} className="flex items-center gap-3 p-3 rounded-lg border border-outline-variant/20 bg-surface-container-lowest hover:bg-surface-container-low transition-colors cursor-pointer group">
+                <label key={opt.id} className="flex items-center gap-2 cursor-pointer group">
                   <input 
                     type="checkbox" 
                     checked={opt.state}
                     onChange={(e) => opt.setter(e.target.checked)}
-                    className="lp-checkbox w-5 h-5 rounded border-outline-variant/30 text-primary focus:ring-primary/20 transition-all cursor-pointer"
+                    className="w-3.5 h-3.5 rounded-sm border-outline-variant/40 text-primary focus:ring-0 focus:ring-offset-0 bg-transparent transition-all cursor-pointer"
                   />
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary transition-colors">{opt.icon}</span>
-                    <span className="text-label-md font-label-md text-on-surface select-none">{opt.label}</span>
-                  </div>
+                  <span className="text-[13px] text-on-surface-variant group-hover:text-on-surface transition-colors select-none">{opt.label}</span>
                 </label>
               ))}
             </div>
           </section>
-        </div>
 
-        {/* Right Column: Preview & Sticky Actions */}
-        <div className="lg:col-span-5 xl:col-span-4 relative">
-          <div className="sticky top-10 space-y-6">
-            
-            {/* Live Preview Card */}
-            <div className="glass-panel rounded-xl overflow-hidden shadow-2xl relative">
-              <div className="h-1 w-full bg-gradient-to-r from-primary via-tertiary to-primary-container"></div>
-              <div className="p-4">
-                <h3 className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-4 flex items-center gap-1">
-                  <span className="material-symbols-outlined text-[16px]">visibility</span>
-                  Live Preview
-                </h3>
-                
-                {/* Social Card Preview */}
-                <div className="bg-surface rounded-lg border border-outline-variant/30 overflow-hidden mb-6">
-                  <div className="h-32 w-full bg-surface-container-highest relative flex items-center justify-center border-b border-outline-variant/30">
-                    <span className="material-symbols-outlined text-outline-variant text-[48px] relative z-10">image</span>
-                  </div>
-                  <div className="p-2">
-                    <div className="font-code-sm text-[11px] text-on-surface-variant uppercase mb-1 truncate">DRAGOLINK.IO</div>
-                    <div className="font-headline-md text-[16px] text-on-surface truncate mb-1">
-                      {title || 'Your Link Title'}
-                    </div>
-                    <div className="font-body-md text-[13px] text-on-surface-variant truncate">
-                      {url || 'A preview of your destination URL will appear here.'}
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Resulting Link */}
-                <div className="bg-surface-container-low rounded-lg p-2 border border-outline-variant/30 flex justify-between items-center group">
-                  <div className="flex items-center gap-2 overflow-hidden">
-                    <div className="w-6 h-6 rounded bg-primary/10 flex items-center justify-center shrink-0">
-                      <span className="material-symbols-outlined text-primary text-[14px]">content_copy</span>
-                    </div>
-                    <span className="font-code-sm text-code-sm text-on-surface truncate">
-                      dragolink.io/<span className="text-primary">{alias || 'alias'}</span>
-                    </span>
-                  </div>
-                  <button className="opacity-0 group-hover:opacity-100 transition-opacity text-on-surface-variant hover:text-primary shrink-0">
-                    <span className="material-symbols-outlined text-[18px]">qr_code_2</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Mobile Action Area */}
-            <div className="md:hidden flex flex-col gap-2 mt-10">
-              <AsyncButton 
-                onClick={handleSubmit} 
-                className="w-full py-4 rounded-lg bg-primary text-white font-label-md text-label-md hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(21,128,61,0.3)] cursor-pointer"
-              >
-                <span className="material-symbols-outlined text-[18px]">bolt</span>
-                Create Link
-              </AsyncButton>
-              <button 
-                onClick={() => navigate('/dashboard')}
-                className="w-full py-4 rounded-lg border border-outline-variant text-primary font-label-md text-label-md hover:bg-surface-container-highest transition-colors cursor-pointer"
-              >
-                Cancel
-              </button>
-            </div>
-            
+          {/* Mobile Action Area */}
+          <div className="md:hidden flex flex-col gap-2 pt-6 mt-6 border-t border-outline-variant/20">
+            <AsyncButton 
+              onClick={handleSubmit} 
+              className="w-full py-4 rounded-lg bg-primary text-white font-label-md text-label-md hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(21,128,61,0.3)] cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[18px]">bolt</span>
+              Create Link
+            </AsyncButton>
+            <button 
+              onClick={() => navigate('/dashboard')}
+              className="w-full py-4 rounded-lg border border-outline-variant text-primary font-label-md text-label-md hover:bg-surface-container-highest transition-colors cursor-pointer"
+            >
+              Cancel
+            </button>
           </div>
         </div>
       </div>

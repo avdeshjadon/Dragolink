@@ -15,7 +15,13 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import org.springframework.web.util.UriComponentsBuilder;
+import com.dragolink.dto.RoutingRuleDto;
+import com.dragolink.dto.ShortLinkCacheDto;
+import com.dragolink.entity.RoutingRuleType;
 
 @Service
 @RequiredArgsConstructor
@@ -30,12 +36,14 @@ public class RedirectServiceImpl implements RedirectService {
     private static final String TOPIC = "link-click-events";
 
     @Override
+    @SneakyThrows
     public String getLongUrlAndRecordClick(String shortCode, HttpServletRequest request) {
         String cacheKey = CACHE_PREFIX + shortCode;
-        String longUrl = redisTemplate.opsForValue().get(cacheKey);
-        Long linkId = null;
+        String cachedValue = redisTemplate.opsForValue().get(cacheKey);
+        
+        ShortLinkCacheDto cacheDto;
 
-        if (longUrl == null) {
+        if (cachedValue == null) {
             ShortLink link = shortLinkRepository.findByCustomAlias(shortCode)
                     .orElseGet(() -> shortLinkRepository.findByShortCode(shortCode)
                             .orElseThrow(() -> new ResourceNotFoundException("Link not found")));
@@ -47,26 +55,92 @@ public class RedirectServiceImpl implements RedirectService {
                 throw new BadRequestException("Link has expired");
             }
 
-            longUrl = link.getLongUrl();
-            linkId = link.getId();
+            List<RoutingRuleDto> rules = link.getRoutingRules().stream().map(r -> 
+                RoutingRuleDto.builder()
+                    .id(r.getId())
+                    .type(r.getType())
+                    .conditionValue(r.getConditionValue())
+                    .destinationUrl(r.getDestinationUrl())
+                    .build()
+            ).collect(Collectors.toList());
 
-            // Cache it
+            cacheDto = ShortLinkCacheDto.builder()
+                    .linkId(link.getId())
+                    .defaultUrl(link.getLongUrl())
+                    .utmSource(link.getUtmSource())
+                    .utmMedium(link.getUtmMedium())
+                    .utmCampaign(link.getUtmCampaign())
+                    .utmTerm(link.getUtmTerm())
+                    .utmContent(link.getUtmContent())
+                    .rules(rules)
+                    .build();
+
             long ttl = link.getExpiryDate() != null ? 
                     Duration.between(LocalDateTime.now(), link.getExpiryDate()).getSeconds() : 
                     86400; // 24 hours
             if (ttl > 0) {
-                redisTemplate.opsForValue().set(cacheKey, longUrl + "::" + linkId, Duration.ofSeconds(ttl));
+                redisTemplate.opsForValue().set(cacheKey, objectMapper.writeValueAsString(cacheDto), Duration.ofSeconds(ttl));
             }
         } else {
-            // Parse cached value which is "longUrl::linkId"
-            String[] parts = longUrl.split("::");
-            longUrl = parts[0];
-            linkId = Long.parseLong(parts[1]);
+            // Backward compatibility for old cache format
+            if (cachedValue.contains("::")) {
+                String[] parts = cachedValue.split("::");
+                cacheDto = ShortLinkCacheDto.builder()
+                    .defaultUrl(parts[0])
+                    .linkId(Long.parseLong(parts[1]))
+                    .build();
+            } else {
+                cacheDto = objectMapper.readValue(cachedValue, ShortLinkCacheDto.class);
+            }
         }
 
-        publishClickEvent(shortCode, linkId, request);
+        // 1. Evaluate Routing Rules
+        String targetUrl = cacheDto.getDefaultUrl();
+        if (cacheDto.getRules() != null && !cacheDto.getRules().isEmpty()) {
+            String userAgent = request.getHeader("User-Agent");
+            if (userAgent == null) userAgent = "";
+            userAgent = userAgent.toLowerCase();
+            
+            String userOs = "unknown";
+            if (userAgent.contains("windows")) userOs = "windows";
+            else if (userAgent.contains("mac os") || userAgent.contains("macintosh")) userOs = "macos";
+            else if (userAgent.contains("android")) userOs = "android";
+            else if (userAgent.contains("iphone") || userAgent.contains("ipad")) userOs = "ios";
+            else if (userAgent.contains("linux")) userOs = "linux";
+            
+            String userDevice = "desktop";
+            if (userAgent.contains("mobi") || userAgent.contains("android") || userAgent.contains("iphone")) {
+                userDevice = "mobile";
+            } else if (userAgent.contains("tablet") || userAgent.contains("ipad")) {
+                userDevice = "tablet";
+            }
+            
+            for (RoutingRuleDto rule : cacheDto.getRules()) {
+                if (rule.getType() == RoutingRuleType.OS && rule.getConditionValue().equalsIgnoreCase(userOs)) {
+                    targetUrl = rule.getDestinationUrl();
+                    break;
+                } else if (rule.getType() == RoutingRuleType.DEVICE && rule.getConditionValue().equalsIgnoreCase(userDevice)) {
+                    targetUrl = rule.getDestinationUrl();
+                    break;
+                }
+            }
+        }
 
-        return longUrl;
+        // 2. Append UTM Parameters
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(targetUrl);
+        boolean addedUtm = false;
+        
+        if (cacheDto.getUtmSource() != null && !cacheDto.getUtmSource().isEmpty()) { builder.queryParam("utm_source", cacheDto.getUtmSource()); addedUtm = true; }
+        if (cacheDto.getUtmMedium() != null && !cacheDto.getUtmMedium().isEmpty()) { builder.queryParam("utm_medium", cacheDto.getUtmMedium()); addedUtm = true; }
+        if (cacheDto.getUtmCampaign() != null && !cacheDto.getUtmCampaign().isEmpty()) { builder.queryParam("utm_campaign", cacheDto.getUtmCampaign()); addedUtm = true; }
+        if (cacheDto.getUtmTerm() != null && !cacheDto.getUtmTerm().isEmpty()) { builder.queryParam("utm_term", cacheDto.getUtmTerm()); addedUtm = true; }
+        if (cacheDto.getUtmContent() != null && !cacheDto.getUtmContent().isEmpty()) { builder.queryParam("utm_content", cacheDto.getUtmContent()); addedUtm = true; }
+        
+        String finalUrl = addedUtm ? builder.build().toUriString() : targetUrl;
+
+        publishClickEvent(shortCode, cacheDto.getLinkId(), request);
+
+        return finalUrl;
     }
 
     @SneakyThrows
