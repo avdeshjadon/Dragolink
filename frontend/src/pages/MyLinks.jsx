@@ -442,7 +442,7 @@ export default function MyLinks() {
         }
         className="max-w-4xl"
       >
-        <div className="bg-surface-container-lowest -mx-6 -mb-6 p-6 overflow-y-auto max-h-[60vh]">
+        <div className="bg-surface-container-lowest -mx-6 -mb-6 p-6 overflow-y-auto max-h-[70vh]">
           {isClickLogLoading ? (
             <div className="flex justify-center items-center h-40">
               <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
@@ -450,51 +450,99 @@ export default function MyLinks() {
           ) : clickLogs.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-40 text-on-surface-variant">
               <span className="material-symbols-outlined text-[48px] mb-2 opacity-50">analytics</span>
-              <p>No clicks recorded yet.</p>
+              <p className="text-label-md">No clicks recorded yet.</p>
             </div>
           ) : (
-            <div className="overflow-x-auto rounded-lg border border-outline-variant/20 shadow-sm">
-              <table className="w-full text-left border-collapse min-w-[800px]">
-                <thead>
-                  <tr className="bg-surface-container-low text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant border-b border-outline-variant/20">
-                    <th className="px-4 py-3">Time</th>
-                    <th className="px-4 py-3">Network & Location</th>
-                    <th className="px-4 py-3">Browser</th>
-                    <th className="px-4 py-3">OS</th>
-                    <th className="px-4 py-3">Device</th>
-                    <th className="px-4 py-3">Referrer</th>
-                  </tr>
-                </thead>
-                <tbody className="text-body-sm font-body-sm text-on-surface divide-y divide-outline-variant/10">
-                  {clickLogs.map((log, idx) => (
-                    <tr key={idx} className="hover:bg-surface-container-lowest/50 transition-colors">
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        {new Date(log.clickedAt).toLocaleString()}
-                      </td>
-                      <td className="px-4 py-3 min-w-[250px]">
-                        <div className="flex flex-col gap-1">
-                          <div className="flex items-center gap-2">
-                            <span className="font-code-sm text-primary">{log.ipAddress}</span>
-                            {log.isp && log.isp !== 'Unknown' && <span className="text-[10px] bg-surface-container px-2 py-0.5 rounded text-on-surface-variant truncate max-w-[120px]" title={log.isp}>{log.isp}</span>}
-                          </div>
-                          {log.country && log.country !== 'Unknown' && (
-                            <div className="text-xs text-on-surface-variant flex flex-col gap-0.5 mt-1">
-                              <span>{log.city}{log.region && log.region !== 'Unknown' ? `, ${log.region}` : ''}, {log.country} {log.zip && log.zip !== 'Unknown' ? log.zip : ''}</span>
-                              {log.latitude && log.longitude && (
-                                <span className="opacity-75">Lat: {log.latitude}, Lon: {log.longitude}</span>
-                              )}
-                            </div>
+            <div className="flex flex-col gap-4">
+              {clickLogs.map((log, idx) => (
+                <div key={idx} className="bg-surface/50 border border-outline-variant/30 rounded-2xl p-5 hover:bg-surface-container-lowest hover:shadow-md transition-all duration-300">
+                  {/* Top Section: Time, IP, and ISP */}
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4 border-b border-outline-variant/10 pb-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0 shadow-sm">
+                        <span className="material-symbols-outlined text-[24px]">touch_app</span>
+                      </div>
+                      <div>
+                        <p className="text-headline-sm font-headline-sm text-on-surface mb-1">
+                          {new Date(log.clickedAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
+                        </p>
+                        <div className="flex flex-wrap items-center gap-2 text-label-sm text-on-surface-variant">
+                          <span className="font-code-sm px-2 py-0.5 bg-surface-container rounded-md text-primary font-medium">{log.ipAddress}</span>
+                          {log.isp && log.isp !== 'Unknown' && (
+                            <span className="flex items-center gap-1 bg-surface-container-high px-2 py-0.5 rounded-md text-on-surface max-w-[200px] truncate" title={log.isp}>
+                              <span className="material-symbols-outlined text-[14px]">router</span>
+                              {log.isp}
+                            </span>
                           )}
                         </div>
-                      </td>
-                      <td className="px-4 py-3">{log.browser}</td>
-                      <td className="px-4 py-3">{log.operatingSystem}</td>
-                      <td className="px-4 py-3 capitalize">{log.deviceType}</td>
-                      <td className="px-4 py-3 truncate max-w-[150px]" title={log.referrer}>{log.referrer}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </div>
+                    </div>
+                    
+                    {/* Device & Browser Pills */}
+                    <div className="flex flex-wrap items-center gap-2">
+                      {log.deviceType && (
+                        <span className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container border border-outline-variant/20 rounded-lg text-xs font-medium capitalize text-on-surface">
+                          <span className="material-symbols-outlined text-[16px] text-primary">
+                            {log.deviceType.toLowerCase() === 'mobile' ? 'smartphone' : log.deviceType.toLowerCase() === 'tablet' ? 'tablet_mac' : 'desktop_windows'}
+                          </span>
+                          {log.deviceType}
+                        </span>
+                      )}
+                      {log.operatingSystem && log.operatingSystem !== 'Unknown' && (
+                        <span className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container border border-outline-variant/20 rounded-lg text-xs font-medium text-on-surface">
+                          <span className="material-symbols-outlined text-[16px] text-tertiary">settings_system_daydream</span>
+                          {log.operatingSystem}
+                        </span>
+                      )}
+                      {log.browser && log.browser !== 'Unknown' && (
+                        <span className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-container border border-outline-variant/20 rounded-lg text-xs font-medium text-on-surface">
+                          <span className="material-symbols-outlined text-[16px] text-secondary">language</span>
+                          {log.browser}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Bottom Section: Location and Referrer */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="flex items-start gap-3 p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/10">
+                      <div className="p-2 bg-secondary/10 rounded-lg text-secondary mt-0.5">
+                        <span className="material-symbols-outlined text-[20px]">location_on</span>
+                      </div>
+                      <div>
+                        <p className="text-label-md font-semibold text-on-surface mb-1">Location</p>
+                        {log.country && log.country !== 'Unknown' ? (
+                          <div className="text-body-sm text-on-surface-variant">
+                            <p className="font-medium text-on-surface">
+                              {log.city}{log.region && log.region !== 'Unknown' ? `, ${log.region}` : ''}, {log.country} {log.zip && log.zip !== 'Unknown' ? log.zip : ''}
+                            </p>
+                            {log.latitude && log.longitude && (
+                              <p className="font-code-sm text-xs opacity-75 mt-1">Lat: {log.latitude}, Lon: {log.longitude}</p>
+                            )}
+                          </div>
+                        ) : (
+                          <p className="text-body-sm text-on-surface-variant opacity-70 italic">Location unavailable</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/10">
+                      <div className="p-2 bg-tertiary/10 rounded-lg text-tertiary mt-0.5">
+                        <span className="material-symbols-outlined text-[20px]">link</span>
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-label-md font-semibold text-on-surface mb-1">Referrer</p>
+                        {log.referrer && log.referrer !== 'Unknown' && log.referrer !== '' ? (
+                          <a href={log.referrer} target="_blank" rel="noopener noreferrer" className="text-body-sm text-primary hover:text-primary/80 transition-colors hover:underline break-all line-clamp-2" title={log.referrer}>
+                            {log.referrer}
+                          </a>
+                        ) : (
+                          <p className="text-body-sm text-on-surface-variant opacity-70 italic">Direct / Unknown</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
