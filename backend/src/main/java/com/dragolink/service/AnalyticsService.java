@@ -56,6 +56,7 @@ public class AnalyticsService {
                 .clicksByDevice(clickAnalyticsRepository.countClicksByDevice(userId))
                 .clicksByBrowser(clickAnalyticsRepository.countClicksByBrowser(userId))
                 .clicksByReferrer(clickAnalyticsRepository.countClicksByReferrer(userId))
+                .clicksByCountry(clickAnalyticsRepository.countClicksByCountry(userId))
                 // recentClicks can be filled by querying across all user's links, skipping for simplicity in dashboard, or fetch top 10
                 .build();
     }
@@ -71,6 +72,14 @@ public class AnalyticsService {
                         .deviceType(ca.getDeviceType())
                         .referrer(ca.getReferrer())
                         .clickedAt(ca.getClickedAt())
+                        .country(ca.getCountry())
+                        .region(ca.getRegion())
+                        .city(ca.getCity())
+                        .zip(ca.getZip())
+                        .latitude(ca.getLatitude())
+                        .longitude(ca.getLongitude())
+                        .timezone(ca.getTimezone())
+                        .isp(ca.getIsp())
                         .build())
                 .collect(Collectors.toList());
     }

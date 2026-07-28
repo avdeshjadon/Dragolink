@@ -39,27 +39,34 @@ public class ShortLink {
     private String title;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean active = true;
 
     @Column(name = "expiry_date")
     private LocalDateTime expiryDate;
 
     @Column(name = "click_count", nullable = false)
+    @Builder.Default
     private long clickCount = 0;
 
     @Column(name = "track_ip", nullable = false)
+    @Builder.Default
     private boolean trackIp = true;
 
     @Column(name = "track_browser", nullable = false)
+    @Builder.Default
     private boolean trackBrowser = true;
 
     @Column(name = "track_os", nullable = false)
+    @Builder.Default
     private boolean trackOs = true;
 
     @Column(name = "track_device", nullable = false)
+    @Builder.Default
     private boolean trackDevice = true;
 
     @Column(name = "track_referrer", nullable = false)
+    @Builder.Default
     private boolean trackReferrer = true;
 
     @Column(name = "created_at", updatable = false)

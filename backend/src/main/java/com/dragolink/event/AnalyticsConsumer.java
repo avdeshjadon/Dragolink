@@ -34,14 +34,55 @@ public class AnalyticsConsumer {
             ShortLink link = shortLinkRepository.findById(linkId).orElse(null);
             if (link == null) return;
 
+            String ip = link.isTrackIp() ? (String) event.get("ipAddress") : "Anonymous";
+            String country = "Unknown";
+            String region = "Unknown";
+            String city = "Unknown";
+            String zip = "Unknown";
+            Double latitude = null;
+            Double longitude = null;
+            String timezone = "Unknown";
+            String isp = "Unknown";
+
+            if (!"Anonymous".equals(ip) && !"127.0.0.1".equals(ip) && !"localhost".equals(ip)) {
+                try {
+                    org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+                    Map<String, Object> location = restTemplate.getForObject("http://ip-api.com/json/" + ip, Map.class);
+                    if (location != null && "success".equals(location.get("status"))) {
+                        country = (String) location.get("country");
+                        region = (String) location.get("regionName");
+                        city = (String) location.get("city");
+                        zip = (String) location.get("zip");
+                        if (location.get("lat") instanceof Number) {
+                            latitude = ((Number) location.get("lat")).doubleValue();
+                        }
+                        if (location.get("lon") instanceof Number) {
+                            longitude = ((Number) location.get("lon")).doubleValue();
+                        }
+                        timezone = (String) location.get("timezone");
+                        isp = (String) location.get("isp");
+                    }
+                } catch (Exception e) {
+                    log.warn("Failed to fetch location for IP: {}", ip);
+                }
+            }
+
             ClickAnalytics analytics = ClickAnalytics.builder()
                     .shortLink(link)
-                    .ipAddress(link.isTrackIp() ? (String) event.get("ipAddress") : "Anonymous")
+                    .ipAddress(ip)
                     .browser(link.isTrackBrowser() ? getBrowser(userAgentStr) : "Anonymous")
                     .operatingSystem(link.isTrackOs() ? getOs(userAgentStr) : "Anonymous")
                     .deviceType(link.isTrackDevice() ? getDevice(userAgentStr) : "Anonymous")
                     .referrer(link.isTrackReferrer() ? (String) event.get("referrer") : "Anonymous")
                     .clickedAt(LocalDateTime.parse((String) event.get("clickedAt")))
+                    .country(country)
+                    .region(region)
+                    .city(city)
+                    .zip(zip)
+                    .latitude(latitude)
+                    .longitude(longitude)
+                    .timezone(timezone)
+                    .isp(isp)
                     .build();
 
             clickAnalyticsRepository.save(analytics);

@@ -39,4 +39,28 @@ public class ClickAnalytics {
 
     @Column(name = "clicked_at", nullable = false)
     private LocalDateTime clickedAt;
+
+    @Column(length = 100)
+    private String country;
+
+    @Column(length = 100)
+    private String region;
+
+    @Column(length = 100)
+    private String city;
+
+    @Column(length = 20)
+    private String zip;
+
+    @Column
+    private Double latitude;
+
+    @Column
+    private Double longitude;
+
+    @Column(length = 100)
+    private String timezone;
+
+    @Column(length = 255)
+    private String isp;
 }

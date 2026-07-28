@@ -458,7 +458,7 @@ export default function MyLinks() {
                 <thead>
                   <tr className="bg-surface-container-low text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant border-b border-outline-variant/20">
                     <th className="px-4 py-3">Time</th>
-                    <th className="px-4 py-3">IP / Location</th>
+                    <th className="px-4 py-3">Network & Location</th>
                     <th className="px-4 py-3">Browser</th>
                     <th className="px-4 py-3">OS</th>
                     <th className="px-4 py-3">Device</th>
@@ -471,7 +471,22 @@ export default function MyLinks() {
                       <td className="px-4 py-3 whitespace-nowrap">
                         {new Date(log.clickedAt).toLocaleString()}
                       </td>
-                      <td className="px-4 py-3 font-code-sm text-primary">{log.ipAddress}</td>
+                      <td className="px-4 py-3 min-w-[250px]">
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-code-sm text-primary">{log.ipAddress}</span>
+                            {log.isp && log.isp !== 'Unknown' && <span className="text-[10px] bg-surface-container px-2 py-0.5 rounded text-on-surface-variant truncate max-w-[120px]" title={log.isp}>{log.isp}</span>}
+                          </div>
+                          {log.country && log.country !== 'Unknown' && (
+                            <div className="text-xs text-on-surface-variant flex flex-col gap-0.5 mt-1">
+                              <span>{log.city}{log.region && log.region !== 'Unknown' ? `, ${log.region}` : ''}, {log.country} {log.zip && log.zip !== 'Unknown' ? log.zip : ''}</span>
+                              {log.latitude && log.longitude && (
+                                <span className="opacity-75">Lat: {log.latitude}, Lon: {log.longitude}</span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </td>
                       <td className="px-4 py-3">{log.browser}</td>
                       <td className="px-4 py-3">{log.operatingSystem}</td>
                       <td className="px-4 py-3 capitalize">{log.deviceType}</td>

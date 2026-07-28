@@ -37,6 +37,7 @@ public class NavigationLink implements Serializable {
     private Integer sortOrder;
 
     @Column(name = "is_external", nullable = false)
+    @Builder.Default
     private Boolean isExternal = false;
 
     @Column(name = "badge_text")

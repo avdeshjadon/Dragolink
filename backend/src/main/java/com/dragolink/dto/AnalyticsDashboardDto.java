@@ -19,5 +19,6 @@ public class AnalyticsDashboardDto {
     private List<Map<String, Object>> clicksByDevice;
     private List<Map<String, Object>> clicksByBrowser;
     private List<Map<String, Object>> clicksByReferrer;
+    private List<Map<String, Object>> clicksByCountry;
     private List<ClickDetailsDto> recentClicks;
 }

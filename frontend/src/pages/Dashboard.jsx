@@ -240,6 +240,57 @@ export default function Dashboard() {
         </div>
       </div>
       
+      {/* Third Row Panels Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        {/* Location Breakdown */}
+        <div className="bg-surface-container-low rounded-xl border border-outline-variant/10 p-4 flex flex-col">
+          <h3 className="text-label-md font-label-md font-semibold text-on-surface uppercase tracking-wider mb-4 border-b border-outline-variant/10 pb-4">Top Locations</h3>
+          <div className="flex-grow">
+            {metrics.clicksByCountry && metrics.clicksByCountry.length > 0 ? (
+              <div className="flex flex-col gap-3">
+                {metrics.clicksByCountry.slice(0, 5).map((loc, index) => (
+                  <div key={index} className="flex justify-between items-center text-label-md font-label-md bg-surface-container-high rounded p-2 px-3">
+                    <div className="flex items-center gap-3">
+                      <span className="material-symbols-outlined text-on-surface-variant text-[18px]">public</span>
+                      <span className="text-on-surface">{loc.country || 'Unknown'}</span>
+                    </div>
+                    <span className="text-primary font-bold">{loc.count}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-full text-on-surface-variant text-label-sm min-h-[100px]">
+                No location data
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Browser Breakdown */}
+        <div className="bg-surface-container-low rounded-xl border border-outline-variant/10 p-4 flex flex-col">
+          <h3 className="text-label-md font-label-md font-semibold text-on-surface uppercase tracking-wider mb-4 border-b border-outline-variant/10 pb-4">Top Browsers</h3>
+          <div className="flex-grow">
+            {metrics.clicksByBrowser && metrics.clicksByBrowser.length > 0 ? (
+              <div className="flex flex-col gap-3">
+                {metrics.clicksByBrowser.slice(0, 5).map((browser, index) => (
+                  <div key={index} className="flex justify-between items-center text-label-md font-label-md bg-surface-container-high rounded p-2 px-3">
+                    <div className="flex items-center gap-3">
+                      <span className="material-symbols-outlined text-on-surface-variant text-[18px]">language</span>
+                      <span className="text-on-surface">{browser.browser || 'Unknown'}</span>
+                    </div>
+                    <span className="text-primary font-bold">{browser.count}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-full text-on-surface-variant text-label-sm min-h-[100px]">
+                No browser data
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      
     </div>
   );
 }

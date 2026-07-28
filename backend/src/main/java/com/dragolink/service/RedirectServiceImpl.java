@@ -88,10 +88,11 @@ public class RedirectServiceImpl implements RedirectService {
     }
 
     private String getClientIp(HttpServletRequest request) {
-        String remoteAddr = request.getHeader("X-FORWARDED-FOR");
-        if (remoteAddr == null || "".equals(remoteAddr)) {
-            remoteAddr = request.getRemoteAddr();
+        String remoteAddr = request.getHeader("X-Forwarded-For");
+        if (remoteAddr != null && !remoteAddr.isEmpty()) {
+            // X-Forwarded-For can contain multiple IPs, the first one is the client
+            return remoteAddr.split(",")[0].trim();
         }
-        return remoteAddr;
+        return request.getRemoteAddr();
     }
 }

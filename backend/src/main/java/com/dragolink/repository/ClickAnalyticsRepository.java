@@ -28,4 +28,7 @@ public interface ClickAnalyticsRepository extends JpaRepository<ClickAnalytics, 
 
     @Query("SELECT c.referrer AS referrer, COUNT(c) AS count FROM ClickAnalytics c WHERE c.shortLink.user.id = :userId GROUP BY c.referrer")
     List<Map<String, Object>> countClicksByReferrer(@Param("userId") Long userId);
+
+    @Query("SELECT c.country AS country, COUNT(c) AS count FROM ClickAnalytics c WHERE c.shortLink.user.id = :userId GROUP BY c.country")
+    List<Map<String, Object>> countClicksByCountry(@Param("userId") Long userId);
 }
