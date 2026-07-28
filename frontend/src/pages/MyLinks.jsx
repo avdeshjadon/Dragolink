@@ -135,6 +135,17 @@ export default function MyLinks() {
     }
   };
 
+  const handleToggleActive = async (id, currentStatus) => {
+    try {
+      await api.patch(`/links/${id}/toggle`);
+      fetchLinks();
+      toast.success(`Link ${currentStatus ? 'deactivated' : 'activated'} successfully!`);
+    } catch (err) {
+      console.error("Failed to toggle link status", err);
+      toast.error(err.response?.data?.message || "Failed to update link status");
+    }
+  };
+
   const handleBulkDelete = () => {
     if (selectedLinks.length === 0) return;
     setIsBulkDeleteModalOpen(true);
@@ -372,13 +383,15 @@ export default function MyLinks() {
                 {/* Status Badge */}
                 <div className="hidden sm:block">
                   {link.active ? (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 text-label-sm font-label-sm shadow-[0_0_10px_rgba(16,185,129,0.1)]">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Active
-                    </span>
+                    <button onClick={() => handleToggleActive(link.id, link.active)} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 text-label-sm font-label-sm shadow-[0_0_10px_rgba(16,185,129,0.1)] hover:bg-emerald-500/20 transition-colors cursor-pointer" title="Click to deactivate">
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)]"></div>
+                      Active
+                    </button>
                   ) : (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant/30 text-label-sm font-label-sm">
-                      <span className="w-2 h-2 rounded-full bg-on-surface-variant/50"></span> Inactive
-                    </span>
+                    <button onClick={() => handleToggleActive(link.id, link.active)} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-on-surface-variant border border-outline-variant/30 text-label-sm font-label-sm hover:bg-surface-container-highest transition-colors cursor-pointer" title="Click to activate">
+                      <div className="w-1.5 h-1.5 rounded-full bg-on-surface-variant/50"></div>
+                      Inactive
+                    </button>
                   )}
                 </div>
 
