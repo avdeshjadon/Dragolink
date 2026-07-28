@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+import com.dragolink.service.UserAgentParserService;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -22,6 +24,7 @@ public class AnalyticsConsumer {
     private final ClickAnalyticsRepository clickAnalyticsRepository;
     private final ShortLinkRepository shortLinkRepository;
     private final ObjectMapper objectMapper;
+    private final UserAgentParserService userAgentParserService;
 
     @KafkaListener(topics = "link-click-events", groupId = "dragolink-group")
     @org.springframework.transaction.annotation.Transactional
@@ -72,9 +75,9 @@ public class AnalyticsConsumer {
             ClickAnalytics analytics = ClickAnalytics.builder()
                     .shortLink(link)
                     .ipAddress(ip)
-                    .browser(link.isTrackBrowser() ? getBrowser(userAgentStr) : "Anonymous")
-                    .operatingSystem(link.isTrackOs() ? getOs(userAgentStr) : "Anonymous")
-                    .deviceType(link.isTrackDevice() ? getDevice(userAgentStr) : "Anonymous")
+                    .browser(link.isTrackBrowser() ? userAgentParserService.getBrowserName(userAgentStr) : "Anonymous")
+                    .operatingSystem(link.isTrackOs() ? userAgentParserService.getOs(userAgentStr) : "Anonymous")
+                    .deviceType(link.isTrackDevice() ? userAgentParserService.getDeviceClass(userAgentStr) : "Anonymous")
                     .referrer(link.isTrackReferrer() ? referrerStr : "Anonymous")
                     .clickedAt(LocalDateTime.parse((String) event.get("clickedAt")))
                     .country(country)
@@ -87,9 +90,9 @@ public class AnalyticsConsumer {
                     .isp(isp)
                     .userAgent(userAgentStr)
                     .language((String) event.get("language"))
-                    .isBot(isBot(userAgentStr))
-                    .browserVersion(getBrowserVersion(userAgentStr))
-                    .osVersion(getOsVersion(userAgentStr))
+                    .isBot(userAgentParserService.getDeviceClass(userAgentStr).equals("bot") || isBot(userAgentStr))
+                    .browserVersion(userAgentParserService.getBrowserVersion(userAgentStr))
+                    .osVersion(userAgentParserService.getOsVersion(userAgentStr))
                     .qrScan(Boolean.TRUE.equals(event.get("qrScan")))
                     .referrerChannel(getReferrerChannel(referrerStr))
                     .utmSource((String) event.get("utmSource"))
@@ -98,7 +101,7 @@ public class AnalyticsConsumer {
                     .utmTerm((String) event.get("utmTerm"))
                     .utmContent((String) event.get("utmContent"))
                     .build();
-
+                    
             clickAnalyticsRepository.save(analytics);
             shortLinkRepository.incrementClickCount(linkId);
 
@@ -107,31 +110,6 @@ public class AnalyticsConsumer {
         }
     }
 
-    private String getBrowser(String ua) {
-        if (ua == null) return "Unknown";
-        if (ua.contains("Edg/")) return "Edge";
-        if (ua.contains("Chrome/")) return "Chrome";
-        if (ua.contains("Firefox/")) return "Firefox";
-        if (ua.contains("Safari/") && !ua.contains("Chrome/")) return "Safari";
-        return "Other";
-    }
-
-    private String getOs(String ua) {
-        if (ua == null) return "Unknown";
-        if (ua.contains("Windows")) return "Windows";
-        if (ua.contains("Mac OS X")) return "Mac OS";
-        if (ua.contains("Android")) return "Android";
-        if (ua.contains("Linux")) return "Linux";
-        if (ua.contains("iPhone") || ua.contains("iPad")) return "iOS";
-        return "Other";
-    }
-
-    private String getDevice(String ua) {
-        if (ua == null) return "Unknown";
-        if (ua.contains("Mobile") || ua.contains("Android") || ua.contains("iPhone")) return "Mobile";
-        if (ua.contains("iPad") || ua.contains("Tablet")) return "Tablet";
-        return "Desktop";
-    }
 
     private boolean isBot(String ua) {
         if (ua == null) return false;
@@ -140,42 +118,6 @@ public class AnalyticsConsumer {
             || lowerUa.contains("slackbot") || lowerUa.contains("whatsapp") || lowerUa.contains("twitterbot")
             || lowerUa.contains("facebookexternalhit") || lowerUa.contains("discordbot") 
             || lowerUa.contains("telegrambot");
-    }
-
-    private String getBrowserVersion(String ua) {
-        if (ua == null) return null;
-        try {
-            if (ua.contains("Chrome/")) {
-                return ua.split("Chrome/")[1].split(" ")[0];
-            } else if (ua.contains("Firefox/")) {
-                return ua.split("Firefox/")[1].split(" ")[0];
-            } else if (ua.contains("Version/") && ua.contains("Safari")) {
-                return ua.split("Version/")[1].split(" ")[0];
-            } else if (ua.contains("Edg/")) {
-                return ua.split("Edg/")[1].split(" ")[0];
-            }
-        } catch (Exception e) {
-            // Ignore parse errors
-        }
-        return null;
-    }
-
-    private String getOsVersion(String ua) {
-        if (ua == null) return null;
-        try {
-            if (ua.contains("Mac OS X ")) {
-                return ua.split("Mac OS X ")[1].split("\\)")[0].replace("_", ".");
-            } else if (ua.contains("Windows NT ")) {
-                return ua.split("Windows NT ")[1].split(";")[0];
-            } else if (ua.contains("Android ")) {
-                return ua.split("Android ")[1].split(";")[0];
-            } else if (ua.contains("OS ") && ua.contains("like Mac OS X")) {
-                return ua.split("OS ")[1].split(" like")[0].replace("_", ".");
-            }
-        } catch (Exception e) {
-            // Ignore parse errors
-        }
-        return null;
     }
 
     private String getReferrerChannel(String referrer) {

@@ -23,6 +23,12 @@
     </properties>
 
     <dependencies>
+        <!-- UA Parser (lightweight alternative to Yauaa for free tier) -->
+        <dependency>
+            <groupId>com.github.ua-parser</groupId>
+            <artifactId>uap-java</artifactId>
+            <version>1.5.4</version>
+        </dependency>
         <!-- Spring Boot Starters -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -86,8 +92,6 @@
             <artifactId>javase</artifactId>
             <version>3.5.2</version>
         </dependency>
-
-        <!-- Removed Yauaa due to high memory consumption on free tier -->
 
         <!-- Utilities -->
         <dependency>

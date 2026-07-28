@@ -31,6 +31,7 @@ public class RedirectServiceImpl implements RedirectService {
     private final StringRedisTemplate redisTemplate;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
+    private final UserAgentParserService userAgentParserService;
 
     private static final String CACHE_PREFIX = "shortlink:";
     private static final String TOPIC = "link-click-events";
@@ -98,22 +99,9 @@ public class RedirectServiceImpl implements RedirectService {
         String targetUrl = cacheDto.getDefaultUrl();
         if (cacheDto.getRules() != null && !cacheDto.getRules().isEmpty()) {
             String userAgent = request.getHeader("User-Agent");
-            if (userAgent == null) userAgent = "";
-            userAgent = userAgent.toLowerCase();
             
-            String userOs = "unknown";
-            if (userAgent.contains("windows")) userOs = "windows";
-            else if (userAgent.contains("mac os") || userAgent.contains("macintosh")) userOs = "macos";
-            else if (userAgent.contains("android")) userOs = "android";
-            else if (userAgent.contains("iphone") || userAgent.contains("ipad")) userOs = "ios";
-            else if (userAgent.contains("linux")) userOs = "linux";
-            
-            String userDevice = "desktop";
-            if (userAgent.contains("mobi") || userAgent.contains("android") || userAgent.contains("iphone")) {
-                userDevice = "mobile";
-            } else if (userAgent.contains("tablet") || userAgent.contains("ipad")) {
-                userDevice = "tablet";
-            }
+            String userOs = userAgentParserService.getOs(userAgent);
+            String userDevice = userAgentParserService.getDeviceClass(userAgent);
             
             for (RoutingRuleDto rule : cacheDto.getRules()) {
                 if (rule.getType() == RoutingRuleType.OS && rule.getConditionValue().equalsIgnoreCase(userOs)) {
