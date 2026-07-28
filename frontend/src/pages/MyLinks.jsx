@@ -153,6 +153,40 @@ export default function MyLinks() {
     }
   };
 
+  const downloadLogsCSV = () => {
+    if (!clickLogs || clickLogs.length === 0) return;
+
+    const headers = ['Time', 'IP Address', 'ISP', 'Location', 'Device', 'OS', 'Browser', 'Referrer'];
+    
+    const rows = clickLogs.map(log => {
+      const time = new Date(log.clickedAt + (!log.clickedAt.endsWith('Z') ? 'Z' : '')).toLocaleString();
+      const location = log.location && log.location !== 'Unknown' ? log.location.replace(/,/g, '') : 'Unknown';
+      const isp = log.isp && log.isp !== 'Unknown' ? log.isp.replace(/,/g, '') : 'Unknown';
+      
+      return [
+        `"${time}"`,
+        `"${log.ipAddress || 'Unknown'}"`,
+        `"${isp}"`,
+        `"${location}"`,
+        `"${log.deviceType || 'Unknown'}"`,
+        `"${log.operatingSystem || 'Unknown'}"`,
+        `"${log.browser || 'Unknown'}"`,
+        `"${log.referrer || 'Direct / Unknown'}"`
+      ].join(',');
+    });
+
+    const csvContent = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `click-logs-${clickLogModalLink?.customAlias || clickLogModalLink?.shortCode || 'export'}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success('Logs downloaded successfully!');
+  };
+
   return (
     <div className="flex flex-col h-full bg-background font-sans relative">
       
@@ -436,6 +470,7 @@ export default function MyLinks() {
         onClose={() => setClickLogModalLink(null)}
         title="Click Logs"
         className="max-w-6xl w-full"
+        hideCloseButton={true}
       >
         <div className="bg-surface-container-lowest -mx-6 -mb-6 p-6 overflow-y-auto max-h-[85vh]">
           <div className="mb-6 pb-4 border-b border-outline-variant/10">
@@ -515,7 +550,15 @@ export default function MyLinks() {
                               {log.city}{log.region && log.region !== 'Unknown' ? `, ${log.region}` : ''}, {log.country} {log.zip && log.zip !== 'Unknown' ? log.zip : ''}
                             </p>
                             {log.latitude && log.longitude && (
-                              <p className="font-code-sm text-xs opacity-75 mt-1">Lat: {log.latitude}, Lon: {log.longitude}</p>
+                              <a 
+                                href={`https://www.google.com/maps?q=${log.latitude},${log.longitude}`} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="inline-flex items-center gap-1 mt-1.5 font-code-sm text-xs text-primary hover:text-primary/80 hover:underline transition-colors"
+                              >
+                                <span className="material-symbols-outlined text-[14px]">map</span>
+                                View on Map (Lat: {log.latitude}, Lon: {log.longitude})
+                              </a>
                             )}
                           </div>
                         ) : (
@@ -544,7 +587,14 @@ export default function MyLinks() {
             </div>
           )}
           
-          <div className="mt-6 flex justify-end">
+          <div className="mt-6 flex justify-end gap-3">
+            <button 
+              onClick={downloadLogsCSV} 
+              className="px-6 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg font-label-md transition-colors cursor-pointer flex items-center gap-2"
+            >
+              <span className="material-symbols-outlined text-[18px]">download</span>
+              Export CSV
+            </button>
             <button 
               onClick={() => setClickLogModalLink(null)} 
               className="px-6 py-2 bg-surface-container-high hover:bg-surface-container-highest text-on-surface rounded-lg font-label-md transition-colors cursor-pointer"
