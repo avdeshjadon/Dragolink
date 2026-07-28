@@ -67,7 +67,7 @@ export default function CreateLink() {
           </button>
           <AsyncButton 
             onClick={handleSubmit} 
-            className="px-4 py-2 rounded-lg bg-primary-container text-white font-label-md text-label-md hover:bg-inverse-primary transition-colors flex items-center gap-2 cursor-pointer"
+            className="px-4 py-2 rounded-lg bg-primary text-white font-label-md text-label-md hover:bg-primary/90 transition-colors flex items-center gap-2 cursor-pointer"
           >
             <span className="material-symbols-outlined text-[18px]">bolt</span>
             Create Now
@@ -281,7 +281,7 @@ export default function CreateLink() {
             <div className="md:hidden flex flex-col gap-2 mt-10">
               <AsyncButton 
                 onClick={handleSubmit} 
-                className="w-full py-4 rounded-lg bg-primary-container text-white font-label-md text-label-md hover:bg-inverse-primary transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(21,128,61,0.3)] cursor-pointer"
+                className="w-full py-4 rounded-lg bg-primary text-white font-label-md text-label-md hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(21,128,61,0.3)] cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[18px]">bolt</span>
                 Create Link

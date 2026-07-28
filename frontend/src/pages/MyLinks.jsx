@@ -296,19 +296,19 @@ export default function MyLinks() {
                 <div className="flex flex-1 items-center gap-5 min-w-0">
                   <div className="w-20 h-20 bg-white rounded-xl border border-outline-variant/20 p-2 shrink-0 flex items-center justify-center shadow-sm relative overflow-hidden group-hover:shadow-md transition-shadow">
                     <QRCodeSVG 
-                      value={`${import.meta.env.VITE_APP_URL}/${link.shortCode}`} 
+                      value={`${import.meta.env.VITE_APP_URL}/${link.customAlias || link.shortCode}`} 
                       size={64} 
                     />
                   </div>
                   <div className="flex flex-col min-w-0 justify-center">
-                    <span className="text-headline-sm font-headline-sm text-on-surface truncate mb-1 group-hover:text-primary transition-colors">{link.title || link.shortCode}</span>
+                    <span className="text-headline-sm font-headline-sm text-on-surface truncate mb-1 group-hover:text-primary transition-colors">{link.title || link.customAlias || link.shortCode}</span>
                     <span className="text-body-md font-body-md text-on-surface-variant/70 truncate">{link.longUrl}</span>
                   </div>
                 </div>
               ) : (
                 <div className="flex flex-1 items-center gap-4 min-w-0">
                   <div className="flex flex-col min-w-0 justify-center gap-1">
-                    <span className="text-headline-sm font-headline-sm text-on-surface truncate group-hover:text-primary transition-colors">{link.title || link.shortCode}</span>
+                    <span className="text-headline-sm font-headline-sm text-on-surface truncate group-hover:text-primary transition-colors">{link.title || link.customAlias || link.shortCode}</span>
                     <span className="text-body-md font-body-md text-on-surface-variant/70 truncate hidden sm:block">{link.longUrl}</span>
                   </div>
                 </div>
@@ -321,10 +321,10 @@ export default function MyLinks() {
                 {activeTab === 'links' && (
                   <div 
                     className="group/copy flex items-center gap-2 px-3 py-1.5 bg-surface-container-lowest border border-outline-variant/20 rounded-full cursor-pointer hover:border-primary/30 hover:bg-primary/5 transition-all w-fit max-w-[180px] overflow-hidden shadow-sm"
-                    onClick={() => handleCopy(link.shortCode)}
+                    onClick={() => handleCopy(link.customAlias || link.shortCode)}
                     title="Copy to clipboard"
                   >
-                    <span className="text-code-sm font-code-sm text-on-surface truncate flex-1">{import.meta.env.VITE_APP_URL}/{link.shortCode}</span>
+                    <span className="text-code-sm font-code-sm text-on-surface truncate flex-1">{import.meta.env.VITE_APP_URL}/{link.customAlias || link.shortCode}</span>
                     <span className="material-symbols-outlined text-[14px] text-on-surface-variant opacity-50 group-hover/copy:opacity-100 group-hover/copy:text-primary transition-opacity shrink-0">content_copy</span>
                   </div>
                 )}
@@ -410,7 +410,7 @@ export default function MyLinks() {
         title="Delete Link?"
         description={
           <>
-            Are you sure you want to delete <span className="font-bold text-on-surface">{deleteModalLink?.title || deleteModalLink?.shortCode}</span>? This action cannot be undone.
+            Are you sure you want to delete <span className="font-bold text-on-surface">{deleteModalLink?.title || deleteModalLink?.customAlias || deleteModalLink?.shortCode}</span>? This action cannot be undone.
           </>
         }
         confirmText="Delete"
@@ -437,7 +437,7 @@ export default function MyLinks() {
         title={
           <div>
             <h3 className="text-headline-sm font-headline-sm text-on-surface">Click Logs</h3>
-            <p className="text-body-sm text-on-surface-variant mt-1">Detailed tracking data for <span className="text-primary font-medium">{clickLogModalLink?.title || clickLogModalLink?.shortCode}</span></p>
+            <p className="text-body-sm text-on-surface-variant mt-1">Detailed tracking data for <span className="text-primary font-medium">{clickLogModalLink?.title || clickLogModalLink?.customAlias || clickLogModalLink?.shortCode}</span></p>
           </div>
         }
         className="max-w-4xl"
