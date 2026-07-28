@@ -102,7 +102,7 @@ export default function MyLinks() {
     setEditModalLink(link);
     setEditUrl(link.longUrl || '');
     setEditTitle(link.title || '');
-    setEditAlias(link.shortCode || '');
+    setEditAlias(link.customAlias || link.shortCode || '');
   };
 
   const handleEditSubmit = async () => {
