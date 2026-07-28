@@ -550,15 +550,7 @@ export default function MyLinks() {
                               {log.city}{log.region && log.region !== 'Unknown' ? `, ${log.region}` : ''}, {log.country} {log.zip && log.zip !== 'Unknown' ? log.zip : ''}
                             </p>
                             {log.latitude && log.longitude && (
-                              <a 
-                                href={`https://www.google.com/maps?q=${log.latitude},${log.longitude}`} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="inline-flex items-center gap-1 mt-1.5 font-code-sm text-xs text-primary hover:text-primary/80 hover:underline transition-colors"
-                              >
-                                <span className="material-symbols-outlined text-[14px]">map</span>
-                                View on Map (Lat: {log.latitude}, Lon: {log.longitude})
-                              </a>
+                              <p className="font-code-sm text-xs opacity-75 mt-1">Lat: {log.latitude}, Lon: {log.longitude}</p>
                             )}
                           </div>
                         ) : (
