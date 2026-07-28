@@ -46,14 +46,13 @@ export default function MotionModal({
             className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md"
           />
           
-          {/* Modal Container */}
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 pointer-events-none">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={TRANSITIONS.SPRING}
-              className={`bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/20 overflow-hidden w-full max-h-full flex flex-col pointer-events-auto ${className.includes('max-w-') ? '' : 'max-w-lg'} ${className}`}
+              className={`bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/20 overflow-hidden w-full max-h-[calc(100vh-2rem)] sm:max-h-[calc(100vh-3rem)] flex flex-col pointer-events-auto ${className.includes('max-w-') ? '' : 'max-w-lg'} ${className}`}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
@@ -74,7 +73,7 @@ export default function MotionModal({
               )}
               
               {/* Content */}
-              <div className="p-6 overflow-y-auto flex-1">
+              <div className="p-4 sm:p-6 overflow-y-auto flex-1 min-h-0">
                 {children}
               </div>
             </motion.div>
