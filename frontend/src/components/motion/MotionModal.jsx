@@ -44,18 +44,21 @@ export default function MotionModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={TRANSITIONS.EASE_OUT}
-            onClick={onClose}
             className="fixed inset-0 bg-slate-900/60 backdrop-blur-md"
             style={{ zIndex: 100 }}
           />
           
-          <div className="fixed inset-0 flex items-center justify-center p-4 sm:p-6 pointer-events-none" style={{ zIndex: 100 }}>
+          <div 
+            className="fixed inset-0 flex items-center justify-center p-4 sm:p-6" 
+            style={{ zIndex: 100 }}
+            onClick={onClose}
+          >
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={TRANSITIONS.SPRING}
-              className={`bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/20 overflow-hidden w-full max-h-[90vh] flex flex-col pointer-events-auto min-h-0 ${className.includes('max-w-') ? '' : 'max-w-lg'} ${className}`}
+              className={`bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/20 overflow-hidden w-full max-h-[90vh] flex flex-col min-h-0 ${className.includes('max-w-') ? '' : 'max-w-lg'} ${className}`}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
