@@ -10,6 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Toaster, toast } from "react-hot-toast";
 import { api } from "../lib/axios";
+import AsyncButton from "../components/AsyncButton";
 
 export default function EditLink() {
   const { id } = useParams();
