@@ -28,7 +28,6 @@ export default function MyLinks() {
   // Modal states
   const [deleteModalLink, setDeleteModalLink] = useState(null);
   const [isBulkDeleteModalOpen, setIsBulkDeleteModalOpen] = useState(false);
-  const [editTrackIp, setEditTrackIp] = useState(false);
 
   // Click Log Modal State
 
@@ -81,36 +80,6 @@ export default function MyLinks() {
     navigator.clipboard.writeText(url).then(() => {
       toast.success("Link copied to clipboard!");
     });
-  };
-
-  const handleEditSubmit = async () => {
-    if (!editModalLink) return;
-    try {
-      await api.put(`/links/${editModalLink.id}`, {
-        longUrl: editUrl,
-        title: editTitle,
-        customAlias: editAlias,
-        trackIp: editTrackIp,
-        trackBrowser: editTrackBrowser,
-        trackOs: editTrackOs,
-        trackDevice: editTrackDevice,
-        trackReferrer: editTrackReferrer,
-        utmSource: editUtmSource || undefined,
-        utmMedium: editUtmMedium || undefined,
-        utmCampaign: editUtmCampaign || undefined,
-        utmTerm: editUtmTerm || undefined,
-        utmContent: editUtmContent || undefined,
-        routingRules: editRoutingRules.filter(
-          (r) => r.conditionValue && r.destinationUrl,
-        ),
-      });
-      setEditModalLink(null);
-      fetchLinks();
-      toast.success("Link updated successfully!");
-    } catch (err) {
-      console.error("Failed to update link", err);
-      toast.error(err.response?.data?.message || "Failed to update link");
-    }
   };
 
   const handleDelete = async (id) => {
