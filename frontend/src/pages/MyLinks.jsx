@@ -65,10 +65,6 @@ export default function MyLinks() {
 
 
 
-  const openClickLogModal = (link) => {
-    setClickLogModalLink(link);
-    fetchClickLogs(link.id);
-  };
 
   const displayedLinks = links.filter(link => {
     const isQR = link.title && link.title.startsWith('[QR]');
@@ -442,7 +438,7 @@ export default function MyLinks() {
 
                 {/* Actions */}
                 <div className="flex items-center gap-4 ml-2">
-                  <button onClick={() => openClickLogModal(link)} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="Click Log / Info">
+                  <button onClick={() => navigate(`/logs/${link.id}`)} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="Click Log / Info">
                     <span className="material-symbols-outlined text-[20px]">info</span>
                   </button>
                   <button onClick={() => navigate(`/analytics/${link.id}`)} className="text-on-surface-variant hover:text-primary transition-colors cursor-pointer" title="Analytics">
@@ -521,8 +517,6 @@ export default function MyLinks() {
         isDestructive={true}
         icon={<span className="material-symbols-outlined text-[32px]">delete_sweep</span>}
       />
-
-
 
 
 
