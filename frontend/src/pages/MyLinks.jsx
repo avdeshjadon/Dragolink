@@ -525,7 +525,7 @@ export default function MyLinks() {
         isOpen={!!editModalLink}
         onClose={() => setEditModalLink(null)}
         title="Edit Link"
-        className="max-w-2xl max-h-[85vh] overflow-y-auto"
+        className="max-w-2xl"
       >
         <div className="space-y-6 mb-6">
           <section className="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/30 shadow-sm">
