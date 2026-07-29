@@ -176,7 +176,7 @@ export default function CreateLink() {
             className="px-4 py-2 rounded-lg bg-primary text-white font-label-md text-label-md hover:bg-primary/90 transition-colors flex items-center gap-2 cursor-pointer"
           >
             <span className="material-symbols-outlined text-[18px]">
-              electric_bolt
+              add_link
             </span>
             Create Now
           </AsyncButton>
@@ -231,6 +231,26 @@ export default function CreateLink() {
                 className="premium-input w-full rounded-lg px-4 py-2 font-body-md"
                 placeholder="e.g. Q3 Social Media Campaign"
               />
+            </div>
+
+            {/* Campaign */}
+            <div>
+              <label className="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">
+                Campaign
+              </label>
+              <input
+                list="campaign-list"
+                type="text"
+                value={utmCampaign}
+                onChange={(e) => setUtmCampaign(e.target.value)}
+                className="premium-input w-full rounded-lg px-4 py-2 font-body-md"
+                placeholder="Select or type a campaign..."
+              />
+              <datalist id="campaign-list">
+                {campaigns.map((camp) => (
+                  <option key={camp.id} value={camp.name} />
+                ))}
+              </datalist>
             </div>
           </section>
 
@@ -503,24 +523,6 @@ export default function CreateLink() {
               </div>
               <div>
                 <label className="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">
-                  Campaign
-                </label>
-                <input
-                  list="campaign-list"
-                  type="text"
-                  value={utmCampaign}
-                  onChange={(e) => setUtmCampaign(e.target.value)}
-                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px] text-on-surface bg-surface-container-highest border-none"
-                  placeholder="Select or type a campaign..."
-                />
-                <datalist id="campaign-list">
-                  {campaigns.map((camp) => (
-                    <option key={camp.id} value={camp.name} />
-                  ))}
-                </datalist>
-              </div>
-              <div>
-                <label className="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">
                   Term
                 </label>
                 <input
@@ -649,7 +651,7 @@ export default function CreateLink() {
               className="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-primary text-white font-label-md text-label-md hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(21,128,61,0.3)] sm:shadow-sm cursor-pointer"
             >
               <span className="material-symbols-outlined text-[18px]">
-                electric_bolt
+                add_link
               </span>
               Create Now
             </AsyncButton>

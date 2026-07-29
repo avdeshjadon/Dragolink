@@ -25,6 +25,20 @@ export default function QRCodes() {
   const [logoMode, setLogoMode] = useState("default"); // 'default', 'custom', 'none'
   const [customLogoUrl, setCustomLogoUrl] = useState("");
   const [previousLogoMode, setPreviousLogoMode] = useState("default");
+  const [campaigns, setCampaigns] = useState([]);
+  const [utmCampaign, setUtmCampaign] = useState("");
+
+  useEffect(() => {
+    const fetchCampaigns = async () => {
+      try {
+        const res = await api.get("/campaigns");
+        setCampaigns(res.data);
+      } catch (error) {
+        console.error("Failed to load campaigns", error);
+      }
+    };
+    fetchCampaigns();
+  }, []);
 
   const qrRef = useRef(null);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
@@ -135,6 +149,7 @@ export default function QRCodes() {
       const res = await api.post("/links", {
         longUrl: destinationUrl,
         title: "[QR] Custom Code",
+        utmCampaign: utmCampaign || undefined,
       });
       const shortCode =
         res.data.shortCode || res.data.customAlias || res.data.id;
@@ -419,23 +434,44 @@ export default function QRCodes() {
 
           <div className="z-10 w-full max-w-md flex flex-col gap-6">
             {/* Moved Destination URL Section */}
-            <section className="w-full">
-              <h3 className="text-label-sm font-label-sm uppercase text-on-surface-variant mb-2">
-                Destination URL
-              </h3>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <span className="material-symbols-outlined text-outline-variant text-[18px]">
-                    link
-                  </span>
+            <section className="w-full space-y-4">
+              <div>
+                <h3 className="text-label-sm font-label-sm uppercase text-on-surface-variant mb-2">
+                  Destination URL
+                </h3>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span className="material-symbols-outlined text-outline-variant text-[18px]">
+                      link
+                    </span>
+                  </div>
+                  <input
+                    type="url"
+                    value={destinationUrl}
+                    onChange={(e) => setDestinationUrl(e.target.value)}
+                    className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2.5 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-code-sm text-code-sm"
+                    placeholder="https://example.com/promo"
+                  />
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-label-sm font-label-sm text-on-surface-variant mb-1.5 uppercase tracking-wider">
+                  Campaign (Optional)
+                </label>
                 <input
-                  type="url"
-                  value={destinationUrl}
-                  onChange={(e) => setDestinationUrl(e.target.value)}
-                  className="w-full bg-surface text-on-surface border border-outline-variant/50 rounded-lg pl-10 pr-4 py-3 font-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none shadow-sm"
-                  placeholder="https://example.com"
+                  list="qr-campaign-list"
+                  type="text"
+                  value={utmCampaign}
+                  onChange={(e) => setUtmCampaign(e.target.value)}
+                  className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2.5 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-body-sm text-body-sm"
+                  placeholder="Select or type a campaign..."
                 />
+                <datalist id="qr-campaign-list">
+                  {campaigns.map((camp) => (
+                    <option key={camp.id} value={camp.name} />
+                  ))}
+                </datalist>
               </div>
             </section>
 

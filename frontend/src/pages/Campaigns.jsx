@@ -14,9 +14,6 @@ export default function Campaigns() {
   const navigate = useNavigate();
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newCampaignName, setNewCampaignName] = useState("");
-  const [newCampaignDesc, setNewCampaignDesc] = useState("");
 
   const fetchCampaigns = async () => {
     try {
@@ -33,21 +30,7 @@ export default function Campaigns() {
     fetchCampaigns();
   }, []);
 
-  const handleCreateCampaign = async () => {
-    if (!newCampaignName.trim()) return;
-    try {
-      await api.post("/campaigns", {
-        name: newCampaignName,
-        description: newCampaignDesc,
-      });
-      setIsModalOpen(false);
-      setNewCampaignName("");
-      setNewCampaignDesc("");
-      await fetchCampaigns();
-    } catch (error) {
-      console.error("Failed to create campaign", error);
-    }
-  };
+
 
   const handleDeleteCampaign = async (id) => {
     if (
@@ -78,11 +61,11 @@ export default function Campaigns() {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-all duration-300 ease-out hover:scale-[1.02] active:scale-[0.98] shadow-sm border border-primary/20"
+            onClick={() => navigate('/campaigns/create')}
+            className="hidden sm:flex bg-primary hover:bg-primary/90 text-white text-label-md font-label-md py-2 px-4 rounded-lg items-center justify-center gap-2 transition-colors shadow-md cursor-pointer"
           >
-            <span className="material-symbols-outlined text-[18px]">add</span>
-            New Campaign
+            <span className="material-symbols-outlined text-[20px]">add</span>
+            Create New
           </button>
         </div>
       </div>
@@ -165,81 +148,15 @@ export default function Campaigns() {
             collective performance over time.
           </p>
           <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 px-6 py-2.5 bg-surface-container border border-outline-variant/30 rounded-lg text-on-surface font-medium hover:border-primary/50 transition-colors"
+            onClick={() => navigate('/campaigns/create')}
+            className="flex items-center gap-2 px-6 py-2.5 bg-surface-container border border-outline-variant/30 rounded-lg text-on-surface font-medium hover:border-primary/50 transition-colors cursor-pointer"
           >
             Get Started
           </button>
         </div>
       )}
 
-      {/* New Campaign Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-surface border border-outline-variant/20 rounded-2xl w-full max-w-md shadow-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="p-6 border-b border-outline-variant/10 flex justify-between items-center">
-              <h3 className="text-title-lg font-title-lg text-on-surface">
-                New Campaign
-              </h3>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-on-surface-variant hover:text-on-surface p-1 rounded-full hover:bg-surface-variant transition-colors"
-              >
-                <span className="material-symbols-outlined">close</span>
-              </button>
-            </div>
 
-            <form
-              onSubmit={(e) => e.preventDefault()}
-              className="p-6 space-y-4"
-            >
-              <div>
-                <label className="block text-label-sm font-label-md text-on-surface-variant mb-1">
-                  Campaign Name
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={newCampaignName}
-                  onChange={(e) => setNewCampaignName(e.target.value)}
-                  className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-                  placeholder="e.g., Summer Sale 2024"
-                />
-              </div>
-
-              <div>
-                <label className="block text-label-sm font-label-md text-on-surface-variant mb-1">
-                  Description (Optional)
-                </label>
-                <textarea
-                  value={newCampaignDesc}
-                  onChange={(e) => setNewCampaignDesc(e.target.value)}
-                  className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none h-24"
-                  placeholder="Track performance for our summer marketing channels..."
-                ></textarea>
-              </div>
-
-              <div className="pt-4 flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-on-surface-variant hover:bg-surface-variant rounded-lg font-medium transition-colors"
-                >
-                  Cancel
-                </button>
-                <AsyncButton
-                  type="submit"
-                  onClick={handleCreateCampaign}
-                  disabled={!newCampaignName.trim()}
-                  className="px-6 py-2 bg-primary text-on-primary rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Create Campaign
-                </AsyncButton>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
