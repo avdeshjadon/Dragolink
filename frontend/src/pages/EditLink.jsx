@@ -11,6 +11,7 @@ import { motion } from "framer-motion";
 import { Toaster, toast } from "react-hot-toast";
 import { api } from "../lib/axios";
 import AsyncButton from "../components/AsyncButton";
+import CampaignSelect from "../components/CampaignSelect";
 
 export default function EditLink() {
   const { id } = useParams();
@@ -264,6 +265,18 @@ export default function EditLink() {
                 />
               </div>
             </div>
+            
+            {/* Campaign */}
+            <div>
+              <label className="block text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-2">
+                Campaign
+              </label>
+              <CampaignSelect
+                campaigns={campaigns}
+                value={editUtmCampaign}
+                onChange={setEditUtmCampaign}
+              />
+            </div>
           </div>
         </section>
 
@@ -405,24 +418,7 @@ export default function EditLink() {
                 className="w-full bg-surface-container text-on-surface border border-outline-variant/50 rounded-xl px-4 py-3 font-code-sm text-code-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
               />
             </div>
-            <div>
-              <label className="block text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-2">
-                Campaign
-              </label>
-              <input
-                list="edit-campaign-list"
-                type="text"
-                value={editUtmCampaign}
-                onChange={(e) => setEditUtmCampaign(e.target.value)}
-                placeholder="Select or type a campaign..."
-                className="w-full bg-surface-container text-on-surface border border-outline-variant/50 rounded-xl px-4 py-3 font-code-sm text-code-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
-              />
-              <datalist id="edit-campaign-list">
-                {campaigns.map((camp) => (
-                  <option key={camp.id} value={camp.name} />
-                ))}
-              </datalist>
-            </div>
+
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
