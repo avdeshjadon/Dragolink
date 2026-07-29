@@ -477,7 +477,7 @@ export default function EditLink() {
             Cancel
           </button>
           <AsyncButton
-            onClick={handleSubmit}
+            onClick={handleEditSubmit}
             className="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-primary text-white font-label-md text-label-md hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(21,128,61,0.3)] sm:shadow-sm cursor-pointer"
           >
             <span className="material-symbols-outlined text-[18px]">save</span>
