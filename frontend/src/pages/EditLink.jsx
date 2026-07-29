@@ -467,6 +467,23 @@ export default function EditLink() {
             </label>
           </div>
         </section>
+
+        {/* Bottom Action Area */}
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-6 mt-6 border-t border-outline-variant/20">
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="w-full sm:w-auto px-6 py-2.5 rounded-lg border border-outline-variant text-primary font-label-md text-label-md hover:bg-surface-container-highest transition-colors cursor-pointer"
+          >
+            Cancel
+          </button>
+          <AsyncButton
+            onClick={handleSubmit}
+            className="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-primary text-white font-label-md text-label-md hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(21,128,61,0.3)] sm:shadow-sm cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[18px]">save</span>
+            Save Changes
+          </AsyncButton>
+        </div>
       </main>
     </div>
   );
