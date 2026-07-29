@@ -249,11 +249,10 @@ export default function MyLinks() {
         ) : (
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 glass-panel p-4 rounded-xl relative z-20">
             <div className="flex items-center gap-2">
-              <button className="bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface text-label-md font-label-md py-1.5 px-3 rounded-lg flex items-center gap-2 transition-colors cursor-pointer">
-                <span className="material-symbols-outlined text-[16px]">
+              <button className="bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface text-label-md font-label-md py-1.5 px-3 rounded-lg flex items-center justify-center transition-colors cursor-pointer" title="Filter">
+                <span className="material-symbols-outlined text-[18px]">
                   filter_list
                 </span>
-                Filter
               </button>
               <div className="flex bg-surface-container-lowest border border-outline-variant/20 rounded-lg p-1">
                 {["All", "Active", "Expired", "Scheduled"].map((filter) => (
@@ -383,7 +382,7 @@ export default function MyLinks() {
                 {activeTab === "links" && (
                   <button
                     onClick={() => handleCopy(link.customAlias || link.shortCode)}
-                    className="flex items-center gap-2 px-3 py-1.5 bg-surface-container-lowest border border-outline-variant/20 rounded-lg cursor-pointer hover:border-primary/30 hover:bg-primary/5 transition-all text-label-sm font-medium text-on-surface hover:text-primary"
+                    className="flex items-center gap-2 px-3 py-1.5 bg-surface-container-lowest border border-outline-variant/20 rounded-lg cursor-pointer hover:border-primary/30 hover:bg-primary/5 transition-all text-label-sm font-medium text-on-surface hover:text-primary whitespace-nowrap"
                     title="Copy shortened link"
                   >
                     <span className="material-symbols-outlined text-[16px]">content_copy</span>
@@ -402,28 +401,30 @@ export default function MyLinks() {
                 </div>
 
                 {/* Status Badge */}
-                <div className="hidden sm:block">
-                  {link.active ? (
-                    <button
-                      onClick={() => handleToggleActive(link.id, link.active)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 text-label-sm font-label-sm shadow-[0_0_10px_rgba(16,185,129,0.1)] hover:bg-emerald-500/20 transition-colors cursor-pointer"
-                      title="Click to deactivate"
-                    >
-                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)]"></div>
-                      Active
-                      <span className="material-symbols-outlined text-[14px]">expand_more</span>
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handleToggleActive(link.id, link.active)}
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-on-surface-variant border border-outline-variant/30 text-label-sm font-label-sm hover:bg-surface-container-highest transition-colors cursor-pointer"
-                      title="Click to activate"
-                    >
-                      <div className="w-1.5 h-1.5 rounded-full bg-on-surface-variant/50"></div>
-                      Inactive
-                      <span className="material-symbols-outlined text-[14px]">expand_more</span>
-                    </button>
-                  )}
+                <div className="hidden sm:block relative w-fit">
+                  <select
+                    value={link.active ? "active" : "inactive"}
+                    onChange={(e) => {
+                      const newStatus = e.target.value === "active";
+                      if (newStatus !== link.active) {
+                        handleToggleActive(link.id, link.active);
+                      }
+                    }}
+                    className={`appearance-none inline-flex items-center pl-6 pr-7 py-1 rounded-full text-label-sm font-label-sm cursor-pointer outline-none transition-colors border shadow-sm ${
+                      link.active 
+                        ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]" 
+                        : "bg-surface-container-high text-on-surface-variant border-outline-variant/30 hover:bg-surface-container-highest"
+                    }`}
+                  >
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
+                  {/* Status dot */}
+                  <div className={`w-1.5 h-1.5 rounded-full absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none ${link.active ? "bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)]" : "bg-on-surface-variant/50"}`}></div>
+                  {/* Custom arrow for select */}
+                  <span className={`material-symbols-outlined text-[14px] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none ${link.active ? "text-emerald-600" : "text-on-surface-variant"}`}>
+                    expand_more
+                  </span>
                 </div>
 
                 {/* Actions */}

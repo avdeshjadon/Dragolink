@@ -166,7 +166,7 @@ export default function EditLink() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate("/links")}
-              className="p-2 -ml-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-full transition-colors"
+              className="p-2 -ml-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-full transition-colors cursor-pointer"
             >
               <span className="material-symbols-outlined text-[24px]">
                 arrow_back
@@ -185,17 +185,22 @@ export default function EditLink() {
           <div className="flex items-center gap-3">
             <button
               onClick={handleEditSubmit}
-              disabled={isEditingLink}
-              className="px-6 py-2 bg-primary hover:bg-primary/90 text-white disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-label-md transition-colors flex items-center gap-2 shadow-sm"
+              disabled={!isChanged() || isEditingLink}
+              className={`px-6 py-2 rounded-lg font-label-md flex items-center gap-2 transition-colors cursor-pointer ${
+                isChanged()
+                  ? "bg-primary text-white hover:bg-primary/90 shadow-sm"
+                  : "bg-surface-container-highest text-on-surface-variant cursor-not-allowed opacity-60"
+              }`}
             >
               {isEditingLink ? (
-                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
               ) : (
                 <span className="material-symbols-outlined text-[18px]">
                   save
                 </span>
               )}
-              Save Changes
+              <span className="hidden sm:inline">Save Changes</span>
+              <span className="sm:hidden">Save</span>
             </button>
           </div>
         </div>
