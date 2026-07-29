@@ -348,7 +348,7 @@ export default function CreateLink() {
                   key={index}
                   className="flex flex-col sm:flex-row gap-2 items-start sm:items-center bg-surface-container-low p-3 rounded-lg border border-outline-variant/30 relative"
                 >
-                  <div className="flex gap-2 w-full sm:w-auto">
+                  <div className="flex gap-2 w-full sm:w-auto sm:mr-3">
                     <select
                       value={rule.type}
                       onChange={(e) =>
@@ -451,67 +451,58 @@ export default function CreateLink() {
                 <label className="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">
                   Source
                 </label>
-                <input
-                  type="text"
-                  list="utm_source_options"
+                <select
                   value={utmSource}
                   onChange={(e) => setUtmSource(e.target.value)}
-                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px]"
-                  placeholder="Select or type..."
-                />
-                <datalist id="utm_source_options">
-                  <option value="google" />
-                  <option value="facebook" />
-                  <option value="instagram" />
-                  <option value="twitter" />
-                  <option value="linkedin" />
-                  <option value="youtube" />
-                  <option value="tiktok" />
-                  <option value="newsletter" />
-                </datalist>
+                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px] text-on-surface-variant bg-surface-container-highest border-none"
+                >
+                  <option value="">Select source...</option>
+                  <option value="google">google</option>
+                  <option value="facebook">facebook</option>
+                  <option value="instagram">instagram</option>
+                  <option value="twitter">twitter</option>
+                  <option value="linkedin">linkedin</option>
+                  <option value="youtube">youtube</option>
+                  <option value="tiktok">tiktok</option>
+                  <option value="newsletter">newsletter</option>
+                </select>
               </div>
               <div>
                 <label className="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">
                   Medium
                 </label>
-                <input
-                  type="text"
-                  list="utm_medium_options"
+                <select
                   value={utmMedium}
                   onChange={(e) => setUtmMedium(e.target.value)}
-                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px]"
-                  placeholder="Select or type..."
-                />
-                <datalist id="utm_medium_options">
-                  <option value="social" />
-                  <option value="email" />
-                  <option value="cpc" />
-                  <option value="banner" />
-                  <option value="referral" />
-                  <option value="organic" />
-                  <option value="affiliate" />
-                </datalist>
+                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px] text-on-surface-variant bg-surface-container-highest border-none"
+                >
+                  <option value="">Select medium...</option>
+                  <option value="social">social</option>
+                  <option value="email">email</option>
+                  <option value="cpc">cpc</option>
+                  <option value="banner">banner</option>
+                  <option value="referral">referral</option>
+                  <option value="organic">organic</option>
+                  <option value="affiliate">affiliate</option>
+                </select>
               </div>
               <div>
                 <label className="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">
                   Campaign
                 </label>
-                <input
-                  type="text"
-                  list="utm_campaign_options"
+                <select
                   value={utmCampaign}
                   onChange={(e) => setUtmCampaign(e.target.value)}
-                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px]"
-                  placeholder="Select or type..."
-                />
-                <datalist id="utm_campaign_options">
-                  <option value="spring_sale" />
-                  <option value="summer_promo" />
-                  <option value="black_friday" />
-                  <option value="holiday_specials" />
-                  <option value="welcome_series" />
-                  <option value="retargeting" />
-                </datalist>
+                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px] text-on-surface-variant bg-surface-container-highest border-none"
+                >
+                  <option value="">Select campaign...</option>
+                  <option value="spring_sale">spring_sale</option>
+                  <option value="summer_promo">summer_promo</option>
+                  <option value="black_friday">black_friday</option>
+                  <option value="holiday_specials">holiday_specials</option>
+                  <option value="welcome_series">welcome_series</option>
+                  <option value="retargeting">retargeting</option>
+                </select>
               </div>
               <div>
                 <label className="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">
@@ -521,7 +512,7 @@ export default function CreateLink() {
                   type="text"
                   value={utmTerm}
                   onChange={(e) => setUtmTerm(e.target.value)}
-                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px]"
+                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px] text-on-surface-variant bg-surface-container-highest border-none"
                   placeholder="e.g. running+shoes"
                 />
               </div>
@@ -529,22 +520,19 @@ export default function CreateLink() {
                 <label className="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">
                   Content
                 </label>
-                <input
-                  type="text"
-                  list="utm_content_options"
+                <select
                   value={utmContent}
                   onChange={(e) => setUtmContent(e.target.value)}
-                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px]"
-                  placeholder="Select or type..."
-                />
-                <datalist id="utm_content_options">
-                  <option value="logolink" />
-                  <option value="textlink" />
-                  <option value="sidebar" />
-                  <option value="header_banner" />
-                  <option value="video_ad" />
-                  <option value="button_blue" />
-                </datalist>
+                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px] text-on-surface-variant bg-surface-container-highest border-none"
+                >
+                  <option value="">Select content...</option>
+                  <option value="logolink">logolink</option>
+                  <option value="textlink">textlink</option>
+                  <option value="sidebar">sidebar</option>
+                  <option value="header_banner">header_banner</option>
+                  <option value="video_ad">video_ad</option>
+                  <option value="button_blue">button_blue</option>
+                </select>
               </div>
             </div>
           </section>
