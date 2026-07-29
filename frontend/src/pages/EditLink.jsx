@@ -261,7 +261,7 @@ export default function EditLink() {
                       onChange={(e) =>
                         updateEditRoutingRule(index, "type", e.target.value)
                       }
-                      className="bg-surface-container-lowest border border-outline-variant/50 rounded-xl px-3 py-2.5 font-label-sm uppercase tracking-wider text-[12px] text-on-surface focus:border-primary outline-none cursor-pointer"
+                      className="bg-surface-container-lowest border border-outline-variant/50 rounded-xl px-3 pr-8 py-2.5 font-label-sm uppercase tracking-wider text-[12px] text-on-surface focus:border-primary outline-none cursor-pointer"
                     >
                       <option value="OS">OS</option>
                       <option value="DEVICE">Device</option>
@@ -276,7 +276,7 @@ export default function EditLink() {
                             e.target.value,
                           )
                         }
-                        className="bg-surface-container-lowest flex-1 sm:w-36 border border-outline-variant/50 rounded-xl px-4 py-2.5 font-body-sm text-[13px] text-on-surface outline-none"
+                        className="bg-surface-container-lowest flex-1 sm:w-36 border border-outline-variant/50 rounded-xl px-4 pr-10 py-2.5 font-body-sm text-[13px] text-on-surface outline-none"
                       >
                         <option value="">Select OS...</option>
                         <option value="ios">iOS</option>
@@ -295,7 +295,7 @@ export default function EditLink() {
                             e.target.value,
                           )
                         }
-                        className="bg-surface-container-lowest flex-1 sm:w-36 border border-outline-variant/50 rounded-xl px-4 py-2.5 font-body-sm text-[13px] text-on-surface outline-none"
+                        className="bg-surface-container-lowest flex-1 sm:w-36 border border-outline-variant/50 rounded-xl px-4 pr-10 py-2.5 font-body-sm text-[13px] text-on-surface outline-none"
                       >
                         <option value="">Select Device...</option>
                         <option value="mobile">Mobile</option>

@@ -348,15 +348,15 @@ export default function CreateLink() {
               {routingRules.map((rule, index) => (
                 <div
                   key={index}
-                  className="flex flex-col sm:flex-row gap-2 items-start sm:items-center bg-surface-container-low p-3 rounded-lg border border-outline-variant/30 relative"
+                  className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-start sm:items-center bg-surface-container-low p-3 rounded-lg border border-outline-variant/30 relative"
                 >
-                  <div className="flex gap-2 w-full sm:w-auto sm:mr-3">
+                  <div className="flex gap-2 w-full sm:w-auto">
                     <select
                       value={rule.type}
                       onChange={(e) =>
                         updateRoutingRule(index, "type", e.target.value)
                       }
-                      className="premium-input rounded-lg px-2 py-1.5 font-code-sm text-[13px] text-on-surface-variant bg-surface-container-highest border-none"
+                      className="premium-input rounded-lg px-2 pr-8 py-1.5 font-code-sm text-[13px] text-on-surface-variant bg-surface-container-highest border-none"
                     >
                       <option value="OS">OS</option>
                       <option value="DEVICE">Device</option>
@@ -371,7 +371,7 @@ export default function CreateLink() {
                             e.target.value,
                           )
                         }
-                        className="premium-input flex-1 sm:w-32 rounded-lg px-3 py-1.5 font-body-sm text-[13px] text-on-surface"
+                        className="premium-input flex-1 sm:w-32 rounded-lg px-3 pr-8 py-1.5 font-body-sm text-[13px] text-on-surface"
                       >
                         <option value="">Select OS...</option>
                         <option value="ios">iOS</option>
@@ -390,7 +390,7 @@ export default function CreateLink() {
                             e.target.value,
                           )
                         }
-                        className="premium-input flex-1 sm:w-32 rounded-lg px-3 py-1.5 font-body-sm text-[13px] text-on-surface"
+                        className="premium-input flex-1 sm:w-32 rounded-lg px-3 pr-8 py-1.5 font-body-sm text-[13px] text-on-surface"
                       >
                         <option value="">Select Device...</option>
                         <option value="mobile">Mobile</option>
@@ -399,7 +399,7 @@ export default function CreateLink() {
                       </select>
                     )}
                   </div>
-                  <span className="text-on-surface-variant text-[12px] hidden sm:block">
+                  <span className="text-on-surface-variant text-[12px] hidden sm:block px-2">
                     ➔
                   </span>
                   <input
@@ -409,7 +409,7 @@ export default function CreateLink() {
                     onChange={(e) =>
                       updateRoutingRule(index, "destinationUrl", e.target.value)
                     }
-                    className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px]"
+                    className="premium-input w-full rounded-lg px-3 pr-8 py-1.5 font-code-sm text-[13px]"
                   />
                   <button
                     type="button"
@@ -456,7 +456,7 @@ export default function CreateLink() {
                 <select
                   value={utmSource}
                   onChange={(e) => setUtmSource(e.target.value)}
-                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px] text-on-surface-variant bg-surface-container-highest border-none"
+                  className="premium-input w-full rounded-lg px-3 pr-8 py-1.5 font-code-sm text-[13px] text-on-surface-variant bg-surface-container-highest border-none"
                 >
                   <option value="">Select source...</option>
                   <option value="google">google</option>
@@ -476,7 +476,7 @@ export default function CreateLink() {
                 <select
                   value={utmMedium}
                   onChange={(e) => setUtmMedium(e.target.value)}
-                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px] text-on-surface-variant bg-surface-container-highest border-none"
+                  className="premium-input w-full rounded-lg px-3 pr-8 py-1.5 font-code-sm text-[13px] text-on-surface-variant bg-surface-container-highest border-none"
                 >
                   <option value="">Select medium...</option>
                   <option value="social">social</option>
@@ -495,7 +495,7 @@ export default function CreateLink() {
                 <select
                   value={utmCampaign}
                   onChange={(e) => setUtmCampaign(e.target.value)}
-                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px] text-on-surface-variant bg-surface-container-highest border-none"
+                  className="premium-input w-full rounded-lg px-3 pr-8 py-1.5 font-code-sm text-[13px] text-on-surface-variant bg-surface-container-highest border-none"
                 >
                   <option value="">Select campaign...</option>
                   <option value="spring_sale">spring_sale</option>
@@ -514,7 +514,7 @@ export default function CreateLink() {
                   type="text"
                   value={utmTerm}
                   onChange={(e) => setUtmTerm(e.target.value)}
-                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px] text-on-surface-variant bg-surface-container-highest border-none"
+                  className="premium-input w-full rounded-lg px-3 pr-8 py-1.5 font-code-sm text-[13px] text-on-surface-variant bg-surface-container-highest border-none"
                   placeholder="e.g. running+shoes"
                 />
               </div>
@@ -525,7 +525,7 @@ export default function CreateLink() {
                 <select
                   value={utmContent}
                   onChange={(e) => setUtmContent(e.target.value)}
-                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px] text-on-surface-variant bg-surface-container-highest border-none"
+                  className="premium-input w-full rounded-lg px-3 pr-8 py-1.5 font-code-sm text-[13px] text-on-surface-variant bg-surface-container-highest border-none"
                 >
                   <option value="">Select content...</option>
                   <option value="logolink">logolink</option>
