@@ -9,12 +9,14 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../lib/axios";
 import AsyncButton from "../components/AsyncButton";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Campaigns() {
   const navigate = useNavigate();
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [campaignToDelete, setCampaignToDelete] = useState(null);
 
   const fetchCampaigns = async () => {
     try {
@@ -33,18 +35,15 @@ export default function Campaigns() {
 
 
 
-  const handleDeleteCampaign = async (id) => {
-    if (
-      !window.confirm(
-        "Are you sure you want to delete this campaign? The links will not be deleted but they will be unassigned from this campaign.",
-      )
-    )
-      return;
+  const confirmDeleteCampaign = async () => {
+    if (!campaignToDelete) return;
     try {
-      await api.delete(`/campaigns/${id}`);
+      await api.delete(`/campaigns/${campaignToDelete.id}`);
       await fetchCampaigns();
     } catch (error) {
       console.error("Failed to delete campaign", error);
+    } finally {
+      setCampaignToDelete(null);
     }
   };
   return (
@@ -123,7 +122,7 @@ export default function Campaigns() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDeleteCampaign(campaign.id);
+                      setCampaignToDelete(campaign);
                     }}
                     className="text-error hover:bg-error/10 p-1.5 rounded-md transition-colors flex items-center justify-center"
                     title="Delete Campaign"
