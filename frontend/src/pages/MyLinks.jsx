@@ -133,7 +133,10 @@ export default function MyLinks() {
   };
 
   const handleExportLinks = () => {
-    if (!displayedLinks || displayedLinks.length === 0) return;
+    if (!displayedLinks || displayedLinks.length === 0) {
+      toast.error("No data available to export");
+      return;
+    }
 
     const headers = [
       "Title",
@@ -249,11 +252,6 @@ export default function MyLinks() {
         ) : (
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 glass-panel p-4 rounded-xl relative z-20">
             <div className="flex items-center gap-2">
-              <button className="bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface text-label-md font-label-md py-1.5 px-3 rounded-lg flex items-center justify-center transition-colors cursor-pointer" title="Filter">
-                <span className="material-symbols-outlined text-[18px]">
-                  filter_list
-                </span>
-              </button>
               <div className="flex bg-surface-container-lowest border border-outline-variant/20 rounded-lg p-1">
                 {["All", "Active", "Expired", "Scheduled"].map((filter) => (
                   <button
@@ -286,10 +284,10 @@ export default function MyLinks() {
                   onClick={() => setIsCreateOpen(!isCreateOpen)}
                   className="flex-1 sm:flex-none bg-primary hover:bg-primary/90 text-white text-label-md font-label-md py-1.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-[0_0_15px_rgba(21,128,61,0.3)] cursor-pointer"
                 >
-                  <span className="material-symbols-outlined text-[18px]">
+                  <span className="material-symbols-outlined text-[20px]">
                     add_link
                   </span>
-                  Create Link
+                  Create
                   <span
                     className="material-symbols-outlined text-[18px] ml-1 transition-transform"
                     style={{

@@ -92,6 +92,15 @@ via any medium, is strictly prohibited without prior written consent from Avdesh
     @apply bg-bg-light text-text-primary antialiased;
     font-family: "Plus Jakarta Sans", "Inter", sans-serif;
   }
+
+  /* Force pointer cursor on all interactive elements across the website */
+  button,
+  select,
+  option,
+  [role="button"],
+  a {
+    cursor: pointer !important;
+  }
 }
 
 /* Custom Input Styling */
