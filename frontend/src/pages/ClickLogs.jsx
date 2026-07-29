@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Toaster, toast } from "react-hot-toast";
 import MotionAlert from "../components/motion/MotionAlert";
 import { api } from "../lib/axios";
-
+import AnimatedTrashIcon from "../components/icons/AnimatedTrashIcon";
 export default function ClickLogs() {
   const { id } = useParams();
   const navigate = useNavigate();

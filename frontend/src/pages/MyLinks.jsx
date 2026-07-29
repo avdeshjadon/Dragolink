@@ -14,7 +14,7 @@ import MotionModal from "../components/motion/MotionModal";
 import { api } from "../lib/axios";
 import { QRCodeSVG } from "qrcode.react";
 import AsyncButton from "../components/AsyncButton";
-
+import AnimatedTrashIcon from "../components/icons/AnimatedTrashIcon";
 export default function MyLinks() {
   const navigate = useNavigate();
   const [selectedLinks, setSelectedLinks] = useState([]);
