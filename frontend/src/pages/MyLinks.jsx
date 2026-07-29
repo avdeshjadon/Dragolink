@@ -522,29 +522,7 @@ export default function MyLinks() {
         icon={<span className="material-symbols-outlined text-[32px]">delete_sweep</span>}
       />
 
-      {/* Single Log Delete Confirmation Modal */}
-      <MotionAlert
-        isOpen={!!deleteLogModalId}
-        onClose={() => setDeleteLogModalId(null)}
-        onConfirm={() => handleDeleteLog(deleteLogModalId)}
-        title="Delete Click Log?"
-        description="Are you sure you want to delete this click log? This action cannot be undone."
-        confirmText="Delete"
-        isDestructive={true}
-        icon={<span className="material-symbols-outlined text-[32px]">warning</span>}
-      />
 
-      {/* Clear All Logs Confirmation Modal */}
-      <MotionAlert
-        isOpen={isClearAllLogsModalOpen}
-        onClose={() => setIsClearAllLogsModalOpen(false)}
-        onConfirm={handleClearAllLogs}
-        title="Clear All Click Logs?"
-        description={`Are you sure you want to permanently delete all click logs for "${clickLogModalLink?.title || clickLogModalLink?.customAlias || clickLogModalLink?.shortCode}"? This action cannot be undone.`}
-        confirmText="Clear All"
-        isDestructive={true}
-        icon={<span className="material-symbols-outlined text-[32px]">delete_sweep</span>}
-      />
 
 
 
