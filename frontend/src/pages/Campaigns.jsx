@@ -77,7 +77,7 @@ export default function Campaigns() {
           </div>
           <button
             onClick={() => navigate('/campaigns/create')}
-            className="hidden sm:flex bg-primary hover:bg-primary/90 text-white text-label-md font-label-md py-2 px-4 rounded-lg items-center justify-center gap-2 transition-colors shadow-md cursor-pointer"
+            className="hidden sm:flex bg-primary hover:bg-primary/90 text-white text-label-md font-label-md py-2 px-4 rounded-lg items-center justify-center gap-2 transition-colors shadow-md cursor-pointer whitespace-nowrap shrink-0"
           >
             <span className="material-symbols-outlined text-[20px]">add</span>
             Create New
