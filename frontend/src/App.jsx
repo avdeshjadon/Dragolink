@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import CreateLink from './pages/CreateLink';
+import EditLink from './pages/EditLink';
 import MyLinks from './pages/MyLinks';
 import ClickLogs from './pages/ClickLogs';
 import Analytics from './pages/Analytics';
@@ -125,6 +126,7 @@ function AnimatedRoutes() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/create" element={<CreateLink />} />
           <Route path="/links" element={<MyLinks />} />
+                <Route path="/links/:id/edit" element={<EditLink />} />
           <Route path="/logs/:id" element={<ClickLogs />} />
           <Route path="/qr" element={<QRCodes />} />
           <Route path="/campaigns" element={<Campaigns />} />
