@@ -26,7 +26,7 @@ export default function ClickLogs() {
     try {
       setIsClickLogLoading(true);
       const [logsRes, linkRes] = await Promise.all([
-        api.get(`/analytics/${id}`),
+        api.get(`/analytics/links/${id}`),
         api.get(`/links`) // Fetch links to find details
       ]);
       setClickLogs(logsRes.data);
@@ -43,7 +43,7 @@ export default function ClickLogs() {
   const handleDeleteLog = async (logId) => {
     setIsDeletingLog(true);
     try {
-      await api.delete(`/analytics/${logId}`);
+      await api.delete(`/analytics/links/${id}/logs/${logId}`);
       toast.success('Log deleted successfully');
       setClickLogs(clickLogs.filter(log => log.id !== logId));
       setDeleteLogModalId(null);
@@ -57,7 +57,7 @@ export default function ClickLogs() {
 
   const handleClearAllLogs = async () => {
     try {
-      await api.delete(`/analytics/link/${id}`);
+      await api.delete(`/analytics/links/${id}/logs`);
       toast.success('All logs cleared successfully');
       setClickLogs([]);
       setIsClearAllLogsModalOpen(false);
