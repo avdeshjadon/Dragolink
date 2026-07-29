@@ -22,16 +22,9 @@ export default function MotionModal({
     return () => window.removeEventListener('keydown', handleEsc);
   }, [isOpen, onClose]);
 
-  // Prevent background scrolling
+  // Removed body overflow hidden to prevent trackpad scroll bugs on macOS
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
+    // We intentionally don't set overflow: hidden here anymore
   }, [isOpen]);
 
   const content = (
@@ -79,7 +72,7 @@ export default function MotionModal({
               )}
               
               {/* Content */}
-              <div className="p-4 sm:p-6 overflow-y-auto flex-1 min-h-0 overscroll-contain">
+              <div className="p-4 sm:p-6 overflow-y-auto overflow-x-hidden flex-1 min-h-0 relative">
                 {children}
               </div>
 
