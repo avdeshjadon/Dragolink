@@ -397,7 +397,7 @@ export default function MyLinks() {
                     <span className="material-symbols-outlined text-[20px]">edit</span>
                   </button>
                   <button onClick={() => setDeleteModalLink(link)} className="text-on-surface-variant hover:text-error transition-colors cursor-pointer" title="Delete">
-                    <span className="material-symbols-outlined text-[20px]">delete</span>
+                    <AnimatedTrashIcon className="w-5 h-5" />
                   </button>
                 </div>
               </div>

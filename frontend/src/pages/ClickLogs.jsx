@@ -235,7 +235,7 @@ export default function ClickLogs() {
                             onClick={(e) => { e.stopPropagation(); setDeleteLogModalId(log.id || idx); }}
                             className="p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer"
                           >
-                            <span className="material-symbols-outlined text-[20px]">delete</span>
+                            <AnimatedTrashIcon className="w-5 h-5" />
                           </button>
                           <span className={`material-symbols-outlined text-on-surface-variant transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
                             expand_more
@@ -263,7 +263,7 @@ export default function ClickLogs() {
                                 Cancel
                               </button>
                               <button onClick={() => handleDeleteLog(log.id)} disabled={isDeleting} className="flex-1 sm:flex-none px-4 py-2 bg-error text-white text-label-md font-medium rounded-lg hover:bg-error/90 transition-colors shadow-sm disabled:opacity-50 cursor-pointer flex items-center justify-center min-w-[80px]">
-                                {isDeleting ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span> : 'Delete'}
+                                {isDeleting ? <AnimatedTrashIcon isDeleting={true} className="w-4 h-4" /> : <><AnimatedTrashIcon className="w-4 h-4 mr-1" /> Delete</>}
                               </button>
                             </div>
                           </div>

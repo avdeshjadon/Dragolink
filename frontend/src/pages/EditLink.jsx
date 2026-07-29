@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import AnimatedTrashIcon from '../components/icons/AnimatedTrashIcon';
 import { Toaster, toast } from 'react-hot-toast';
 import { api } from '../lib/axios';
 
@@ -256,7 +257,7 @@ export default function EditLink() {
                     className="flex-1 w-full bg-surface-container-lowest text-on-surface border border-outline-variant/50 rounded-xl px-4 py-2.5 font-code-sm text-[13px] focus:border-primary outline-none"
                   />
                   <button onClick={() => removeEditRoutingRule(index)} className="p-2.5 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-xl transition-colors sm:ml-auto w-full sm:w-auto flex justify-center mt-2 sm:mt-0">
-                    <span className="material-symbols-outlined text-[20px]">close</span>
+                    <AnimatedTrashIcon className="w-5 h-5" />
                   </button>
                 </div>
               ))}
