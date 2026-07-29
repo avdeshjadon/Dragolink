@@ -11,7 +11,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Toaster, toast } from "react-hot-toast";
 import MotionAlert from "../components/motion/MotionAlert";
 import { api } from "../lib/axios";
-import AnimatedTrashIcon from "../components/icons/AnimatedTrashIcon";
 export default function ClickLogs() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -317,9 +316,9 @@ export default function ClickLogs() {
                               e.stopPropagation();
                               setDeleteLogModalId(log.id || idx);
                             }}
-                            className="p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer"
+                            className="p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-lg transition-colors cursor-pointer flex items-center justify-center"
                           >
-                            <AnimatedTrashIcon className="w-5 h-5" />
+                            <span className="material-symbols-outlined text-[20px]">delete</span>
                           </button>
                           <span
                             className={`material-symbols-outlined text-on-surface-variant transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
@@ -361,13 +360,10 @@ export default function ClickLogs() {
                                 className="flex-1 sm:flex-none px-4 py-2 bg-error text-white text-label-md font-medium rounded-lg hover:bg-error/90 transition-colors shadow-sm disabled:opacity-50 cursor-pointer flex items-center justify-center min-w-[80px]"
                               >
                                 {isDeleting ? (
-                                  <AnimatedTrashIcon
-                                    isDeleting={true}
-                                    className="w-4 h-4"
-                                  />
+                                  <span className="material-symbols-outlined text-[16px] animate-pulse">delete</span>
                                 ) : (
                                   <>
-                                    <AnimatedTrashIcon className="w-4 h-4 mr-1" />{" "}
+                                    <span className="material-symbols-outlined text-[16px] mr-1">delete</span>{" "}
                                     Delete
                                   </>
                                 )}

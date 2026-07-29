@@ -8,7 +8,6 @@ via any medium, is strictly prohibited without prior written consent from Avdesh
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import AnimatedTrashIcon from "../components/icons/AnimatedTrashIcon";
 import { Toaster, toast } from "react-hot-toast";
 import { api } from "../lib/axios";
 
@@ -319,9 +318,9 @@ export default function EditLink() {
                   />
                   <button
                     onClick={() => removeEditRoutingRule(index)}
-                    className="p-2.5 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-xl transition-colors sm:ml-auto w-full sm:w-auto flex justify-center mt-2 sm:mt-0"
+                    className="p-2.5 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-xl transition-colors sm:ml-auto w-full sm:w-auto flex justify-center mt-2 sm:mt-0 items-center"
                   >
-                    <AnimatedTrashIcon className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-[20px]">delete</span>
                   </button>
                 </div>
               ))

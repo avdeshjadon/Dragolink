@@ -9,7 +9,6 @@ import React, { useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { TRANSITIONS, VARIANTS } from "../../constants/motion";
-import AnimatedTrashIcon from "../icons/AnimatedTrashIcon";
 
 export default function MotionAlert({
   isOpen,
@@ -90,10 +89,9 @@ export default function MotionAlert({
                 className={`flex-1 py-2.5 rounded-lg font-label-md transition-all duration-300 shadow-sm cursor-pointer flex items-center justify-center gap-2 ${isDestructive ? "bg-error text-white hover:bg-error/90" : "bg-primary text-white hover:bg-primary/90"} disabled:opacity-90 disabled:cursor-wait`}
               >
                 {isDestructive && (
-                  <AnimatedTrashIcon
-                    isDeleting={isConfirming}
-                    className="w-5 h-5"
-                  />
+                  <span className={`material-symbols-outlined text-[20px] ${isConfirming ? "animate-pulse" : ""}`}>
+                    delete
+                  </span>
                 )}
                 {!isDestructive && isConfirming && (
                   <svg

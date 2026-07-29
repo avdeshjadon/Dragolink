@@ -14,7 +14,6 @@ import MotionModal from "../components/motion/MotionModal";
 import { api } from "../lib/axios";
 import { QRCodeSVG } from "qrcode.react";
 import AsyncButton from "../components/AsyncButton";
-import AnimatedTrashIcon from "../components/icons/AnimatedTrashIcon";
 export default function MyLinks() {
   const navigate = useNavigate();
   const [selectedLinks, setSelectedLinks] = useState([]);
@@ -461,7 +460,9 @@ export default function MyLinks() {
                     className="text-on-surface-variant hover:text-error transition-colors cursor-pointer"
                     title="Delete"
                   >
-                    <AnimatedTrashIcon className="w-5 h-5" />
+                    <span className="material-symbols-outlined text-[20px]">
+                      delete
+                    </span>
                   </button>
                 </div>
               </div>
