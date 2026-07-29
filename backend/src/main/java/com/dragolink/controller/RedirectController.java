@@ -21,14 +21,18 @@ public class RedirectController {
     private final RateLimiterService rateLimiterService;
 
     @GetMapping("/{shortCode}")
-    public ResponseEntity<Void> redirect(@PathVariable String shortCode, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public ResponseEntity<Void> redirect(@PathVariable String shortCode, HttpServletRequest request) {
         String ip = getClientIp(request);
         rateLimiterService.checkRateLimit("rate:ip:" + ip + ":redirect", 1000, 60);
 
         String longUrl = redirectService.getLongUrlAndRecordClick(shortCode, request);
         
-        response.sendRedirect(longUrl);
-        return ResponseEntity.status(HttpStatus.FOUND).build();
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .header("Location", longUrl)
+                .header("Cache-Control", "no-cache, no-store, must-revalidate")
+                .header("Pragma", "no-cache")
+                .header("Expires", "0")
+                .build();
     }
 
     private String getClientIp(HttpServletRequest request) {
