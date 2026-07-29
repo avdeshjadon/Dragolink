@@ -52,6 +52,26 @@ public class CampaignService {
         return mapToDto(campaign);
     }
 
+    public CampaignDto getCampaignById(Long id, UserDetails userDetails) {
+        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
+        Campaign campaign = campaignRepository.findByIdAndUser(id, user)
+                .orElseThrow(() -> new RuntimeException("Campaign not found or unauthorized"));
+        return mapToDto(campaign);
+    }
+
+    @Transactional
+    public CampaignDto updateCampaign(Long id, CampaignRequestDto request, UserDetails userDetails) {
+        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
+        Campaign campaign = campaignRepository.findByIdAndUser(id, user)
+                .orElseThrow(() -> new RuntimeException("Campaign not found or unauthorized"));
+        
+        campaign.setName(request.getName());
+        campaign.setDescription(request.getDescription());
+        
+        campaign = campaignRepository.save(campaign);
+        return mapToDto(campaign);
+    }
+
     @Transactional
     public void deleteCampaign(Long id, UserDetails userDetails) {
         User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();

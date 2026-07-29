@@ -14,6 +14,7 @@ export default function Campaigns() {
   const navigate = useNavigate();
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchCampaigns = async () => {
     try {
@@ -59,7 +60,21 @@ export default function Campaigns() {
             campaigns across multiple channels.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span className="material-symbols-outlined text-outline-variant text-[18px]">
+                search
+              </span>
+            </div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full sm:w-64 bg-surface-container-lowest border border-outline-variant/30 rounded-lg pl-10 pr-4 py-2 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-on-surface-variant"
+              placeholder="Search campaigns..."
+            />
+          </div>
           <button
             onClick={() => navigate('/campaigns/create')}
             className="hidden sm:flex bg-primary hover:bg-primary/90 text-white text-label-md font-label-md py-2 px-4 rounded-lg items-center justify-center gap-2 transition-colors shadow-md cursor-pointer"
@@ -77,7 +92,9 @@ export default function Campaigns() {
         </div>
       ) : campaigns.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {campaigns.map((campaign) => (
+          {campaigns
+            .filter((c) => c.name.toLowerCase().includes(searchQuery.toLowerCase()))
+            .map((campaign) => (
             <div
               key={campaign.id}
               onClick={() => navigate(`/links?campaign=${encodeURIComponent(campaign.name)}`)}
@@ -87,10 +104,22 @@ export default function Campaigns() {
                 <div className="w-10 h-10 rounded-lg bg-primary-container text-on-primary-container flex items-center justify-center">
                   <span className="material-symbols-outlined">campaign</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-label-sm font-label-sm text-on-surface-variant">
+                <div className="flex items-center gap-1">
+                  <span className="text-label-sm font-label-sm text-on-surface-variant mr-2">
                     {new Date(campaign.createdAt).toLocaleDateString()}
                   </span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/campaigns/${campaign.id}/edit`);
+                    }}
+                    className="text-on-surface-variant hover:text-primary hover:bg-primary/10 p-1.5 rounded-md transition-colors flex items-center justify-center"
+                    title="Edit Campaign"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">
+                      edit
+                    </span>
+                  </button>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();

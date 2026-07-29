@@ -36,6 +36,7 @@ import PublicAnalytics from "./pages/PublicAnalytics";
 import QRCodes from "./pages/QRCodes";
 import Campaigns from "./pages/Campaigns";
 import CreateCampaign from "./pages/CreateCampaign";
+import EditCampaign from "./pages/EditCampaign";
 import Team from "./pages/Team";
 import APIKeys from "./pages/APIKeys";
 import MyApplications from "./pages/MyApplications";
@@ -151,6 +152,7 @@ function AnimatedRoutes() {
           <Route path="/qr" element={<QRCodes />} />
           <Route path="/campaigns" element={<Campaigns />} />
           <Route path="/campaigns/create" element={<CreateCampaign />} />
+          <Route path="/campaigns/:id/edit" element={<EditCampaign />} />
           <Route path="/team" element={<Team />} />
           <Route path="/api-keys" element={<APIKeys />} />
           <Route path="/applications" element={<MyApplications />} />

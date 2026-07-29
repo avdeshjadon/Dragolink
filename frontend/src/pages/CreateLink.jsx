@@ -8,6 +8,8 @@ via any medium, is strictly prohibited without prior written consent from Avdesh
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { Plus, X, Globe, Link as LinkIcon, BarChart3, Settings, Shield, Clock, Hash, Smartphone, MapPin, Search } from "lucide-react";
+import CampaignSelect from "../components/CampaignSelect";
 import { api } from "../lib/axios";
 import AsyncButton from "../components/AsyncButton";
 
@@ -238,19 +240,11 @@ export default function CreateLink() {
               <label className="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">
                 Campaign
               </label>
-              <input
-                list="campaign-list"
-                type="text"
+              <CampaignSelect
+                campaigns={campaigns}
                 value={utmCampaign}
-                onChange={(e) => setUtmCampaign(e.target.value)}
-                className="premium-input w-full rounded-lg px-4 py-2 font-body-md"
-                placeholder="Select or type a campaign..."
+                onChange={setUtmCampaign}
               />
-              <datalist id="campaign-list">
-                {campaigns.map((camp) => (
-                  <option key={camp.id} value={camp.name} />
-                ))}
-              </datalist>
             </div>
           </section>
 

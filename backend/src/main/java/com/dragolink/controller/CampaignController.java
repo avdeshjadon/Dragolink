@@ -36,6 +36,16 @@ public class CampaignController {
         return ResponseEntity.ok(campaignService.createCampaign(request, userDetails));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<CampaignDto> getCampaign(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(campaignService.getCampaignById(id, userDetails));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CampaignDto> updateCampaign(@PathVariable Long id, @Valid @RequestBody CampaignRequestDto request, @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(campaignService.updateCampaign(id, request, userDetails));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCampaign(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
         campaignService.deleteCampaign(id, userDetails);

@@ -11,6 +11,7 @@ import QRCodeStyling from "qr-code-styling";
 import toast from "react-hot-toast";
 import { api } from "../lib/axios";
 import AsyncButton from "../components/AsyncButton";
+import CampaignSelect from "../components/CampaignSelect";
 
 export default function QRCodes() {
   const [destinationUrl, setDestinationUrl] = useState(
@@ -449,7 +450,7 @@ export default function QRCodes() {
                     type="url"
                     value={destinationUrl}
                     onChange={(e) => setDestinationUrl(e.target.value)}
-                    className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2.5 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-code-sm text-code-sm"
+                    className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-10 pr-4 py-2.5 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-code-sm text-code-sm"
                     placeholder="https://example.com/promo"
                   />
                 </div>
@@ -459,19 +460,11 @@ export default function QRCodes() {
                 <label className="block text-label-sm font-label-sm text-on-surface-variant mb-1.5 uppercase tracking-wider">
                   Campaign (Optional)
                 </label>
-                <input
-                  list="qr-campaign-list"
-                  type="text"
+                <CampaignSelect
+                  campaigns={campaigns}
                   value={utmCampaign}
-                  onChange={(e) => setUtmCampaign(e.target.value)}
-                  className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2.5 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-body-sm text-body-sm"
-                  placeholder="Select or type a campaign..."
+                  onChange={setUtmCampaign}
                 />
-                <datalist id="qr-campaign-list">
-                  {campaigns.map((camp) => (
-                    <option key={camp.id} value={camp.name} />
-                  ))}
-                </datalist>
               </div>
             </section>
 
