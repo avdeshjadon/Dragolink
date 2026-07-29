@@ -19,6 +19,19 @@ export default function CreateLink() {
   const [tags, setTags] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [aliasSuggestions, setAliasSuggestions] = useState([]);
+  const [campaigns, setCampaigns] = useState([]);
+
+  useEffect(() => {
+    const fetchCampaigns = async () => {
+      try {
+        const res = await api.get("/campaigns");
+        setCampaigns(res.data);
+      } catch (error) {
+        console.error("Failed to load campaigns", error);
+      }
+    };
+    fetchCampaigns();
+  }, []);
 
   // Generate alias suggestions based on destination URL
   useEffect(() => {
@@ -492,19 +505,19 @@ export default function CreateLink() {
                 <label className="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">
                   Campaign
                 </label>
-                <select
+                <input
+                  list="campaign-list"
+                  type="text"
                   value={utmCampaign}
                   onChange={(e) => setUtmCampaign(e.target.value)}
-                  className="premium-input w-full rounded-lg px-3 pr-8 py-1.5 font-code-sm text-[13px] text-on-surface-variant bg-surface-container-highest border-none"
-                >
-                  <option value="">Select campaign...</option>
-                  <option value="spring_sale">spring_sale</option>
-                  <option value="summer_promo">summer_promo</option>
-                  <option value="black_friday">black_friday</option>
-                  <option value="holiday_specials">holiday_specials</option>
-                  <option value="welcome_series">welcome_series</option>
-                  <option value="retargeting">retargeting</option>
-                </select>
+                  className="premium-input w-full rounded-lg px-3 py-1.5 font-code-sm text-[13px] text-on-surface bg-surface-container-highest border-none"
+                  placeholder="Select or type a campaign..."
+                />
+                <datalist id="campaign-list">
+                  {campaigns.map((camp) => (
+                    <option key={camp.id} value={camp.name} />
+                  ))}
+                </datalist>
               </div>
               <div>
                 <label className="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1">

@@ -24,6 +24,7 @@ public class ShortLinkResponse {
     private LocalDateTime expiryDate;
     private long clickCount;
     private LocalDateTime createdAt;
+    private String campaignName;
     
     private boolean trackIp;
     private boolean trackBrowser;

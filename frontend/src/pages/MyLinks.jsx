@@ -5,8 +5,8 @@ Proprietary and Confidential – Unauthorized copying, modification, or distribu
 via any medium, is strictly prohibited without prior written consent from Avdesh Jadon.
 */
 
-import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Toaster, toast } from "react-hot-toast";
 import MotionAlert from "../components/motion/MotionAlert";
@@ -16,6 +16,10 @@ import { QRCodeSVG } from "qrcode.react";
 import AsyncButton from "../components/AsyncButton";
 export default function MyLinks() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const campaignFilter = searchParams.get("campaign");
+
   const [selectedLinks, setSelectedLinks] = useState([]);
   const [activeFilter, setActiveFilter] = useState("Active");
   const [activeTab, setActiveTab] = useState("links"); // 'links' or 'qr'
@@ -23,6 +27,24 @@ export default function MyLinks() {
   const [links, setLinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const createDropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        createDropdownRef.current &&
+        !createDropdownRef.current.contains(event.target)
+      ) {
+        setIsCreateOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, []);
 
   // Modal states
   const [deleteModalLink, setDeleteModalLink] = useState(null);
@@ -53,6 +75,8 @@ export default function MyLinks() {
   };
 
   const displayedLinks = links.filter((link) => {
+    if (campaignFilter && link.campaignName !== campaignFilter) return false;
+
     const isQR = link.title && link.title.startsWith("[QR]");
     if (activeTab === "qr" && !isQR) return false;
     if (activeTab === "links" && isQR) return false;
@@ -267,6 +291,15 @@ export default function MyLinks() {
                   </button>
                 ))}
               </div>
+              {campaignFilter && (
+                <div className="flex items-center gap-2 bg-primary-container text-on-primary-container px-3 py-1 text-label-sm font-label-sm rounded-lg ml-2">
+                  <span className="material-symbols-outlined text-[16px]">campaign</span>
+                  <span className="font-semibold">{campaignFilter}</span>
+                  <button onClick={() => navigate('/links')} className="hover:text-primary ml-1 flex items-center cursor-pointer opacity-80 hover:opacity-100">
+                    <span className="material-symbols-outlined text-[16px]">close</span>
+                  </button>
+                </div>
+              )}
             </div>
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <button
@@ -279,7 +312,7 @@ export default function MyLinks() {
                 Export
               </button>
 
-              <div className="relative">
+              <div className="relative" ref={createDropdownRef}>
                 <button
                   onClick={() => setIsCreateOpen(!isCreateOpen)}
                   className="flex-1 sm:flex-none bg-primary hover:bg-primary/90 text-white text-label-md font-label-md py-1.5 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-[0_0_15px_rgba(21,128,61,0.3)] cursor-pointer"
@@ -479,9 +512,7 @@ export default function MyLinks() {
                 No links found
               </h3>
               <p className="text-body-md text-on-surface-variant text-center max-w-sm mb-6">
-                You haven't created any{" "}
-                {activeTab === "qr" ? "QR Codes" : "links"} in this category
-                yet. Start sharing to see them here.
+                You haven't created any links in this category yet. Start sharing to see them here.
               </p>
               <button
                 onClick={() => navigate(activeTab === "qr" ? "/qr" : "/create")}

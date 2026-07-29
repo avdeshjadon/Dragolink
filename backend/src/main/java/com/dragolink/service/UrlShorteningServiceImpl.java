@@ -19,6 +19,8 @@ import com.dragolink.repository.BlockedDomainRepository;
 import com.dragolink.repository.ClickAnalyticsRepository;
 import com.dragolink.repository.ShortLinkRepository;
 import com.dragolink.repository.UserRepository;
+import com.dragolink.repository.CampaignRepository;
+import com.dragolink.entity.Campaign;
 import com.dragolink.util.Base62Util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -39,6 +41,7 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
     private final UserRepository userRepository;
     private final BlockedDomainRepository blockedDomainRepository;
     private final ClickAnalyticsRepository clickAnalyticsRepository;
+    private final CampaignRepository campaignRepository;
     private final StringRedisTemplate redisTemplate;
 
     private static final String CACHE_PREFIX = "shortlink:";
@@ -63,6 +66,18 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
             throw new BadRequestException("Invalid or restricted URL");
         }
 
+        Campaign campaignObj = null;
+        if (request.getUtmCampaign() != null && !request.getUtmCampaign().trim().isEmpty()) {
+            campaignObj = campaignRepository.findByNameAndUser(request.getUtmCampaign().trim(), user)
+                    .orElseGet(() -> {
+                        Campaign newCampaign = Campaign.builder()
+                                .name(request.getUtmCampaign().trim())
+                                .user(user)
+                                .build();
+                        return campaignRepository.save(newCampaign);
+                    });
+        }
+
         ShortLink shortLink = ShortLink.builder()
                 .user(user)
                 .longUrl(request.getLongUrl())
@@ -77,6 +92,7 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
                 .utmSource(request.getUtmSource())
                 .utmMedium(request.getUtmMedium())
                 .utmCampaign(request.getUtmCampaign())
+                .campaign(campaignObj)
                 .utmTerm(request.getUtmTerm())
                 .utmContent(request.getUtmContent())
                 .active(true)
@@ -148,6 +164,20 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
 
         link.setUtmSource(request.getUtmSource());
         link.setUtmMedium(request.getUtmMedium());
+        
+        if (request.getUtmCampaign() != null && !request.getUtmCampaign().trim().isEmpty()) {
+            Campaign campaignObj = campaignRepository.findByNameAndUser(request.getUtmCampaign().trim(), link.getUser())
+                    .orElseGet(() -> {
+                        Campaign newCampaign = Campaign.builder()
+                                .name(request.getUtmCampaign().trim())
+                                .user(link.getUser())
+                                .build();
+                        return campaignRepository.save(newCampaign);
+                    });
+            link.setCampaign(campaignObj);
+        } else {
+            link.setCampaign(null);
+        }
         link.setUtmCampaign(request.getUtmCampaign());
         link.setUtmTerm(request.getUtmTerm());
         link.setUtmContent(request.getUtmContent());
@@ -214,6 +244,7 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
                 .expiryDate(link.getExpiryDate())
                 .clickCount(link.getClickCount())
                 .createdAt(link.getCreatedAt())
+                .campaignName(link.getCampaign() != null ? link.getCampaign().getName() : null)
                 .trackIp(link.isTrackIp())
                 .trackBrowser(link.isTrackBrowser())
                 .trackOs(link.isTrackOs())

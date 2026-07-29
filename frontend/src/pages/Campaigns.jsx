@@ -6,10 +6,12 @@ via any medium, is strictly prohibited without prior written consent from Avdesh
 */
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { api } from "../lib/axios";
 import AsyncButton from "../components/AsyncButton";
 
 export default function Campaigns() {
+  const navigate = useNavigate();
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -95,7 +97,8 @@ export default function Campaigns() {
           {campaigns.map((campaign) => (
             <div
               key={campaign.id}
-              className="bg-surface-container border border-outline-variant/20 rounded-xl p-6 shadow-sm hover:border-primary/30 transition-colors flex flex-col"
+              onClick={() => navigate(`/links?campaign=${encodeURIComponent(campaign.name)}`)}
+              className="bg-surface-container border border-outline-variant/20 rounded-xl p-6 shadow-sm hover:border-primary/30 transition-colors flex flex-col cursor-pointer"
             >
               <div className="flex justify-between items-start mb-4">
                 <div className="w-10 h-10 rounded-lg bg-primary-container text-on-primary-container flex items-center justify-center">
@@ -106,7 +109,10 @@ export default function Campaigns() {
                     {new Date(campaign.createdAt).toLocaleDateString()}
                   </span>
                   <button
-                    onClick={() => handleDeleteCampaign(campaign.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteCampaign(campaign.id);
+                    }}
                     className="text-error hover:bg-error/10 p-1.5 rounded-md transition-colors flex items-center justify-center"
                     title="Delete Campaign"
                   >

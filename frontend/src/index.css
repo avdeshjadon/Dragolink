@@ -149,3 +149,14 @@ select.premium-input {
 .icon-fill {
   font-variation-settings: "FILL" 1;
 }
+
+/* Global Pointer Cursor for Interactive Elements */
+button:not(:disabled), 
+select:not(:disabled), 
+option:not(:disabled), 
+a:not(.disabled), 
+input[type="submit"]:not(:disabled), 
+input[type="button"]:not(:disabled),
+.cursor-pointer {
+  cursor: pointer !important;
+}

@@ -23,6 +23,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +52,15 @@ public class AnalyticsService {
                 .limit(5)
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
+        Map<String, Long> campaignClicks = allLinks.stream()
+                .filter(l -> l.getCampaign() != null)
+                .collect(Collectors.groupingBy(l -> l.getCampaign().getName(), Collectors.summingLong(ShortLink::getClickCount)));
+        
+        List<Map<String, Object>> topCampaigns = campaignClicks.entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .limit(5)
+                .map(e -> Map.of("name", (Object) e.getKey(), "clicks", (Object) e.getValue()))
+                .collect(Collectors.toList());
 
         long uniqueVisitors = clickAnalyticsRepository.countUniqueVisitorsByUserId(userId);
 
@@ -59,6 +71,7 @@ public class AnalyticsService {
                 .activeLinks(activeLinks)
                 .expiredLinks(expiredLinks)
                 .topLinks(topLinks)
+                .topCampaigns(topCampaigns)
                 .clicksByDate(clickAnalyticsRepository.countClicksByDate(userId, LocalDateTime.now().minusDays(days)))
                 .clicksByDevice(clickAnalyticsRepository.countClicksByDevice(userId))
                 .clicksByBrowser(clickAnalyticsRepository.countClicksByBrowser(userId))

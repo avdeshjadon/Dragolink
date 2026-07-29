@@ -35,6 +35,19 @@ export default function EditLink() {
   const [editTrackDevice, setEditTrackDevice] = useState(true);
   const [editTrackReferrer, setEditTrackReferrer] = useState(true);
   const [originalLink, setOriginalLink] = useState(null);
+  const [campaigns, setCampaigns] = useState([]);
+
+  useEffect(() => {
+    const fetchCampaigns = async () => {
+      try {
+        const res = await api.get("/campaigns");
+        setCampaigns(res.data);
+      } catch (error) {
+        console.error("Failed to load campaigns", error);
+      }
+    };
+    fetchCampaigns();
+  }, []);
 
   useEffect(() => {
     const fetchLinkDetails = async () => {
@@ -397,12 +410,18 @@ export default function EditLink() {
                 Campaign
               </label>
               <input
+                list="edit-campaign-list"
                 type="text"
                 value={editUtmCampaign}
                 onChange={(e) => setEditUtmCampaign(e.target.value)}
-                placeholder="e.g. summer_sale"
+                placeholder="Select or type a campaign..."
                 className="w-full bg-surface-container text-on-surface border border-outline-variant/50 rounded-xl px-4 py-3 font-code-sm text-code-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
               />
+              <datalist id="edit-campaign-list">
+                {campaigns.map((camp) => (
+                  <option key={camp.id} value={camp.name} />
+                ))}
+              </datalist>
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

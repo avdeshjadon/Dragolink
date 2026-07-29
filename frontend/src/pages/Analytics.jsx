@@ -120,15 +120,15 @@ export default function Analytics() {
           });
           const dash = res.data;
 
-          const topLink =
-            dash.topLinks && dash.topLinks.length > 0 ? dash.topLinks[0] : null;
+          const topCampaignData = 
+            dash.topCampaigns && dash.topCampaigns.length > 0 ? dash.topCampaigns[0] : null;
 
           setData({
             totalClicks: dash.totalClicks,
             uniqueVisitors: dash.uniqueVisitors,
-            topCampaign: topLink ? topLink.title || topLink.shortCode : "None",
-            topCampaignSub: topLink
-              ? `${((topLink.clickCount / Math.max(1, dash.totalClicks)) * 100).toFixed(1)}% of total volume`
+            topCampaign: topCampaignData ? topCampaignData.name : "None",
+            topCampaignSub: topCampaignData
+              ? `${((topCampaignData.clicks / Math.max(1, dash.totalClicks)) * 100).toFixed(1)}% of total volume`
               : "",
             clicksByDate: dash.clicksByDate.map((d) => ({
               date: d.date,

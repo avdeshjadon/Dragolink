@@ -6,6 +6,7 @@ via any medium, is strictly prohibited without prior written consent from Avdesh
 */
 
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../lib/axios";
 import {
@@ -23,6 +24,7 @@ import {
 const COLORS = ["#15803d", "#79db8d", "#98da27", "#4ade80", "#22c55e"];
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [timeRange, setTimeRange] = useState("7D");
   const [metrics, setMetrics] = useState(null);
@@ -447,6 +449,65 @@ export default function Dashboard() {
                 No browser data
               </div>
             )}
+          </div>
+        </div>
+      </div>
+
+      {/* Top Campaigns Section */}
+      <div className="grid grid-cols-1 gap-6 mt-6">
+        <div className="bg-surface-container-low rounded-xl border border-outline-variant/10 overflow-hidden flex flex-col">
+          <div className="p-4 flex justify-between items-center border-b border-outline-variant/10">
+            <h3 className="text-label-md font-label-md font-semibold text-on-surface uppercase tracking-wider">
+              Top Campaigns
+            </h3>
+            <button
+              onClick={() => navigate('/campaigns')}
+              className="text-label-sm font-label-sm text-primary hover:underline cursor-pointer"
+            >
+              View All
+            </button>
+          </div>
+          <div className="overflow-x-auto flex-grow">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="text-label-sm font-label-sm text-on-surface-variant uppercase border-b border-outline-variant/5">
+                  <th className="p-4 font-medium">Campaign Name</th>
+                  <th className="p-4 font-medium text-right">Total Clicks</th>
+                </tr>
+              </thead>
+              <tbody className="text-body-md font-body-md">
+                {metrics.topCampaigns && metrics.topCampaigns.length > 0 ? (
+                  metrics.topCampaigns.map((camp, idx) => (
+                    <tr
+                      key={idx}
+                      onClick={() => navigate(`/links?campaign=${encodeURIComponent(camp.name)}`)}
+                      className="border-b border-outline-variant/5 hover:bg-surface-container-high transition-colors cursor-pointer"
+                    >
+                      <td className="p-4 text-on-surface font-medium flex items-center gap-2">
+                        <div className="w-6 h-6 rounded bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
+                          <span className="material-symbols-outlined text-[14px]">
+                            campaign
+                          </span>
+                        </div>
+                        {camp.name}
+                      </td>
+                      <td className="p-4 text-right text-on-surface-variant">
+                        {camp.clicks?.toLocaleString()}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="2"
+                      className="p-4 text-center text-on-surface-variant"
+                    >
+                      No campaign data available
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

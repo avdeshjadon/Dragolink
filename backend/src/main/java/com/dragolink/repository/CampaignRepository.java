@@ -19,4 +19,5 @@ import java.util.Optional;
 public interface CampaignRepository extends JpaRepository<Campaign, Long> {
     List<Campaign> findByUserOrderByCreatedAtDesc(User user);
     Optional<Campaign> findByIdAndUser(Long id, User user);
+    Optional<Campaign> findByNameAndUser(String name, User user);
 }
