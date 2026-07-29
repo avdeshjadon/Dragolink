@@ -472,12 +472,12 @@ export default function MyLinks() {
 
           {displayedLinks.length === 0 && !loading && (
             <div className="p-12 flex flex-col items-center justify-center bg-surface/50 rounded-2xl border border-outline-variant/20 border-dashed animate-fade-in mt-4">
-              <div className="w-20 h-20 bg-surface-container-low rounded-full flex items-center justify-center mb-6 shadow-inner">
-                <span className="material-symbols-outlined text-[40px] text-on-surface-variant/50">
-                  link_off
-                </span>
-              </div>
-              <h3 className="text-headline-sm font-headline-sm text-on-surface mb-2">
+              <img 
+                src="/images/no_result_found.svg" 
+                alt="No links found" 
+                className="w-48 h-48 mb-2 opacity-90 object-contain drop-shadow-sm"
+              />
+              <h3 className="text-headline-sm font-headline-sm text-on-surface mb-2 mt-4">
                 No links found
               </h3>
               <p className="text-body-md text-on-surface-variant text-center max-w-sm mb-6">
