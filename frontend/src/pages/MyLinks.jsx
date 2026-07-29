@@ -54,8 +54,13 @@ export default function MyLinks() {
 
   const displayedLinks = links.filter((link) => {
     const isQR = link.title && link.title.startsWith("[QR]");
-    if (activeTab === "qr") return isQR;
-    return !isQR;
+    if (activeTab === "qr" && !isQR) return false;
+    if (activeTab === "links" && isQR) return false;
+
+    if (activeFilter === "Active") return link.active && link.status !== "Expired";
+    if (activeFilter === "Expired") return link.status === "Expired";
+    if (activeFilter === "Scheduled") return link.status === "Scheduled";
+    return true;
   });
 
   const handleSelectAll = (e) => {
@@ -128,7 +133,7 @@ export default function MyLinks() {
   };
 
   const handleExportLinks = () => {
-    if (!filteredLinks || filteredLinks.length === 0) return;
+    if (!displayedLinks || displayedLinks.length === 0) return;
 
     const headers = [
       "Title",
@@ -141,7 +146,7 @@ export default function MyLinks() {
       "Expires At",
     ];
 
-    const rows = filteredLinks.map((link) => {
+    const rows = displayedLinks.map((link) => {
       const createdAt = new Date(link.createdAt).toLocaleString();
       const expiresAt = link.expiryDate
         ? new Date(link.expiryDate).toLocaleString()
@@ -191,7 +196,7 @@ export default function MyLinks() {
         <div className="mt-4 sm:mt-0 flex bg-surface-container-lowest border border-outline-variant/20 rounded-lg p-1 w-full sm:w-auto">
           <button
             onClick={() => setActiveTab("links")}
-            className={`flex-1 sm:flex-none px-4 py-1.5 text-label-md font-label-md rounded-md transition-colors flex items-center justify-center gap-2 ${
+            className={`cursor-pointer flex-1 sm:flex-none px-4 py-1.5 text-label-md font-label-md rounded-md transition-colors flex items-center justify-center gap-2 ${
               activeTab === "links"
                 ? "bg-primary text-white shadow-md"
                 : "text-on-surface-variant hover:text-on-surface"
@@ -202,7 +207,7 @@ export default function MyLinks() {
           </button>
           <button
             onClick={() => setActiveTab("qr")}
-            className={`flex-1 sm:flex-none px-4 py-1.5 text-label-md font-label-md rounded-md transition-colors flex items-center justify-center gap-2 ${
+            className={`cursor-pointer flex-1 sm:flex-none px-4 py-1.5 text-label-md font-label-md rounded-md transition-colors flex items-center justify-center gap-2 ${
               activeTab === "qr"
                 ? "bg-primary-container text-on-primary-container shadow-sm"
                 : "text-on-surface-variant hover:text-on-surface"
@@ -251,7 +256,7 @@ export default function MyLinks() {
                 Filter
               </button>
               <div className="flex bg-surface-container-lowest border border-outline-variant/20 rounded-lg p-1">
-                {["Active", "Expired", "Scheduled"].map((filter) => (
+                {["All", "Active", "Expired", "Scheduled"].map((filter) => (
                   <button
                     key={filter}
                     onClick={() => setActiveFilter(filter)}
@@ -376,21 +381,14 @@ export default function MyLinks() {
               <div className="flex items-center justify-between xl:justify-end gap-6 xl:w-[500px] shrink-0 mt-4 xl:mt-0 pt-4 xl:pt-0 border-t border-outline-variant/10 xl:border-t-0">
                 {/* Short URL Pill (Only in Links tab) */}
                 {activeTab === "links" && (
-                  <div
-                    className="group/copy flex items-center gap-2 px-3 py-1.5 bg-surface-container-lowest border border-outline-variant/20 rounded-full cursor-pointer hover:border-primary/30 hover:bg-primary/5 transition-all w-fit max-w-[180px] overflow-hidden shadow-sm"
-                    onClick={() =>
-                      handleCopy(link.customAlias || link.shortCode)
-                    }
-                    title="Copy to clipboard"
+                  <button
+                    onClick={() => handleCopy(link.customAlias || link.shortCode)}
+                    className="flex items-center gap-2 px-3 py-1.5 bg-surface-container-lowest border border-outline-variant/20 rounded-lg cursor-pointer hover:border-primary/30 hover:bg-primary/5 transition-all text-label-sm font-medium text-on-surface hover:text-primary"
+                    title="Copy shortened link"
                   >
-                    <span className="text-code-sm font-code-sm text-on-surface truncate flex-1">
-                      {import.meta.env.VITE_APP_URL}/
-                      {link.customAlias || link.shortCode}
-                    </span>
-                    <span className="material-symbols-outlined text-[14px] text-on-surface-variant opacity-50 group-hover/copy:opacity-100 group-hover/copy:text-primary transition-opacity shrink-0">
-                      content_copy
-                    </span>
-                  </div>
+                    <span className="material-symbols-outlined text-[16px]">content_copy</span>
+                    Copy Link
+                  </button>
                 )}
 
                 {/* Clicks */}
@@ -413,6 +411,7 @@ export default function MyLinks() {
                     >
                       <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)]"></div>
                       Active
+                      <span className="material-symbols-outlined text-[14px]">expand_more</span>
                     </button>
                   ) : (
                     <button
@@ -422,6 +421,7 @@ export default function MyLinks() {
                     >
                       <div className="w-1.5 h-1.5 rounded-full bg-on-surface-variant/50"></div>
                       Inactive
+                      <span className="material-symbols-outlined text-[14px]">expand_more</span>
                     </button>
                   )}
                 </div>

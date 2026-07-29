@@ -34,6 +34,7 @@ export default function EditLink() {
   const [editTrackOs, setEditTrackOs] = useState(true);
   const [editTrackDevice, setEditTrackDevice] = useState(true);
   const [editTrackReferrer, setEditTrackReferrer] = useState(true);
+  const [originalLink, setOriginalLink] = useState(null);
 
   useEffect(() => {
     const fetchLinkDetails = async () => {
@@ -57,6 +58,7 @@ export default function EditLink() {
         setEditTrackOs(link.trackOs !== false);
         setEditTrackDevice(link.trackDevice !== false);
         setEditTrackReferrer(link.trackReferrer !== false);
+        setOriginalLink(link);
 
         setLoading(false);
       } catch (error) {
@@ -83,6 +85,30 @@ export default function EditLink() {
     const newRules = [...editRoutingRules];
     newRules[index][field] = value;
     setEditRoutingRules(newRules);
+  };
+
+  const isChanged = () => {
+    if (!originalLink) return false;
+    if (editUrl !== originalLink.longUrl) return true;
+    if (editTitle !== (originalLink.title || "")) return true;
+    if (editAlias !== (originalLink.customAlias || "")) return true;
+    
+    // Quick deep equal for routing rules
+    if (JSON.stringify(editRoutingRules) !== JSON.stringify(originalLink.routingRules || [])) return true;
+    
+    if (editUtmSource !== (originalLink.utmSource || "")) return true;
+    if (editUtmMedium !== (originalLink.utmMedium || "")) return true;
+    if (editUtmCampaign !== (originalLink.utmCampaign || "")) return true;
+    if (editUtmTerm !== (originalLink.utmTerm || "")) return true;
+    if (editUtmContent !== (originalLink.utmContent || "")) return true;
+    
+    if (editTrackIp !== (originalLink.trackIp !== false)) return true;
+    if (editTrackBrowser !== (originalLink.trackBrowser !== false)) return true;
+    if (editTrackOs !== (originalLink.trackOs !== false)) return true;
+    if (editTrackDevice !== (originalLink.trackDevice !== false)) return true;
+    if (editTrackReferrer !== (originalLink.trackReferrer !== false)) return true;
+    
+    return false;
   };
 
   const handleEditSubmit = async () => {
@@ -478,7 +504,12 @@ export default function EditLink() {
           </button>
           <AsyncButton
             onClick={handleEditSubmit}
-            className="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-primary text-white font-label-md text-label-md hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(21,128,61,0.3)] sm:shadow-sm cursor-pointer"
+            disabled={!isChanged() || isEditingLink}
+            className={`w-full sm:w-auto px-6 py-2.5 rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 transition-colors cursor-pointer ${
+              isChanged()
+                ? "bg-primary text-white hover:bg-primary/90 shadow-[0_0_15px_rgba(21,128,61,0.3)] sm:shadow-sm"
+                : "bg-surface-container-highest text-on-surface-variant cursor-not-allowed opacity-60"
+            }`}
           >
             <span className="material-symbols-outlined text-[18px]">save</span>
             Save Changes
