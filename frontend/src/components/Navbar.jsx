@@ -1,6 +1,13 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { LogOut, LayoutDashboard, PlusCircle, List } from 'lucide-react';
+/*
+Copyright (c) 2026 Avdesh Jadon (Dragolink)
+All Rights Reserved.
+Proprietary and Confidential – Unauthorized copying, modification, or distribution of this file,
+via any medium, is strictly prohibited without prior written consent from Avdesh Jadon.
+*/
+
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { LogOut, LayoutDashboard, PlusCircle, List } from "lucide-react";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -8,7 +15,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -16,33 +23,54 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-2">
-              <img src="/dragolink.svg?v=2" alt="Dragolink Logo" className="h-8 w-auto" />
+            <Link
+              to={user ? "/dashboard" : "/"}
+              className="flex items-center gap-2"
+            >
+              <img
+                src="/dragolink.svg?v=2"
+                alt="Dragolink Logo"
+                className="h-8 w-auto"
+              />
               <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
                 Dragolink
               </span>
             </Link>
           </div>
-          
+
           <div className="flex items-center space-x-4">
             {user ? (
               <>
-                <Link to="/dashboard" className="text-slate-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2">
+                <Link
+                  to="/dashboard"
+                  className="text-slate-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2"
+                >
                   <LayoutDashboard className="h-4 w-4" /> Dashboard
                 </Link>
-                <Link to="/create" className="text-slate-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2">
+                <Link
+                  to="/create"
+                  className="text-slate-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2"
+                >
                   <PlusCircle className="h-4 w-4" /> Create
                 </Link>
-                <Link to="/links" className="text-slate-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2">
+                <Link
+                  to="/links"
+                  className="text-slate-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2"
+                >
                   <List className="h-4 w-4" /> My Links
                 </Link>
-                {user.role === 'ADMIN' && (
-                  <Link to="/admin/domains" className="text-slate-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
+                {user.role === "ADMIN" && (
+                  <Link
+                    to="/admin/domains"
+                    className="text-slate-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
+                  >
                     Admin
                   </Link>
                 )}
                 <div className="border-l border-slate-200 h-6 mx-2"></div>
-                <span className="text-sm text-slate-500 font-medium">{user.name}</span>
+                <span className="text-sm text-slate-500 font-medium">
+                  {user.name}
+                </span>
                 <button
                   onClick={handleLogout}
                   className="text-slate-600 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors"
@@ -52,10 +80,16 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <Link to="/login" className="text-slate-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
+                <Link
+                  to="/login"
+                  className="text-slate-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
+                >
                   Log in
                 </Link>
-                <Link to="/register" className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm">
+                <Link
+                  to="/register"
+                  className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm"
+                >
                   Sign up
                 </Link>
               </>

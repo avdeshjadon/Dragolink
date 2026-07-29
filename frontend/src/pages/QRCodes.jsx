@@ -1,3 +1,10 @@
+/*
+Copyright (c) 2026 Avdesh Jadon (Dragolink)
+All Rights Reserved.
+Proprietary and Confidential – Unauthorized copying, modification, or distribution of this file,
+via any medium, is strictly prohibited without prior written consent from Avdesh Jadon.
+*/
+
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import QRCodeStyling from "qr-code-styling";
@@ -114,29 +121,33 @@ export default function QRCodes() {
 
   const handleSave = async () => {
     if (!destinationUrl) {
-      toast.error('Destination URL is required');
+      toast.error("Destination URL is required");
       return;
     }
-    
+
     // Check if it's already a dragolink URL
     if (destinationUrl.includes(import.meta.env.VITE_APP_URL)) {
-        setShowDownloadModal(true);
-        return;
+      setShowDownloadModal(true);
+      return;
     }
 
     try {
-      const res = await api.post('/links', { longUrl: destinationUrl, title: '[QR] Custom Code' });
-      const shortCode = res.data.shortCode || res.data.customAlias || res.data.id;
+      const res = await api.post("/links", {
+        longUrl: destinationUrl,
+        title: "[QR] Custom Code",
+      });
+      const shortCode =
+        res.data.shortCode || res.data.customAlias || res.data.id;
       if (shortCode) {
         setSavedShortCode(shortCode);
         const shortUrl = `${import.meta.env.VITE_APP_URL}/${shortCode}`;
         setDestinationUrl(shortUrl);
-        toast.success('Link saved for tracking!');
+        toast.success("Link saved for tracking!");
       }
       setShowDownloadModal(true);
     } catch (err) {
       console.error(err);
-      toast.error('Failed to save link for tracking');
+      toast.error("Failed to save link for tracking");
     }
   };
 
@@ -187,29 +198,34 @@ export default function QRCodes() {
           </h2>
         </div>
         <div className="flex gap-2">
-          <button onClick={resetSettings} className="px-4 py-1 rounded text-label-md font-label-md text-primary border border-outline-variant/30 hover:bg-surface-container-high transition-colors cursor-pointer">
+          <button
+            onClick={resetSettings}
+            className="px-4 py-1 rounded text-label-md font-label-md text-primary border border-outline-variant/30 hover:bg-surface-container-high transition-colors cursor-pointer"
+          >
             Reset
           </button>
           {logoMode !== "none" ? (
-            <button 
-              onClick={() => { 
+            <button
+              onClick={() => {
                 setPreviousLogoMode(logoMode);
-                setLogoMode("none"); 
-                toast.success("Logo removed"); 
+                setLogoMode("none");
+                toast.success("Logo removed");
               }}
               className="px-4 py-1 rounded text-label-md font-label-md border border-outline-variant/30 text-error hover:bg-error/10 transition-colors shadow-sm cursor-pointer flex items-center gap-1"
             >
               Remove Logo
             </button>
           ) : (
-            <button 
-              onClick={() => { 
-                setLogoMode(previousLogoMode); 
-                toast.success("Logo restored"); 
+            <button
+              onClick={() => {
+                setLogoMode(previousLogoMode);
+                toast.success("Logo restored");
               }}
               className="px-4 py-1 rounded text-label-md font-label-md border border-outline-variant/30 text-primary hover:bg-primary/10 transition-colors shadow-sm cursor-pointer flex items-center gap-1"
             >
-              <span className="material-symbols-outlined text-[18px]">undo</span>
+              <span className="material-symbols-outlined text-[18px]">
+                undo
+              </span>
               Undo
             </button>
           )}
@@ -220,7 +236,6 @@ export default function QRCodes() {
       <div className="flex-1 flex overflow-hidden flex-col md:flex-row">
         {/* Left Panel: Controls */}
         <div className="w-full md:w-5/12 lg:w-1/3 border-r border-outline-variant/10 overflow-y-auto bg-surface-container-lowest p-6 space-y-10 custom-scrollbar">
-
           {/* Section: Colors */}
           <section>
             <div className="flex justify-between items-end border-b border-outline-variant/10 pb-1 mb-4">
@@ -403,7 +418,6 @@ export default function QRCodes() {
           ></div>
 
           <div className="z-10 w-full max-w-md flex flex-col gap-6">
-            
             {/* Moved Destination URL Section */}
             <section className="w-full">
               <h3 className="text-label-sm font-label-sm uppercase text-on-surface-variant mb-2">
@@ -440,7 +454,9 @@ export default function QRCodes() {
                 onClick={handleSave}
                 className="w-full bg-primary text-white hover:bg-primary/90 text-label-md font-label-md py-2.5 rounded flex items-center justify-center gap-2 transition-colors shadow-sm border border-primary/20 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                <span className="material-symbols-outlined text-[18px]">save</span>
+                <span className="material-symbols-outlined text-[18px]">
+                  save
+                </span>
                 Save this
               </AsyncButton>
             </div>
@@ -448,31 +464,45 @@ export default function QRCodes() {
         </div>
       </div>
 
-
       {/* Download Modal */}
       {showDownloadModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
           <div className="bg-surface rounded-xl shadow-2xl p-6 w-full max-w-sm border border-outline-variant/20 flex flex-col items-center">
             <div className="w-16 h-16 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center mb-4">
-              <span className="material-symbols-outlined text-3xl">check_circle</span>
+              <span className="material-symbols-outlined text-3xl">
+                check_circle
+              </span>
             </div>
-            <h3 className="text-headline-md font-headline-md text-on-surface mb-2">QR Code Ready!</h3>
+            <h3 className="text-headline-md font-headline-md text-on-surface mb-2">
+              QR Code Ready!
+            </h3>
             <p className="text-body-md font-body-md text-on-surface-variant text-center mb-6">
-              Your link is now trackable. Choose a format to download your QR code.
+              Your link is now trackable. Choose a format to download your QR
+              code.
             </p>
             <div className="flex w-full gap-3">
               <button
-                onClick={() => { handleDownloadPNG(); setShowDownloadModal(false); }}
+                onClick={() => {
+                  handleDownloadPNG();
+                  setShowDownloadModal(false);
+                }}
                 className="flex-1 bg-primary text-white py-2.5 rounded-lg text-label-md font-label-md hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer"
               >
-                <span className="material-symbols-outlined text-[18px]">image</span>
+                <span className="material-symbols-outlined text-[18px]">
+                  image
+                </span>
                 PNG
               </button>
               <button
-                onClick={() => { handleDownloadSVG(); setShowDownloadModal(false); }}
+                onClick={() => {
+                  handleDownloadSVG();
+                  setShowDownloadModal(false);
+                }}
                 className="flex-1 bg-surface-container-lowest border border-outline-variant/30 text-on-surface py-2.5 rounded-lg text-label-md font-label-md hover:bg-surface-container transition-colors flex items-center justify-center gap-2 shadow-sm cursor-pointer"
               >
-                <span className="material-symbols-outlined text-[18px]">code</span>
+                <span className="material-symbols-outlined text-[18px]">
+                  code
+                </span>
                 SVG
               </button>
             </div>

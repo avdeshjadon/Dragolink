@@ -1,5 +1,12 @@
-import { useEffect } from 'react';
-import Lenis from 'lenis';
+/*
+Copyright (c) 2026 Avdesh Jadon (Dragolink)
+All Rights Reserved.
+Proprietary and Confidential – Unauthorized copying, modification, or distribution of this file,
+via any medium, is strictly prohibited without prior written consent from Avdesh Jadon.
+*/
+
+import { useEffect } from "react";
+import Lenis from "lenis";
 
 export default function SmoothScroll({ children }) {
   useEffect(() => {
@@ -15,7 +22,7 @@ export default function SmoothScroll({ children }) {
       lenis.raf(time);
       requestAnimationFrame(raf);
     }
-    
+
     requestAnimationFrame(raf);
 
     return () => {

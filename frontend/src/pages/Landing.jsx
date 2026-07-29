@@ -1,3 +1,10 @@
+/*
+Copyright (c) 2026 Avdesh Jadon (Dragolink)
+All Rights Reserved.
+Proprietary and Confidential – Unauthorized copying, modification, or distribution of this file,
+via any medium, is strictly prohibited without prior written consent from Avdesh Jadon.
+*/
+
 import { useState, useEffect } from "react";
 import { api } from "../lib/axios";
 import { Link } from "react-router-dom";
@@ -19,21 +26,33 @@ import {
   Webhook as WebhookIcon,
   Network,
   Layout,
-  CheckCircle2
+  CheckCircle2,
 } from "lucide-react";
 
 const IconMap = {
-  LinkIcon, BarChart3, QrCode, ShieldCheck,
-  Settings2, Users, Zap, Globe, Lock, Cpu, Server, Smartphone,
-  MessageSquare, WebhookIcon, Network, Layout, CheckCircle2
+  LinkIcon,
+  BarChart3,
+  QrCode,
+  ShieldCheck,
+  Settings2,
+  Users,
+  Zap,
+  Globe,
+  Lock,
+  Cpu,
+  Server,
+  Smartphone,
+  MessageSquare,
+  WebhookIcon,
+  Network,
+  Layout,
+  CheckCircle2,
 };
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 
 export default function Landing() {
   const [url, setUrl] = useState("");
-
-  
 
   const [pageData, setPageData] = useState(null);
 
@@ -51,7 +70,12 @@ export default function Landing() {
     fetchPageData();
   }, []);
 
-  if (!pageData) return <div className="min-h-screen flex items-center justify-center bg-bg-light">Loading...</div>;
+  if (!pageData)
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-bg-light">
+        Loading...
+      </div>
+    );
 
   return (
     <div className="flex flex-col min-h-screen bg-bg-light w-full font-sans">
@@ -132,21 +156,25 @@ export default function Landing() {
       </section>
 
       {/* Capabilities */}
-      <section id="features" className="py-24 bg-bg-light relative overflow-hidden">
-
-        
+      <section
+        id="features"
+        className="py-24 bg-bg-light relative overflow-hidden"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
-            <motion.h2 
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-3xl sm:text-4xl font-extrabold text-brand-dark mb-4 tracking-tight"
             >
-              {pageData.capabilities.title1} <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-emerald">{pageData.capabilities.title2}</span>
+              {pageData.capabilities.title1}{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-emerald">
+                {pageData.capabilities.title2}
+              </span>
             </motion.h2>
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -156,12 +184,12 @@ export default function Landing() {
               {pageData.capabilities.subtitle}
             </motion.p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {pageData.features.map((feature, idx) => {
               const IconComponent = IconMap[feature.icon] || LinkIcon;
               return (
-                <motion.div 
+                <motion.div
                   key={idx}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -172,13 +200,17 @@ export default function Landing() {
                   {/* Subtle glowing blobs inside the card on hover */}
                   <div className="absolute -right-12 -top-12 w-32 h-32 bg-brand-emerald/10 rounded-full blur-3xl group-hover:bg-brand-emerald/20 transition-all duration-700"></div>
                   <div className="absolute -left-12 -bottom-12 w-32 h-32 bg-brand/10 rounded-full blur-3xl group-hover:bg-brand/20 transition-all duration-700"></div>
-  
+
                   <div className="relative z-10">
                     <IconComponent className="w-8 h-8 text-brand mb-4 group-hover:scale-110 group-hover:-rotate-3 group-hover:text-brand-emerald transition-all duration-300 drop-shadow-sm" />
-                    <h3 className="text-xl font-bold text-brand-dark mb-2 tracking-tight group-hover:text-brand transition-colors duration-300">{feature.title}</h3>
-                  <p className="text-text-secondary leading-relaxed font-medium">{feature.description}</p>
-                </div>
-              </motion.div>
+                    <h3 className="text-xl font-bold text-brand-dark mb-2 tracking-tight group-hover:text-brand transition-colors duration-300">
+                      {feature.title}
+                    </h3>
+                    <p className="text-text-secondary leading-relaxed font-medium">
+                      {feature.description}
+                    </p>
+                  </div>
+                </motion.div>
               );
             })}
           </div>

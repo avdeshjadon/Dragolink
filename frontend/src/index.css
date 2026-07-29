@@ -1,72 +1,79 @@
+/*
+Copyright (c) 2026 Avdesh Jadon (Dragolink)
+All Rights Reserved.
+Proprietary and Confidential – Unauthorized copying, modification, or distribution of this file,
+via any medium, is strictly prohibited without prior written consent from Avdesh Jadon.
+*/
+
 @import "tailwindcss";
 
 @theme {
   /* Existing LinkPulse Brand Colors (Preserved for Marketing Pages) */
-  --color-primary: #15803D;
-  --color-primary-hover: #0B3D2E;
-  --color-secondary: #22C55E;
-  
-  --color-brand-dark: #0B3D2E;
-  --color-brand: #15803D;
-  --color-brand-emerald: #22C55E;
-  --color-brand-accent: #4ADE80;
-  --color-brand-lime: #A3E635;
-  --color-bg-dark: #071A14;
-  --color-surface-dark: #0D261E;
-  --color-bg-light: #F6FAF7;
-  --color-surface-light: #FFFFFF;
-  --color-text-primary: #10231B;
-  --color-text-secondary: #66756D;
-  --color-border-light: #DCE8E0;
+  --color-primary: #15803d;
+  --color-primary-hover: #0b3d2e;
+  --color-secondary: #22c55e;
+
+  --color-brand-dark: #0b3d2e;
+  --color-brand: #15803d;
+  --color-brand-emerald: #22c55e;
+  --color-brand-accent: #4ade80;
+  --color-brand-lime: #a3e635;
+  --color-bg-dark: #071a14;
+  --color-surface-dark: #0d261e;
+  --color-bg-light: #f6faf7;
+  --color-surface-light: #ffffff;
+  --color-text-primary: #10231b;
+  --color-text-secondary: #66756d;
+  --color-border-light: #dce8e0;
 
   /* Stitch UI Kit Premium Colors (Dashboard) - Light Theme */
-  --color-background: #F6FAF7;
-  --color-outline-variant: #DCE8E0;
-  --color-tertiary-container: #BCEBF2;
-  --color-error-container: #FFDAD6;
-  --color-on-secondary-fixed-variant: #0E1F12;
-  --color-surface-container-highest: #E0E7E2;
-  --color-secondary-fixed-dim: #B7CCB8;
-  --color-surface-container-low: #FFFFFF;
-  --color-on-background: #10231B;
-  --color-secondary-container: #D3E8D4;
-  --color-on-primary: #FFFFFF;
-  --color-surface-variant: #DDE5DB;
+  --color-background: #f6faf7;
+  --color-outline-variant: #dce8e0;
+  --color-tertiary-container: #bcebf2;
+  --color-error-container: #ffdad6;
+  --color-on-secondary-fixed-variant: #0e1f12;
+  --color-surface-container-highest: #e0e7e2;
+  --color-secondary-fixed-dim: #b7ccb8;
+  --color-surface-container-low: #ffffff;
+  --color-on-background: #10231b;
+  --color-secondary-container: #d3e8d4;
+  --color-on-primary: #ffffff;
+  --color-surface-variant: #dde5db;
   --color-on-primary-fixed-variant: #002109;
-  --color-tertiary: #39656B;
-  --color-on-tertiary-fixed: #001F23;
-  --color-surface-container-high: #E9EFEA;
-  --color-secondary-fixed: #D3E8D4;
-  --color-surface-bright: #F6FAF7;
-  --color-on-surface-variant: #66756D;
-  --color-on-tertiary: #FFFFFF;
-  --color-on-secondary-container: #0E1F12;
-  --color-tertiary-fixed-dim: #A1D0D6;
-  --color-on-tertiary-container: #001F23;
-  --color-surface: #F6FAF7;
-  --color-error: #BA1A1A;
-  --color-primary: #15803D;
-  --color-surface-tint: #15803D;
-  --color-on-tertiary-fixed-variant: #1F4D53;
-  --color-primary-container: #A1F2B6;
+  --color-tertiary: #39656b;
+  --color-on-tertiary-fixed: #001f23;
+  --color-surface-container-high: #e9efea;
+  --color-secondary-fixed: #d3e8d4;
+  --color-surface-bright: #f6faf7;
+  --color-on-surface-variant: #66756d;
+  --color-on-tertiary: #ffffff;
+  --color-on-secondary-container: #0e1f12;
+  --color-tertiary-fixed-dim: #a1d0d6;
+  --color-on-tertiary-container: #001f23;
+  --color-surface: #f6faf7;
+  --color-error: #ba1a1a;
+  --color-primary: #15803d;
+  --color-surface-tint: #15803d;
+  --color-on-tertiary-fixed-variant: #1f4d53;
+  --color-primary-container: #a1f2b6;
   --color-outline: #717971;
-  --color-inverse-primary: #79DB8D;
-  --color-inverse-on-surface: #F6FAF7;
-  --color-on-secondary: #FFFFFF;
-  --color-inverse-surface: #10231B;
+  --color-inverse-primary: #79db8d;
+  --color-inverse-on-surface: #f6faf7;
+  --color-on-secondary: #ffffff;
+  --color-inverse-surface: #10231b;
   --color-on-error-container: #410002;
   --color-on-primary-container: #002109;
-  --color-primary-fixed-dim: #79DB8D;
+  --color-primary-fixed-dim: #79db8d;
   --color-on-primary-fixed: #002109;
-  --color-surface-dim: #DDE5DB;
-  --color-on-error: #FFFFFF;
-  --color-on-surface: #10231B;
-  --color-primary-fixed: #95F8A7;
+  --color-surface-dim: #dde5db;
+  --color-on-error: #ffffff;
+  --color-on-surface: #10231b;
+  --color-primary-fixed: #95f8a7;
   --color-secondary: #516353;
-  --color-tertiary-fixed: #BCEBF2;
-  --color-surface-container-lowest: #FFFFFF;
-  --color-surface-container: #F2F7F4;
-  --color-on-secondary-fixed: #0E1F12;
+  --color-tertiary-fixed: #bcebf2;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container: #f2f7f4;
+  --color-on-secondary-fixed: #0e1f12;
 
   /* Stitch Typography */
   --font-display-lg: "Geist";
@@ -78,47 +85,49 @@
   --font-body-lg: "Inter";
   --font-body-md: "Inter";
   --font-headline-lg: "Geist";
-
-
 }
 
 @layer base {
   body {
     @apply bg-bg-light text-text-primary antialiased;
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-family: "Plus Jakarta Sans", "Inter", sans-serif;
   }
 }
 
 /* Custom Input Styling */
 .premium-input {
-    background-color: var(--color-surface-container-low);
-    border: 1px solid var(--color-outline-variant);
-    color: var(--color-on-surface);
-    transition: all 0.2s ease;
+  background-color: var(--color-surface-container-low);
+  border: 1px solid var(--color-outline-variant);
+  color: var(--color-on-surface);
+  transition: all 0.2s ease;
 }
 .premium-input:focus {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 2px rgba(21, 128, 61, 0.2);
-    outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(21, 128, 61, 0.2);
+  outline: none;
 }
 
 /* Glassmorphism Panel */
 .glass-panel {
-    background-color: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 /* Tonal Card */
 .tonal-card {
-    background-color: var(--color-surface-container-low);
-    border: 1px solid rgba(220, 232, 224, 0.1);
+  background-color: var(--color-surface-container-low);
+  border: 1px solid rgba(220, 232, 224, 0.1);
 }
 
 /* Utilities */
 .material-symbols-outlined {
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
 }
 .icon-fill {
-    font-variation-settings: 'FILL' 1;
+  font-variation-settings: "FILL" 1;
 }

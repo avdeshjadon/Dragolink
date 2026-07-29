@@ -1,3 +1,10 @@
+/*
+Copyright (c) 2026 Avdesh Jadon (Dragolink)
+All Rights Reserved.
+Proprietary and Confidential – Unauthorized copying, modification, or distribution of this file,
+via any medium, is strictly prohibited without prior written consent from Avdesh Jadon.
+*/
+
 import * as React from "react";
 import { cn } from "../../lib/utils";
 
@@ -7,7 +14,7 @@ const Input = React.forwardRef(({ className, type, ...props }, ref) => {
       type={type}
       className={cn(
         "flex h-11 w-full rounded-lg border border-border-light bg-surface-light px-3 py-2 text-sm text-text-primary ring-offset-bg-light file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:border-transparent disabled:cursor-not-allowed disabled:opacity-50 transition-all",
-        className
+        className,
       )}
       ref={ref}
       {...props}

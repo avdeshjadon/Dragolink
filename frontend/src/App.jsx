@@ -1,54 +1,68 @@
-import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
-import { AnimatePresence, motion } from 'motion/react';
-import { Toaster } from 'react-hot-toast';
-import MotionPage from './components/motion/MotionPage';
-import SmoothScroll from './components/SmoothScroll';
-import { useAuth } from './context/AuthContext';
-import Landing from './pages/Landing';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import CreateLink from './pages/CreateLink';
-import EditLink from './pages/EditLink';
-import MyLinks from './pages/MyLinks';
-import ClickLogs from './pages/ClickLogs';
-import Analytics from './pages/Analytics';
-import SettingsProfile from './pages/SettingsProfile';
-import SettingsSecurity from './pages/SettingsSecurity';
-import Product from './pages/Product';
-import Features from './pages/Features';
-import Pricing from './pages/Pricing';
-import PublicAnalytics from './pages/PublicAnalytics';
-import QRCodes from './pages/QRCodes';
-import Campaigns from './pages/Campaigns';
-import Team from './pages/Team';
-import APIKeys from './pages/APIKeys';
-import MyApplications from './pages/MyApplications';
-import Notifications from './pages/Notifications';
-import PublicQRCodes from './pages/PublicQRCodes';
-import PublicIntegrations from './pages/PublicIntegrations';
-import PublicAPI from './pages/PublicAPI';
-import Blog from './pages/Blog';
-import BlogPost from './pages/BlogPost';
-import HelpCenter from './pages/HelpCenter';
-import Guides from './pages/Guides';
-import CaseStudies from './pages/CaseStudies';
+/*
+Copyright (c) 2026 Avdesh Jadon (Dragolink)
+All Rights Reserved.
+Proprietary and Confidential – Unauthorized copying, modification, or distribution of this file,
+via any medium, is strictly prohibited without prior written consent from Avdesh Jadon.
+*/
 
-import Docs from './pages/Docs';
-import About from './pages/About';
-import Careers from './pages/Careers';
-import JobDetails from './pages/JobDetails';
-import JobApplicationForm from './pages/JobApplicationForm';
-import Contact from './pages/Contact';
-import Privacy from './pages/Privacy';
-import Terms from './pages/Terms';
-import Security from './pages/Security';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+  useLocation,
+} from "react-router-dom";
+import { AnimatePresence, motion } from "motion/react";
+import { Toaster } from "react-hot-toast";
+import MotionPage from "./components/motion/MotionPage";
+import SmoothScroll from "./components/SmoothScroll";
+import { useAuth } from "./context/AuthContext";
+import Landing from "./pages/Landing";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import CreateLink from "./pages/CreateLink";
+import EditLink from "./pages/EditLink";
+import MyLinks from "./pages/MyLinks";
+import ClickLogs from "./pages/ClickLogs";
+import Analytics from "./pages/Analytics";
+import SettingsProfile from "./pages/SettingsProfile";
+import SettingsSecurity from "./pages/SettingsSecurity";
+import Product from "./pages/Product";
+import Features from "./pages/Features";
+import Pricing from "./pages/Pricing";
+import PublicAnalytics from "./pages/PublicAnalytics";
+import QRCodes from "./pages/QRCodes";
+import Campaigns from "./pages/Campaigns";
+import Team from "./pages/Team";
+import APIKeys from "./pages/APIKeys";
+import MyApplications from "./pages/MyApplications";
+import Notifications from "./pages/Notifications";
+import PublicQRCodes from "./pages/PublicQRCodes";
+import PublicIntegrations from "./pages/PublicIntegrations";
+import PublicAPI from "./pages/PublicAPI";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+import HelpCenter from "./pages/HelpCenter";
+import Guides from "./pages/Guides";
+import CaseStudies from "./pages/CaseStudies";
 
-import DashboardLayout from './components/DashboardLayout';
-import SettingsLayout from './components/SettingsLayout';
-import PublicNavbar from './components/PublicNavbar';
-import PublicFooter from './components/PublicFooter';
-import ScrollToTop from './components/ScrollToTop';
+import Docs from "./pages/Docs";
+import About from "./pages/About";
+import Careers from "./pages/Careers";
+import JobDetails from "./pages/JobDetails";
+import JobApplicationForm from "./pages/JobApplicationForm";
+import Contact from "./pages/Contact";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+import Security from "./pages/Security";
+
+import DashboardLayout from "./components/DashboardLayout";
+import SettingsLayout from "./components/SettingsLayout";
+import PublicNavbar from "./components/PublicNavbar";
+import PublicFooter from "./components/PublicFooter";
+import ScrollToTop from "./components/ScrollToTop";
 
 // Redirect component for external admin routes
 const AdminRedirect = () => {
@@ -58,10 +72,10 @@ const AdminRedirect = () => {
 
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const { user } = useAuth();
-  
+
   if (!user) return <Navigate to="/login" />;
-  if (adminOnly && user.role !== 'ADMIN') return <Navigate to="/dashboard" />;
-  
+  if (adminOnly && user.role !== "ADMIN") return <Navigate to="/dashboard" />;
+
   return children;
 };
 
@@ -82,7 +96,7 @@ const PublicLayout = () => {
 
 function AnimatedRoutes() {
   const location = useLocation();
-  
+
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
@@ -105,7 +119,10 @@ function AnimatedRoutes() {
           <Route path="/about" element={<About />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/careers/:jobId" element={<JobDetails />} />
-          <Route path="/careers/:jobId/apply" element={<JobApplicationForm />} />
+          <Route
+            path="/careers/:jobId/apply"
+            element={<JobApplicationForm />}
+          />
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
@@ -117,16 +134,18 @@ function AnimatedRoutes() {
           {/* External redirects */}
           <Route path="/admin/*" element={<AdminRedirect />} />
         </Route>
-        
-        <Route element={
-          <ProtectedRoute>
-            <DashboardLayout />
-          </ProtectedRoute>
-        }>
+
+        <Route
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/create" element={<CreateLink />} />
           <Route path="/links" element={<MyLinks />} />
-                <Route path="/links/:id/edit" element={<EditLink />} />
+          <Route path="/links/:id/edit" element={<EditLink />} />
           <Route path="/logs/:id" element={<ClickLogs />} />
           <Route path="/qr" element={<QRCodes />} />
           <Route path="/campaigns" element={<Campaigns />} />
@@ -137,13 +156,15 @@ function AnimatedRoutes() {
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/analytics/:id" element={<Analytics />} />
         </Route>
-        
+
         {/* Settings Routes wrapped in SettingsLayout */}
-        <Route element={
-          <ProtectedRoute>
-            <SettingsLayout />
-          </ProtectedRoute>
-        }>
+        <Route
+          element={
+            <ProtectedRoute>
+              <SettingsLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route path="/settings/profile" element={<SettingsProfile />} />
           <Route path="/settings/security" element={<SettingsSecurity />} />
         </Route>
@@ -165,4 +186,3 @@ function App() {
 }
 
 export default App;
-

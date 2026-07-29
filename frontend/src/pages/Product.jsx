@@ -1,7 +1,14 @@
-import { useState, useEffect } from 'react';
-import { api } from '../lib/axios';
-import { motion } from 'motion/react';
-import { Link } from 'react-router-dom';
+/*
+Copyright (c) 2026 Avdesh Jadon (Dragolink)
+All Rights Reserved.
+Proprietary and Confidential – Unauthorized copying, modification, or distribution of this file,
+via any medium, is strictly prohibited without prior written consent from Avdesh Jadon.
+*/
+
+import { useState, useEffect } from "react";
+import { api } from "../lib/axios";
+import { motion } from "motion/react";
+import { Link } from "react-router-dom";
 import {
   LinkIcon,
   Zap,
@@ -22,26 +29,40 @@ import {
   Smartphone,
   MessageSquare,
   Network,
-  Layout
-} from 'lucide-react';
-import { Button } from '../components/ui/Button';
+  Layout,
+} from "lucide-react";
+import { Button } from "../components/ui/Button";
 
 const IconMap = {
-  LinkIcon, Zap, Globe, Shield, Activity, BarChart3, Lock,
-  Webhook, QrCode, Users, Clock, CheckCircle2,
-  ShieldCheck, Settings2, Cpu, Server, Smartphone,
-  MessageSquare, Network, Layout
+  LinkIcon,
+  Zap,
+  Globe,
+  Shield,
+  Activity,
+  BarChart3,
+  Lock,
+  Webhook,
+  QrCode,
+  Users,
+  Clock,
+  CheckCircle2,
+  ShieldCheck,
+  Settings2,
+  Cpu,
+  Server,
+  Smartphone,
+  MessageSquare,
+  Network,
+  Layout,
 };
 
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-80px' },
+  viewport: { once: true, margin: "-80px" },
 };
 
 export default function Product() {
-  
-
   const [pageData, setPageData] = useState(null);
 
   useEffect(() => {
@@ -58,14 +79,17 @@ export default function Product() {
     fetchPageData();
   }, []);
 
-  if (!pageData) return <div className="min-h-screen flex items-center justify-center bg-bg-light">Loading...</div>;
+  if (!pageData)
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-bg-light">
+        Loading...
+      </div>
+    );
 
   return (
     <div className="bg-bg-light min-h-screen font-sans">
       {/* Hero Section */}
       <section className="relative pt-32 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center overflow-hidden">
-
-
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -73,9 +97,11 @@ export default function Product() {
           className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-brand-dark mb-8 tracking-tight leading-[1.1]"
         >
           {pageData.hero.title1} <br className="hidden md:block" />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-emerald to-brand">{pageData.hero.title2}</span>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-emerald to-brand">
+            {pageData.hero.title2}
+          </span>
         </motion.h1>
-        
+
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -84,7 +110,7 @@ export default function Product() {
         >
           {pageData.hero.subtitle}
         </motion.p>
-        
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -92,41 +118,48 @@ export default function Product() {
           className="flex flex-col sm:flex-row items-center justify-center gap-5 mb-8"
         >
           <Link to="/register">
-            <Button size="lg" className="h-14 px-10 text-lg shadow-lg shadow-brand-emerald/25 hover:shadow-brand-emerald/40 transition-all duration-300">
+            <Button
+              size="lg"
+              className="h-14 px-10 text-lg shadow-lg shadow-brand-emerald/25 hover:shadow-brand-emerald/40 transition-all duration-300"
+            >
               {pageData.hero.button1}
             </Button>
           </Link>
           <a href="mailto:sales@dragolink.com">
-            <Button size="lg" variant="outline" className="h-14 px-10 text-lg bg-bg-light/50 backdrop-blur-sm border-2 hover:bg-surface-light transition-all duration-300">
+            <Button
+              size="lg"
+              variant="outline"
+              className="h-14 px-10 text-lg bg-bg-light/50 backdrop-blur-sm border-2 hover:bg-surface-light transition-all duration-300"
+            >
               {pageData.hero.button2}
             </Button>
           </a>
         </motion.div>
-        
+
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
           className="text-sm font-medium text-text-secondary/80 flex items-center justify-center gap-2"
         >
-          <CheckCircle2 className="w-4 h-4 text-brand-emerald" /> {pageData.hero.guarantee.split('•')[0]}
-          {pageData.hero.guarantee.includes('•') && (
+          <CheckCircle2 className="w-4 h-4 text-brand-emerald" />{" "}
+          {pageData.hero.guarantee.split("•")[0]}
+          {pageData.hero.guarantee.includes("•") && (
             <>
-              <span className="mx-2 text-border-light">•</span> 
-              {pageData.hero.guarantee.split('•')[1]}
+              <span className="mx-2 text-border-light">•</span>
+              {pageData.hero.guarantee.split("•")[1]}
             </>
           )}
         </motion.p>
       </section>
 
-
-
-
       {/* Feature Grid */}
       <section className="py-24 bg-surface-light border-y border-border-light px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <motion.div {...fadeUp} className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-brand-dark mb-4">{pageData.featuresHeader.title}</h2>
+            <h2 className="text-3xl font-bold text-brand-dark mb-4">
+              {pageData.featuresHeader.title}
+            </h2>
             <p className="text-lg text-text-secondary max-w-2xl mx-auto">
               {pageData.featuresHeader.subtitle}
             </p>
@@ -144,7 +177,9 @@ export default function Product() {
                   <div className="w-10 h-10 bg-brand/10 text-brand rounded-lg flex items-center justify-center mb-4">
                     <IconComponent className="w-5 h-5" />
                   </div>
-                  <h3 className="font-bold text-text-primary mb-2">{f.title}</h3>
+                  <h3 className="font-bold text-text-primary mb-2">
+                    {f.title}
+                  </h3>
                   <p className="text-text-secondary text-sm">{f.desc}</p>
                 </motion.div>
               );
@@ -165,12 +200,16 @@ export default function Product() {
       {/* CTA */}
       <section className="py-24 text-center px-4 bg-surface-light border-t border-border-light">
         <motion.div {...fadeUp}>
-          <h2 className="text-3xl font-bold text-brand-dark mb-4">{pageData.cta.title}</h2>
+          <h2 className="text-3xl font-bold text-brand-dark mb-4">
+            {pageData.cta.title}
+          </h2>
           <p className="text-lg text-text-secondary max-w-xl mx-auto mb-8">
             {pageData.cta.subtitle}
           </p>
           <Link to="/register">
-            <Button size="lg" className="text-base px-8">{pageData.cta.buttonText}</Button>
+            <Button size="lg" className="text-base px-8">
+              {pageData.cta.buttonText}
+            </Button>
           </Link>
         </motion.div>
       </section>

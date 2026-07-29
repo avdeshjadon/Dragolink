@@ -1,3 +1,10 @@
+/*
+Copyright (c) 2026 Avdesh Jadon (Dragolink)
+All Rights Reserved.
+Proprietary and Confidential – Unauthorized copying, modification, or distribution of this file,
+via any medium, is strictly prohibited without prior written consent from Avdesh Jadon.
+*/
+
 import * as React from "react";
 import { cn } from "../../lib/utils";
 
@@ -6,7 +13,7 @@ const Card = React.forwardRef(({ className, ...props }, ref) => (
     ref={ref}
     className={cn(
       "rounded-2xl border border-border-light bg-surface-light text-text-primary shadow-sm",
-      className
+      className,
     )}
     {...props}
   />
@@ -27,7 +34,7 @@ const CardTitle = React.forwardRef(({ className, ...props }, ref) => (
     ref={ref}
     className={cn(
       "text-lg font-semibold leading-none tracking-tight",
-      className
+      className,
     )}
     {...props}
   />
@@ -57,4 +64,11 @@ const CardFooter = React.forwardRef(({ className, ...props }, ref) => (
 ));
 CardFooter.displayName = "CardFooter";
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent };
+export {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardDescription,
+  CardContent,
+};

@@ -1,8 +1,15 @@
-import React from 'react';
-import { motion } from 'motion/react';
-import { VARIANTS } from '../../constants/motion';
+/*
+Copyright (c) 2026 Avdesh Jadon (Dragolink)
+All Rights Reserved.
+Proprietary and Confidential – Unauthorized copying, modification, or distribution of this file,
+via any medium, is strictly prohibited without prior written consent from Avdesh Jadon.
+*/
 
-export default function MotionPage({ children, className = '', ...props }) {
+import React from "react";
+import { motion } from "motion/react";
+import { VARIANTS } from "../../constants/motion";
+
+export default function MotionPage({ children, className = "", ...props }) {
   return (
     <motion.div
       variants={VARIANTS.PAGE_FADE_BLUR}

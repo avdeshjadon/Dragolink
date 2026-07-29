@@ -1,24 +1,59 @@
-import { Link } from 'react-router-dom';
-import { motion } from 'motion/react';
-import { useState, useEffect } from 'react';
-import { api } from '../lib/axios';
+/*
+Copyright (c) 2026 Avdesh Jadon (Dragolink)
+All Rights Reserved.
+Proprietary and Confidential – Unauthorized copying, modification, or distribution of this file,
+via any medium, is strictly prohibited without prior written consent from Avdesh Jadon.
+*/
+
+import { Link } from "react-router-dom";
+import { motion } from "motion/react";
+import { useState, useEffect } from "react";
+import { api } from "../lib/axios";
 import {
-  LinkIcon, BarChart3, QrCode, ShieldCheck,
-  Settings2, Users, Zap, Globe, Lock, Cpu, Server, Smartphone,
-  ArrowRight, CheckCircle2, MessageSquare, Globe as WebhookIcon, Network, Layout,
-} from 'lucide-react';
-import { Button } from '../components/ui/Button';
+  LinkIcon,
+  BarChart3,
+  QrCode,
+  ShieldCheck,
+  Settings2,
+  Users,
+  Zap,
+  Globe,
+  Lock,
+  Cpu,
+  Server,
+  Smartphone,
+  ArrowRight,
+  CheckCircle2,
+  MessageSquare,
+  Globe as WebhookIcon,
+  Network,
+  Layout,
+} from "lucide-react";
+import { Button } from "../components/ui/Button";
 
 const iconMap = {
-  LinkIcon, BarChart3, QrCode, ShieldCheck,
-  Settings2, Users, Zap, Globe, Lock, Cpu, Server, Smartphone,
-  MessageSquare, WebhookIcon, Network, Layout
+  LinkIcon,
+  BarChart3,
+  QrCode,
+  ShieldCheck,
+  Settings2,
+  Users,
+  Zap,
+  Globe,
+  Lock,
+  Cpu,
+  Server,
+  Smartphone,
+  MessageSquare,
+  WebhookIcon,
+  Network,
+  Layout,
 };
 
 const cardMotion = (idx) => ({
   initial: { opacity: 0, y: 30 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-50px' },
+  viewport: { once: true, margin: "-50px" },
   transition: { delay: (idx % 3) * 0.05, duration: 0.5 },
 });
 
@@ -34,8 +69,12 @@ function FeatureCard({ feature, idx }) {
 
       <div className="relative z-10">
         <Icon className="w-8 h-8 text-brand mb-4 group-hover:scale-110 group-hover:-rotate-3 group-hover:text-brand-emerald transition-all duration-300 drop-shadow-sm" />
-        <h3 className="text-xl font-bold text-brand-dark mb-2 tracking-tight group-hover:text-brand transition-colors duration-300">{feature.title}</h3>
-        <p className="text-text-secondary leading-relaxed font-medium">{feature.description}</p>
+        <h3 className="text-xl font-bold text-brand-dark mb-2 tracking-tight group-hover:text-brand transition-colors duration-300">
+          {feature.title}
+        </h3>
+        <p className="text-text-secondary leading-relaxed font-medium">
+          {feature.description}
+        </p>
       </div>
     </motion.div>
   );
@@ -46,36 +85,41 @@ export default function Features() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get('/public/pages/features')
-      .then(res => {
+    api
+      .get("/public/pages/features")
+      .then((res) => {
         setData(JSON.parse(res.data.htmlContent));
         setLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
         setLoading(false);
       });
   }, []);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-bg-light text-text-secondary">Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-bg-light text-text-secondary">
+        Loading...
+      </div>
+    );
   }
 
   if (!data) {
-    return <div className="min-h-screen flex items-center justify-center bg-bg-light text-text-secondary">Failed to load content.</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-bg-light text-text-secondary">
+        Failed to load content.
+      </div>
+    );
   }
 
   const { hero, categories, integrations, comparison, cta } = data;
 
   return (
     <div className="bg-bg-light min-h-screen py-24 font-sans relative overflow-hidden">
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-
         {/* Hero */}
         <div className="relative text-center max-w-5xl mx-auto mb-20 pt-10">
-
-          
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -83,7 +127,9 @@ export default function Features() {
             className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-brand-dark mb-8 tracking-tight leading-[1.1]"
           >
             {hero.title1} <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-emerald">{hero.title2}</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand-emerald">
+              {hero.title2}
+            </span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -95,21 +141,25 @@ export default function Features() {
           </motion.p>
         </div>
 
-
-
         {/* Feature categories */}
         {categories?.map((category, cIdx) => (
           <div key={category.name} className="mb-20">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
+              viewport={{ once: true, margin: "-50px" }}
               className="flex items-baseline gap-4 mb-8"
             >
-              <span className="text-sm font-bold text-brand uppercase tracking-widest">{String(cIdx + 1).padStart(2, '0')}</span>
+              <span className="text-sm font-bold text-brand uppercase tracking-widest">
+                {String(cIdx + 1).padStart(2, "0")}
+              </span>
               <div>
-                <h2 className="text-2xl font-bold text-brand-dark tracking-tight">{category.name}</h2>
-                <p className="text-text-secondary font-medium">{category.tagline}</p>
+                <h2 className="text-2xl font-bold text-brand-dark tracking-tight">
+                  {category.name}
+                </h2>
+                <p className="text-text-secondary font-medium">
+                  {category.tagline}
+                </p>
               </div>
             </motion.div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -122,77 +172,103 @@ export default function Features() {
 
         {/* Integrations */}
         {integrations && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          className="bg-white rounded-3xl border border-outline-variant/30 shadow-sm p-10 mb-24"
-        >
-          <div className="text-center max-w-2xl mx-auto mb-10">
-            <h2 className="text-2xl font-bold text-brand-dark mb-2 tracking-tight">{integrations.title}</h2>
-            <p className="text-text-secondary font-medium">{integrations.subtitle}</p>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-            {integrations.items.map((item, i) => {
-              const IconComp = iconMap[item.icon] || LinkIcon;
-              return (
-                <div key={i} className="flex flex-col items-center gap-3 p-6 rounded-2xl border border-outline-variant/30 hover:border-brand-emerald/40 transition-colors">
-                  <IconComp className="w-7 h-7 text-brand" />
-                  <span className="font-semibold text-text-primary text-sm">{item.label}</span>
-                </div>
-              );
-            })}
-          </div>
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            className="bg-white rounded-3xl border border-outline-variant/30 shadow-sm p-10 mb-24"
+          >
+            <div className="text-center max-w-2xl mx-auto mb-10">
+              <h2 className="text-2xl font-bold text-brand-dark mb-2 tracking-tight">
+                {integrations.title}
+              </h2>
+              <p className="text-text-secondary font-medium">
+                {integrations.subtitle}
+              </p>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+              {integrations.items.map((item, i) => {
+                const IconComp = iconMap[item.icon] || LinkIcon;
+                return (
+                  <div
+                    key={i}
+                    className="flex flex-col items-center gap-3 p-6 rounded-2xl border border-outline-variant/30 hover:border-brand-emerald/40 transition-colors"
+                  >
+                    <IconComp className="w-7 h-7 text-brand" />
+                    <span className="font-semibold text-text-primary text-sm">
+                      {item.label}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
         )}
 
         {/* Comparison callout */}
         {comparison && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          className="grid md:grid-cols-2 gap-6 mb-24"
-        >
-          <div className="bg-white rounded-3xl border border-outline-variant/30 shadow-sm p-8">
-            <h3 className="font-bold text-brand-dark mb-4">Without Dragolink</h3>
-            <ul className="space-y-3">
-              {comparison.without.map((item, i) => (
-                <li key={i} className="text-text-secondary text-sm font-medium">— {item}</li>
-              ))}
-            </ul>
-          </div>
-          <div className="bg-brand-dark rounded-3xl shadow-sm p-8">
-            <h3 className="font-bold text-white mb-4">With Dragolink</h3>
-            <ul className="space-y-3">
-              {comparison.with.map((item, i) => (
-                <li key={i} className="flex items-center gap-2 text-white/90 text-sm font-medium">
-                  <CheckCircle2 className="w-4 h-4 text-brand-emerald shrink-0" /> {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            className="grid md:grid-cols-2 gap-6 mb-24"
+          >
+            <div className="bg-white rounded-3xl border border-outline-variant/30 shadow-sm p-8">
+              <h3 className="font-bold text-brand-dark mb-4">
+                Without Dragolink
+              </h3>
+              <ul className="space-y-3">
+                {comparison.without.map((item, i) => (
+                  <li
+                    key={i}
+                    className="text-text-secondary text-sm font-medium"
+                  >
+                    — {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="bg-brand-dark rounded-3xl shadow-sm p-8">
+              <h3 className="font-bold text-white mb-4">With Dragolink</h3>
+              <ul className="space-y-3">
+                {comparison.with.map((item, i) => (
+                  <li
+                    key={i}
+                    className="flex items-center gap-2 text-white/90 text-sm font-medium"
+                  >
+                    <CheckCircle2 className="w-4 h-4 text-brand-emerald shrink-0" />{" "}
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </motion.div>
         )}
 
         {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
+          viewport={{ once: true, margin: "-50px" }}
           className="text-center"
         >
-          <h2 className="text-3xl font-bold text-brand-dark mb-4 tracking-tight">{cta?.title || "Ready to put every feature to work?"}</h2>
+          <h2 className="text-3xl font-bold text-brand-dark mb-4 tracking-tight">
+            {cta?.title || "Ready to put every feature to work?"}
+          </h2>
           <p className="text-lg text-text-secondary max-w-xl mx-auto mb-8 font-medium">
-            {cta?.subtitle || "Start free and upgrade whenever your team needs more."}
+            {cta?.subtitle ||
+              "Start free and upgrade whenever your team needs more."}
           </p>
           <Link to="/register">
-            <Button size="lg" className="text-base px-8 inline-flex items-center gap-2">
-              {cta?.buttonText || "Start for free"} <ArrowRight className="w-4 h-4" />
+            <Button
+              size="lg"
+              className="text-base px-8 inline-flex items-center gap-2"
+            >
+              {cta?.buttonText || "Start for free"}{" "}
+              <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
         </motion.div>
-
       </div>
     </div>
   );

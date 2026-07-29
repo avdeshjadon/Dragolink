@@ -1,8 +1,20 @@
-import React from 'react';
-import { motion } from 'motion/react';
-import { VARIANTS } from '../../constants/motion';
+/*
+Copyright (c) 2026 Avdesh Jadon (Dragolink)
+All Rights Reserved.
+Proprietary and Confidential – Unauthorized copying, modification, or distribution of this file,
+via any medium, is strictly prohibited without prior written consent from Avdesh Jadon.
+*/
 
-export const MotionList = ({ children, className = '', as: Component = motion.ul, ...props }) => {
+import React from "react";
+import { motion } from "motion/react";
+import { VARIANTS } from "../../constants/motion";
+
+export const MotionList = ({
+  children,
+  className = "",
+  as: Component = motion.ul,
+  ...props
+}) => {
   return (
     <Component
       variants={VARIANTS.STAGGER_CONTAINER}
@@ -17,7 +29,12 @@ export const MotionList = ({ children, className = '', as: Component = motion.ul
   );
 };
 
-export const MotionListItem = ({ children, className = '', as: Component = motion.li, ...props }) => {
+export const MotionListItem = ({
+  children,
+  className = "",
+  as: Component = motion.li,
+  ...props
+}) => {
   return (
     <Component
       variants={VARIANTS.STAGGER_ITEM}
