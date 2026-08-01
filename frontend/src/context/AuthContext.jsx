@@ -26,12 +26,17 @@ export function AuthProvider({ children }) {
       const redirectResult = await getRedirectResult(auth);
       if (redirectResult && redirectResult.user) {
         const firebaseUser = redirectResult.user;
-        const { data } = await api.post("/auth/google", {
-          email: firebaseUser.email,
-          name: firebaseUser.displayName || firebaseUser.email.split("@")[0]
-        });
-        localStorage.setItem("token", data.token);
-        setUser(data.user);
+        try {
+          const { data } = await api.post("/auth/google", {
+            email: firebaseUser.email,
+            name: firebaseUser.displayName || firebaseUser.email.split("@")[0]
+          });
+          localStorage.setItem("token", data.token);
+          setUser(data.user);
+        } catch (backendError) {
+          console.error("Backend Google Auth Error:", backendError);
+          alert("Google Login successful, but Backend server failed to process it. Please restart/deploy your backend server.");
+        }
         setLoading(false);
         return; // Successfully authenticated via redirect
       }
