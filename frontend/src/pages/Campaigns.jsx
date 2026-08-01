@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../lib/axios";
 import AsyncButton from "../components/AsyncButton";
 import { motion, AnimatePresence } from "framer-motion";
+import MotionAlert from "../components/motion/MotionAlert";
 
 export default function Campaigns() {
   const navigate = useNavigate();
@@ -184,7 +185,27 @@ export default function Campaigns() {
         </div>
       )}
 
-
+      {/* Delete Confirmation Modal */}
+      <MotionAlert
+        isOpen={!!campaignToDelete}
+        onClose={() => setCampaignToDelete(null)}
+        onConfirm={confirmDeleteCampaign}
+        title="Delete Campaign?"
+        description={
+          <>
+            Are you sure you want to delete{" "}
+            <span className="font-bold text-on-surface">
+              {campaignToDelete?.name}
+            </span>
+            ? This action cannot be undone.
+          </>
+        }
+        confirmText="Delete"
+        isDestructive={true}
+        icon={
+          <span className="material-symbols-outlined text-[32px]">warning</span>
+        }
+      />
     </div>
   );
 }

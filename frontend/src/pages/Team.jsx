@@ -8,10 +8,16 @@ via any medium, is strictly prohibited without prior written consent from Avdesh
 import React, { useState, useEffect } from "react";
 import { api } from "../lib/axios";
 import AsyncButton from "../components/AsyncButton";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Team() {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteRole, setInviteRole] = useState("MEMBER");
+  const [inviteError, setInviteError] = useState("");
 
   const fetchMembers = async () => {
     try {
@@ -43,12 +49,26 @@ export default function Team() {
       console.error("Failed to update team member role", error);
     }
   };
+  
+  const handleInvite = async (e) => {
+    e.preventDefault();
+    setInviteError("");
+    try {
+      await api.post("/team/invite", { email: inviteEmail, role: inviteRole });
+      setIsInviteModalOpen(false);
+      setInviteEmail("");
+      setInviteRole("MEMBER");
+      fetchMembers();
+    } catch (error) {
+      setInviteError(error.response?.data?.message || "Failed to invite member");
+    }
+  };
 
   useEffect(() => {
     fetchMembers();
   }, []);
   return (
-    <div className="flex flex-col h-full bg-background font-sans">
+    <div className="flex flex-col h-full bg-background font-sans relative">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
         <div>
@@ -59,7 +79,10 @@ export default function Team() {
             Manage workspace access, roles, and pending invitations.
           </p>
         </div>
-        <button className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90 px-4 py-2 rounded-lg text-label-md font-label-md transition-colors duration-200 shadow-sm border border-primary-fixed/20">
+        <button 
+          onClick={() => setIsInviteModalOpen(true)}
+          className="flex items-center gap-2 bg-primary text-white hover:bg-primary/90 px-4 py-2 rounded-lg text-label-md font-label-md transition-colors duration-200 shadow-sm border border-primary-fixed/20"
+        >
           <span className="material-symbols-outlined text-[18px]">
             person_add
           </span>
@@ -87,7 +110,7 @@ export default function Team() {
                   Seats Utilized
                 </h3>
                 <p className="text-body-md font-body-md text-on-surface-variant mt-1">
-                  You are currently using 4 out of 10 available seats on the
+                  You are currently using {members.length} out of 10 available seats on the
                   Enterprise Tier.
                 </p>
               </div>
@@ -96,14 +119,17 @@ export default function Team() {
             <div className="w-full md:w-64 space-y-2">
               <div className="flex justify-between items-end">
                 <span className="text-headline-md font-headline-md text-primary">
-                  4
+                  {members.length}
                 </span>
                 <span className="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">
                   / 10 Seats
                 </span>
               </div>
               <div className="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
-                <div className="h-full bg-primary rounded-full w-[40%] transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(121,219,141,0.5)]"></div>
+                <div 
+                  className="h-full bg-primary rounded-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(121,219,141,0.5)]"
+                  style={{ width: `${(members.length / 10) * 100}%` }}
+                ></div>
               </div>
             </div>
           </div>
@@ -158,19 +184,22 @@ export default function Team() {
                         value={member.role}
                         onChange={(e) => updateRole(member.id, e.target.value)}
                         className={`inline-flex items-center px-2 py-1 rounded-full text-label-sm font-label-sm outline-none border border-transparent hover:border-outline-variant/30 ${
-                          member.role === "ADMIN"
+                          member.role === "ADMIN" || member.role === "OWNER"
                             ? "bg-secondary-container text-on-secondary-container shadow-sm"
                             : "bg-surface-container-highest text-on-surface"
                         }`}
+                        disabled={member.role === "OWNER"}
                       >
+                        <option value="OWNER" disabled>OWNER</option>
                         <option value="ADMIN">ADMIN</option>
                         <option value="MEMBER">MEMBER</option>
                         <option value="VIEWER">VIEWER</option>
                       </select>
                       <AsyncButton
                         onClick={(e) => removeMember(member.id, e)}
-                        className="text-on-surface-variant hover:text-error transition-colors p-1 opacity-0 group-hover:opacity-100 focus:opacity-100"
+                        className="text-on-surface-variant hover:text-error transition-colors p-1 opacity-0 group-hover:opacity-100 focus:opacity-100 disabled:opacity-0"
                         title="Remove Member"
+                        disabled={member.role === "OWNER"}
                       >
                         <span className="material-symbols-outlined">
                           person_remove
@@ -253,6 +282,80 @@ export default function Team() {
           </div>
         </section>
       </div>
+
+      {/* Invite Modal */}
+      <AnimatePresence>
+        {isInviteModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsInviteModalOpen(false)}
+              className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+            ></motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-md bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/20 p-6 z-10"
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-title-lg font-title-lg text-on-surface">Invite Member</h3>
+                <button 
+                  onClick={() => setIsInviteModalOpen(false)}
+                  className="text-on-surface-variant hover:text-on-surface rounded-full p-1 transition-colors"
+                >
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+              <form onSubmit={handleInvite} className="space-y-4">
+                <div>
+                  <label className="block text-label-md font-medium text-on-surface mb-1">Email Address</label>
+                  <input
+                    type="email"
+                    required
+                    value={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.value)}
+                    className="w-full px-3 py-2 bg-surface-container text-on-surface rounded-lg border border-outline-variant/20 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                    placeholder="colleague@example.com"
+                  />
+                </div>
+                <div>
+                  <label className="block text-label-md font-medium text-on-surface mb-1">Role</label>
+                  <select
+                    value={inviteRole}
+                    onChange={(e) => setInviteRole(e.target.value)}
+                    className="w-full px-3 py-2 bg-surface-container text-on-surface rounded-lg border border-outline-variant/20 focus:border-primary outline-none"
+                  >
+                    <option value="ADMIN">ADMIN</option>
+                    <option value="MEMBER">MEMBER</option>
+                    <option value="VIEWER">VIEWER</option>
+                  </select>
+                </div>
+                {inviteError && (
+                  <div className="text-error text-label-sm font-medium">{inviteError}</div>
+                )}
+                <div className="flex justify-end gap-3 mt-6">
+                  <button
+                    type="button"
+                    onClick={() => setIsInviteModalOpen(false)}
+                    className="px-4 py-2 text-on-surface-variant hover:bg-surface-container rounded-lg font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <AsyncButton
+                    type="submit"
+                    className="px-4 py-2 bg-primary text-white hover:bg-primary/90 rounded-lg font-medium transition-colors shadow-sm"
+                  >
+                    Send Invitation
+                  </AsyncButton>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -40,4 +40,31 @@ public class TeamController {
         teamService.updateTeamMemberRole(id, request.get("role"), userDetails);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/invite")
+    public ResponseEntity<TeamMemberDto> inviteTeamMember(@RequestBody java.util.Map<String, String> request, @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(teamService.inviteTeamMember(request.get("email"), request.get("role"), userDetails));
+    }
+
+    @GetMapping("/invitations")
+    public ResponseEntity<List<TeamMemberDto>> getInvitations(@AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(teamService.getInvitations(userDetails));
+    }
+
+    @PostMapping("/invitations/{id}/accept")
+    public ResponseEntity<Void> acceptInvitation(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        teamService.acceptInvitation(id, userDetails);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/invitations/{id}/decline")
+    public ResponseEntity<Void> declineInvitation(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        teamService.declineInvitation(id, userDetails);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/workspaces")
+    public ResponseEntity<List<TeamMemberDto>> getWorkspaces(@AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(teamService.getWorkspaces(userDetails));
+    }
 }

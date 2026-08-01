@@ -34,10 +34,10 @@ public class AnalyticsService {
     private final ClickAnalyticsRepository clickAnalyticsRepository;
     private final ShortLinkRepository shortLinkRepository;
     private final UserRepository userRepository;
+    private final WorkspaceService workspaceService;
 
     public AnalyticsDashboardDto getDashboard(UserDetails userDetails, int days) {
-        User user = userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user = workspaceService.getEffectiveWorkspaceOwner(userDetails);
         Long userId = user.getId();
 
         List<ShortLink> allLinks = shortLinkRepository.findByUserIdOrderByCreatedAtDesc(userId);
@@ -82,7 +82,12 @@ public class AnalyticsService {
     }
 
     public List<ClickDetailsDto> getLinkAnalytics(Long linkId, UserDetails userDetails) {
-        // Validation of ownership should be done here
+        User user = workspaceService.getEffectiveWorkspaceOwner(userDetails);
+        ShortLink link = shortLinkRepository.findById(linkId)
+                .orElseThrow(() -> new ResourceNotFoundException("Link not found"));
+        if (!link.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Unauthorized access to link");
+        }
         return clickAnalyticsRepository.findByShortLinkIdOrderByClickedAtDesc(linkId)
                 .stream()
                 .map(ca -> ClickDetailsDto.builder()
@@ -118,8 +123,7 @@ public class AnalyticsService {
     }
 
     public void deleteClickLog(Long linkId, Long logId, UserDetails userDetails) {
-        User user = userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user = workspaceService.getEffectiveWorkspaceOwner(userDetails);
         ShortLink link = shortLinkRepository.findById(linkId)
                 .orElseThrow(() -> new ResourceNotFoundException("Link not found"));
         
@@ -139,8 +143,7 @@ public class AnalyticsService {
 
     @org.springframework.transaction.annotation.Transactional
     public void deleteAllClickLogs(Long linkId, UserDetails userDetails) {
-        User user = userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user = workspaceService.getEffectiveWorkspaceOwner(userDetails);
         ShortLink link = shortLinkRepository.findById(linkId)
                 .orElseThrow(() -> new ResourceNotFoundException("Link not found"));
                 

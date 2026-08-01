@@ -30,9 +30,10 @@ public class CampaignService {
     private final CampaignRepository campaignRepository;
     private final ShortLinkRepository shortLinkRepository;
     private final UserRepository userRepository;
+    private final WorkspaceService workspaceService;
 
     public List<CampaignDto> getCampaigns(UserDetails userDetails) {
-        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
+        User user = workspaceService.getEffectiveWorkspaceOwner(userDetails);
         List<Campaign> campaigns = campaignRepository.findByUserOrderByCreatedAtDesc(user);
         
         return campaigns.stream().map(this::mapToDto).collect(Collectors.toList());
@@ -40,7 +41,7 @@ public class CampaignService {
 
     @Transactional
     public CampaignDto createCampaign(CampaignRequestDto request, UserDetails userDetails) {
-        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
+        User user = workspaceService.getEffectiveWorkspaceOwner(userDetails);
         
         Campaign campaign = Campaign.builder()
                 .name(request.getName())
@@ -53,7 +54,7 @@ public class CampaignService {
     }
 
     public CampaignDto getCampaignById(Long id, UserDetails userDetails) {
-        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
+        User user = workspaceService.getEffectiveWorkspaceOwner(userDetails);
         Campaign campaign = campaignRepository.findByIdAndUser(id, user)
                 .orElseThrow(() -> new RuntimeException("Campaign not found or unauthorized"));
         return mapToDto(campaign);
@@ -61,7 +62,7 @@ public class CampaignService {
 
     @Transactional
     public CampaignDto updateCampaign(Long id, CampaignRequestDto request, UserDetails userDetails) {
-        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
+        User user = workspaceService.getEffectiveWorkspaceOwner(userDetails);
         Campaign campaign = campaignRepository.findByIdAndUser(id, user)
                 .orElseThrow(() -> new RuntimeException("Campaign not found or unauthorized"));
         
@@ -74,7 +75,7 @@ public class CampaignService {
 
     @Transactional
     public void deleteCampaign(Long id, UserDetails userDetails) {
-        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
+        User user = workspaceService.getEffectiveWorkspaceOwner(userDetails);
         Campaign campaign = campaignRepository.findByIdAndUser(id, user)
                 .orElseThrow(() -> new RuntimeException("Campaign not found or unauthorized"));
                 

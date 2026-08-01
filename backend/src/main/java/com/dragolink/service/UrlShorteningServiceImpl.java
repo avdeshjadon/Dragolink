@@ -43,14 +43,14 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
     private final ClickAnalyticsRepository clickAnalyticsRepository;
     private final CampaignRepository campaignRepository;
     private final StringRedisTemplate redisTemplate;
+    private final WorkspaceService workspaceService;
 
     private static final String CACHE_PREFIX = "shortlink:";
 
     @Override
     @Transactional
     public ShortLinkResponse createShortLink(ShortLinkRequest request, UserDetails userDetails) {
-        User user = userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user = workspaceService.getEffectiveWorkspaceOwner(userDetails);
 
         if (request.getCustomAlias() != null && !request.getCustomAlias().isEmpty()) {
             if (shortLinkRepository.existsByCustomAlias(request.getCustomAlias()) || shortLinkRepository.existsByShortCode(request.getCustomAlias())) {
@@ -123,8 +123,7 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
 
     @Override
     public List<ShortLinkResponse> getUserLinks(UserDetails userDetails) {
-        User user = userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user = workspaceService.getEffectiveWorkspaceOwner(userDetails);
         return shortLinkRepository.findByUserIdOrderByCreatedAtDesc(user.getId())
                 .stream().map(this::mapToResponse).collect(Collectors.toList());
     }
@@ -227,8 +226,9 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
     private ShortLink getOwnedLink(Long id, UserDetails userDetails) {
         ShortLink link = shortLinkRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Link not found"));
-        if (!link.getUser().getEmail().equals(userDetails.getUsername())) {
-            throw new AccessDeniedException("You do not own this link");
+        User effectiveOwner = workspaceService.getEffectiveWorkspaceOwner(userDetails);
+        if (!link.getUser().getId().equals(effectiveOwner.getId())) {
+            throw new AccessDeniedException("You do not own this link or have workspace access");
         }
         return link;
     }

@@ -17,8 +17,8 @@ export default function DashboardLayout() {
   const { logout } = useAuth();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   const [navigation, setNavigation] = useState([]);
+  const [pendingInvitations, setPendingInvitations] = useState([]);
 
   useEffect(() => {
     api
@@ -31,7 +31,31 @@ export default function DashboardLayout() {
         ),
       )
       .catch((err) => console.error("Failed to load sidebar navigation", err));
+      
+    // Fetch pending invitations
+    api.get("/team/invitations")
+      .then(res => setPendingInvitations(res.data))
+      .catch(err => console.error("Failed to fetch invitations", err));
   }, []);
+
+  const handleAcceptInvitation = async (id) => {
+    try {
+      await api.post(`/team/invitations/${id}/accept`);
+      setPendingInvitations(prev => prev.filter(inv => inv.id !== id));
+      window.location.reload(); // Reload to refresh workspaces
+    } catch (error) {
+      console.error("Failed to accept invitation", error);
+    }
+  };
+
+  const handleDeclineInvitation = async (id) => {
+    try {
+      await api.post(`/team/invitations/${id}/decline`);
+      setPendingInvitations(prev => prev.filter(inv => inv.id !== id));
+    } catch (error) {
+      console.error("Failed to decline invitation", error);
+    }
+  };
 
   const SidebarContent = () => {
     const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -190,6 +214,31 @@ export default function DashboardLayout() {
   return (
     <div className="antialiased min-h-screen bg-background flex flex-col">
       <TopNavbar />
+      
+      {pendingInvitations.length > 0 && (
+        <div className="bg-primary/10 border-b border-primary/20 p-3 px-4 md:px-6 lg:px-10 flex flex-col sm:flex-row items-center justify-between gap-4 sticky top-[73px] z-30">
+          <div className="flex items-center gap-3">
+            <span className="material-symbols-outlined text-primary text-xl">group_add</span>
+            <span className="text-label-md font-medium text-on-surface">
+              You have {pendingInvitations.length} pending team invitation(s).
+            </span>
+          </div>
+          <div className="flex gap-2 w-full sm:w-auto">
+            <button
+              onClick={() => handleAcceptInvitation(pendingInvitations[0].id)}
+              className="flex-1 sm:flex-none px-4 py-1.5 bg-primary text-white text-label-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+            >
+              Accept {pendingInvitations[0].name ? `from ${pendingInvitations[0].name}` : ''}
+            </button>
+            <button
+              onClick={() => handleDeclineInvitation(pendingInvitations[0].id)}
+              className="flex-1 sm:flex-none px-4 py-1.5 bg-surface text-on-surface-variant border border-outline-variant/30 text-label-sm font-medium rounded-lg hover:bg-surface-container transition-colors"
+            >
+              Decline
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Desktop Sidebar - Completely Separated & Fixed */}
       <aside className="hidden md:flex flex-col w-64 fixed top-[65px] bottom-0 left-0 z-40 border-r border-outline-variant/10 bg-surface-container-low">

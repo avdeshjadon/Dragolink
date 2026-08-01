@@ -77,4 +77,108 @@ public class TeamService {
         member.setRole(role.toUpperCase());
         teamMemberRepository.save(member);
     }
+
+    public TeamMemberDto inviteTeamMember(String email, String role, UserDetails userDetails) {
+        User owner = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        if (owner.getEmail().equals(email)) {
+            throw new RuntimeException("Cannot invite yourself");
+        }
+
+        if (teamMemberRepository.findByOwnerAndEmail(owner, email).isPresent()) {
+            throw new RuntimeException("User is already invited or part of the team");
+        }
+
+        User memberUser = userRepository.findByEmail(email).orElse(null);
+
+        TeamMember teamMember = TeamMember.builder()
+                .owner(owner)
+                .member(memberUser)
+                .email(email)
+                .role(role.toUpperCase())
+                .status("INVITED")
+                .build();
+
+        teamMember = teamMemberRepository.save(teamMember);
+
+        TeamMemberDto dto = TeamMemberDto.builder()
+                .id(teamMember.getId())
+                .email(teamMember.getEmail())
+                .role(teamMember.getRole())
+                .status(teamMember.getStatus())
+                .createdAt(teamMember.getCreatedAt())
+                .build();
+        if (teamMember.getMember() != null) {
+            dto.setName(teamMember.getMember().getName());
+        }
+        return dto;
+    }
+
+    public List<TeamMemberDto> getInvitations(UserDetails userDetails) {
+        return teamMemberRepository.findByEmailAndStatus(userDetails.getUsername(), "INVITED").stream()
+                .map(member -> TeamMemberDto.builder()
+                        .id(member.getId())
+                        .email(member.getEmail())
+                        .role(member.getRole())
+                        .status(member.getStatus())
+                        .name(member.getOwner().getName()) // Using name to pass the owner's name
+                        .createdAt(member.getCreatedAt())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public void acceptInvitation(Long id, UserDetails userDetails) {
+        TeamMember member = teamMemberRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Invitation not found"));
+
+        if (!member.getEmail().equals(userDetails.getUsername()) || !"INVITED".equals(member.getStatus())) {
+            throw new RuntimeException("Invalid invitation");
+        }
+
+        User user = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        member.setMember(user);
+        member.setStatus("ACTIVE");
+        teamMemberRepository.save(member);
+    }
+
+    public void declineInvitation(Long id, UserDetails userDetails) {
+        TeamMember member = teamMemberRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Invitation not found"));
+
+        if (!member.getEmail().equals(userDetails.getUsername()) || !"INVITED".equals(member.getStatus())) {
+            throw new RuntimeException("Invalid invitation");
+        }
+
+        teamMemberRepository.delete(member);
+    }
+
+    public List<TeamMemberDto> getWorkspaces(UserDetails userDetails) {
+        User user = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        List<TeamMemberDto> workspaces = new java.util.ArrayList<>();
+        
+        // Own workspace
+        workspaces.add(TeamMemberDto.builder()
+                .id(user.getId())
+                .name(user.getName() + " (Personal)")
+                .role("OWNER")
+                .status("ACTIVE")
+                .build());
+                
+        // Workspaces the user belongs to
+        teamMemberRepository.findByMember(user).stream()
+                .filter(m -> "ACTIVE".equals(m.getStatus()))
+                .forEach(m -> workspaces.add(TeamMemberDto.builder()
+                        .id(m.getOwner().getId())
+                        .name(m.getOwner().getName() + "'s Team")
+                        .role(m.getRole())
+                        .status("ACTIVE")
+                        .build()));
+                        
+        return workspaces;
+    }
 }

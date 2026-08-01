@@ -20,4 +20,5 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
     List<TeamMember> findByOwnerOrderByCreatedAtDesc(User owner);
     List<TeamMember> findByMember(User member);
     Optional<TeamMember> findByOwnerAndEmail(User owner, String email);
+    List<TeamMember> findByEmailAndStatus(String email, String status);
 }
