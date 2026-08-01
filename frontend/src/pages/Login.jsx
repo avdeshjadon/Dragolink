@@ -5,7 +5,7 @@ Proprietary and Confidential – Unauthorized copying, modification, or distribu
 via any medium, is strictly prohibited without prior written consent from Avdesh Jadon.
 */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { motion } from "motion/react";
@@ -20,8 +20,14 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { login, googleLogin } = useAuth();
+  const { user, login } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async () => {
     setError("");
