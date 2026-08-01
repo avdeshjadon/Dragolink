@@ -6,6 +6,7 @@ via any medium, is strictly prohibited without prior written consent from Avdesh
 */
 
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -22,3 +23,17 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 403) {
+      if (error.response.data && error.response.data.message && error.response.data.message.includes("VIEWER_ACCESS_DENIED")) {
+        toast.error("Viewer Access Denied: You cannot modify resources in this workspace.", {
+          duration: 4000,
+        });
+      }
+    }
+    return Promise.reject(error);
+  }
+);

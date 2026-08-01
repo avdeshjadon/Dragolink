@@ -52,6 +52,12 @@ public class WorkspaceService {
                 throw new AccessDeniedException("Your invitation to this workspace is not active");
             }
 
+            String method = request.getMethod();
+            boolean isWriteRequest = method.equals("POST") || method.equals("PUT") || method.equals("PATCH") || method.equals("DELETE");
+            if (isWriteRequest && "VIEWER".equalsIgnoreCase(member.getRole())) {
+                throw new AccessDeniedException("VIEWER_ACCESS_DENIED: Viewers cannot perform this action");
+            }
+
             return owner;
         } catch (NumberFormatException e) {
             return loggedInUser;
