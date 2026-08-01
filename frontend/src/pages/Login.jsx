@@ -12,13 +12,15 @@ import { motion } from "motion/react";
 import { Lock, Mail } from "lucide-react";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
+import { auth, googleProvider } from "../lib/firebase";
+import { signInWithPopup } from "firebase/auth";
 import AuthVisual from "../components/AuthVisual";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { login } = useAuth();
+  const { login, googleLogin } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
@@ -139,6 +141,20 @@ export default function Login() {
             <Button
               variant="outline"
               type="button"
+              onClick={async () => {
+                try {
+                  setError("");
+                  const result = await signInWithPopup(auth, googleProvider);
+                  const user = result.user;
+                  await googleLogin({
+                    email: user.email,
+                    name: user.displayName || user.email.split("@")[0]
+                  });
+                  navigate("/dashboard");
+                } catch (err) {
+                  setError("Google sign-in failed. Please try again.");
+                }
+              }}
               className="w-full h-11 text-base font-semibold"
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">

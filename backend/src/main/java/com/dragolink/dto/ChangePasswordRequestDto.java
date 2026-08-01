@@ -16,4 +16,7 @@ public class ChangePasswordRequestDto {
     private String currentPassword;
     @NotBlank(message = "New password is required")
     private String newPassword;
+    
+    // Optional: if OTP is provided, it can bypass current password check (e.g. forgot password flow)
+    private String otp;
 }

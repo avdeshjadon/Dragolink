@@ -59,6 +59,14 @@ public class User implements UserDetails {
     @Builder.Default
     private boolean isActive = true;
 
+    @Column(name = "auth_provider", nullable = false)
+    @Builder.Default
+    private String authProvider = "LOCAL";
+
+    @Column(name = "has_password", nullable = false)
+    @Builder.Default
+    private boolean hasPassword = true;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

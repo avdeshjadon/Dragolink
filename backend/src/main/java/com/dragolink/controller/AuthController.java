@@ -43,6 +43,33 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(request));
     }
 
+    @PostMapping("/google")
+    public ResponseEntity<AuthResponse> googleLogin(@Valid @RequestBody com.dragolink.dto.GoogleAuthRequest request, HttpServletRequest httpRequest) {
+        String ip = getClientIp(httpRequest);
+        rateLimiterService.checkRateLimit("auth:ip:" + ip, 10, 60);
+        return ResponseEntity.ok(authService.googleLogin(request));
+    }
+
+    @PostMapping("/send-otp")
+    public ResponseEntity<?> sendOtp(@Valid @RequestBody com.dragolink.dto.SendOtpRequest request, HttpServletRequest httpRequest) {
+        String ip = getClientIp(httpRequest);
+        rateLimiterService.checkRateLimit("otp:send:" + ip, 3, 60); // Max 3 OTP requests per minute
+        authService.sendOtp(request);
+        return ResponseEntity.ok(java.util.Map.of("message", "OTP sent successfully"));
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOtp(@Valid @RequestBody com.dragolink.dto.VerifyOtpRequest request, HttpServletRequest httpRequest) {
+        String ip = getClientIp(httpRequest);
+        rateLimiterService.checkRateLimit("otp:verify:" + ip, 5, 60); // Max 5 verification attempts per minute
+        boolean isValid = authService.verifyOtp(request);
+        if (isValid) {
+            return ResponseEntity.ok(java.util.Map.of("message", "OTP verified successfully"));
+        } else {
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "Invalid or expired OTP"));
+        }
+    }
+
     @GetMapping("/me")
     public ResponseEntity<UserDto> getMe(@AuthenticationPrincipal UserDetails userDetails) {
         if(userDetails == null) {

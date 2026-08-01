@@ -81,53 +81,64 @@ export default function TopNavbar() {
             <div className="relative" ref={dropdownRef}>
               <button 
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors border border-outline-variant/20"
+                className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-surface-container-lowest hover:bg-surface-container transition-all border border-outline-variant/30 shadow-sm hover:shadow"
               >
-                <div className="w-5 h-5 rounded-md bg-primary-container text-on-primary-container flex items-center justify-center text-xs font-bold">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary to-primary-container text-on-primary flex items-center justify-center text-sm font-bold shadow-sm shrink-0">
                   {activeWorkspace.name.charAt(0).toUpperCase()}
                 </div>
-                <span className="text-label-md font-medium text-on-surface truncate max-w-[180px]">
-                  {activeWorkspace.name} ({activeWorkspace.role})
-                </span>
-                <span className="material-symbols-outlined text-[16px] text-on-surface-variant">
-                  unfold_more
+                <div className="flex flex-col items-start min-w-0">
+                  <span className="text-label-md font-semibold text-on-surface truncate max-w-[150px] leading-tight">
+                    {activeWorkspace.name}
+                  </span>
+                  <span className="text-[9px] font-bold text-primary tracking-widest uppercase leading-tight mt-0.5">
+                    {activeWorkspace.role}
+                  </span>
+                </div>
+                <span className={`material-symbols-outlined text-[18px] text-on-surface-variant ml-1 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}>
+                  keyboard_arrow_down
                 </span>
               </button>
               
               <AnimatePresence>
                 {isDropdownOpen && (
                   <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute left-0 mt-2 w-56 bg-surface-container-lowest rounded-xl shadow-lg border border-outline-variant/20 overflow-hidden z-50"
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    transition={{ duration: 0.15, ease: "easeOut" }}
+                    className="absolute left-0 mt-2 w-64 bg-surface-container-lowest rounded-xl shadow-xl shadow-surface-variant/20 border border-outline-variant/30 overflow-hidden z-50 backdrop-blur-xl"
                   >
-                    <div className="p-2 border-b border-outline-variant/10">
-                      <p className="text-label-sm text-on-surface-variant px-2">Workspaces</p>
+                    <div className="p-3 border-b border-outline-variant/10 bg-surface/50">
+                      <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-widest">Select Workspace</p>
                     </div>
-                    <div className="max-h-64 overflow-y-auto p-1">
+                    <div className="max-h-64 overflow-y-auto p-1.5 space-y-0.5">
                       {workspaces.map((workspace) => (
                         <button
                           key={workspace.id}
                           onClick={() => handleWorkspaceChange(workspace)}
-                          className={`w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg text-left transition-colors ${
+                          className={`w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-left transition-all ${
                             activeWorkspace.id === workspace.id 
-                              ? "bg-secondary-container text-on-secondary-container" 
-                              : "hover:bg-surface-container-high text-on-surface"
+                              ? "bg-primary/10 text-on-surface" 
+                              : "hover:bg-surface-container text-on-surface"
                           }`}
                         >
                           <div className="flex items-center gap-3 overflow-hidden">
-                            <div className="w-6 h-6 rounded-md bg-surface-variant text-on-surface-variant flex items-center justify-center text-xs font-bold shrink-0">
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold shrink-0 shadow-sm transition-colors ${
+                              activeWorkspace.id === workspace.id
+                                ? "bg-gradient-to-br from-primary to-primary-container text-on-primary"
+                                : "bg-surface-variant text-on-surface-variant"
+                            }`}>
                               {workspace.name.charAt(0).toUpperCase()}
                             </div>
                             <div className="flex flex-col min-w-0">
-                              <span className="text-label-md font-medium truncate">{workspace.name}</span>
-                              <span className="text-[10px] text-on-surface-variant uppercase tracking-wider">{workspace.role}</span>
+                              <span className="text-label-md font-semibold truncate">{workspace.name}</span>
+                              <span className={`text-[10px] font-bold tracking-wider uppercase mt-0.5 ${
+                                activeWorkspace.id === workspace.id ? "text-primary" : "text-on-surface-variant"
+                              }`}>{workspace.role}</span>
                             </div>
                           </div>
                           {activeWorkspace.id === workspace.id && (
-                            <span className="material-symbols-outlined text-[16px] shrink-0">check</span>
+                            <span className="material-symbols-outlined text-[18px] shrink-0 text-primary">check_circle</span>
                           )}
                         </button>
                       ))}

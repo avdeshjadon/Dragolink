@@ -30,6 +30,17 @@ public class TeamService {
     private final WorkspaceService workspaceService;
     private final NotificationRepository notificationRepository;
 
+    private void verifyTeamManagementAccess(User loggedInUser, User owner) {
+        if (owner.getId().equals(loggedInUser.getId())) {
+            return;
+        }
+        TeamMember member = teamMemberRepository.findByOwnerAndEmail(owner, loggedInUser.getEmail())
+                .orElseThrow(() -> new RuntimeException("Unauthorized: You are not part of this workspace"));
+        if (!"ADMIN".equalsIgnoreCase(member.getRole())) {
+            throw new RuntimeException("Unauthorized: Only Owner or Admin can manage the team");
+        }
+    }
+
     public void requestRoleUpgrade(String requestedRole, String reason, UserDetails userDetails) {
         User loggedInUser = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -63,14 +74,16 @@ public class TeamService {
     }
     
     public void acceptUpgradeRequest(Long memberId, UserDetails userDetails) {
-        User owner = userRepository.findByEmail(userDetails.getUsername())
+        User loggedInUser = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        User owner = workspaceService.getEffectiveWorkspaceOwner(userDetails);
+        verifyTeamManagementAccess(loggedInUser, owner);
                 
         TeamMember member = teamMemberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("Team member not found"));
                 
         if (!member.getOwner().getId().equals(owner.getId())) {
-            throw new RuntimeException("Unauthorized");
+            throw new RuntimeException("Unauthorized: Member does not belong to this workspace");
         }
         
         if (member.getUpgradeRequestedRole() != null) {
@@ -90,14 +103,16 @@ public class TeamService {
     }
     
     public void denyUpgradeRequest(Long memberId, UserDetails userDetails) {
-        User owner = userRepository.findByEmail(userDetails.getUsername())
+        User loggedInUser = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        User owner = workspaceService.getEffectiveWorkspaceOwner(userDetails);
+        verifyTeamManagementAccess(loggedInUser, owner);
                 
         TeamMember member = teamMemberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("Team member not found"));
                 
         if (!member.getOwner().getId().equals(owner.getId())) {
-            throw new RuntimeException("Unauthorized");
+            throw new RuntimeException("Unauthorized: Member does not belong to this workspace");
         }
         
         if (member.getUpgradeRequestedRole() != null) {
@@ -116,10 +131,9 @@ public class TeamService {
     }
 
     public List<TeamMemberDto> getTeamMembers(UserDetails userDetails) {
-        User user = userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User owner = workspaceService.getEffectiveWorkspaceOwner(userDetails);
                 
-        return teamMemberRepository.findByOwnerOrderByCreatedAtDesc(user).stream()
+        return teamMemberRepository.findByOwnerOrderByCreatedAtDesc(owner).stream()
                 .map(member -> {
                     TeamMemberDto dto = TeamMemberDto.builder()
                             .id(member.getId())
@@ -141,28 +155,32 @@ public class TeamService {
     }
 
     public void removeTeamMember(Long id, UserDetails userDetails) {
-        User user = userRepository.findByEmail(userDetails.getUsername())
+        User loggedInUser = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        User owner = workspaceService.getEffectiveWorkspaceOwner(userDetails);
+        verifyTeamManagementAccess(loggedInUser, owner);
         
         TeamMember member = teamMemberRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Team member not found"));
 
-        if (!member.getOwner().getId().equals(user.getId())) {
-            throw new RuntimeException("Unauthorized");
+        if (!member.getOwner().getId().equals(owner.getId())) {
+            throw new RuntimeException("Unauthorized: Member does not belong to this workspace");
         }
 
         teamMemberRepository.delete(member);
     }
 
     public void updateTeamMemberRole(Long id, String role, UserDetails userDetails) {
-        User user = userRepository.findByEmail(userDetails.getUsername())
+        User loggedInUser = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        User owner = workspaceService.getEffectiveWorkspaceOwner(userDetails);
+        verifyTeamManagementAccess(loggedInUser, owner);
         
         TeamMember member = teamMemberRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Team member not found"));
 
-        if (!member.getOwner().getId().equals(user.getId())) {
-            throw new RuntimeException("Unauthorized");
+        if (!member.getOwner().getId().equals(owner.getId())) {
+            throw new RuntimeException("Unauthorized: Member does not belong to this workspace");
         }
 
         member.setRole(role.toUpperCase());
@@ -170,11 +188,13 @@ public class TeamService {
     }
 
     public TeamMemberDto inviteTeamMember(String email, String role, UserDetails userDetails) {
-        User owner = userRepository.findByEmail(userDetails.getUsername())
+        User loggedInUser = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        User owner = workspaceService.getEffectiveWorkspaceOwner(userDetails);
+        verifyTeamManagementAccess(loggedInUser, owner);
         
         if (owner.getEmail().equals(email)) {
-            throw new RuntimeException("Cannot invite yourself");
+            throw new RuntimeException("Cannot invite the workspace owner");
         }
 
         if (teamMemberRepository.findByOwnerAndEmail(owner, email).isPresent()) {

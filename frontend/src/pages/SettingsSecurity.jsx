@@ -8,8 +8,10 @@ via any medium, is strictly prohibited without prior written consent from Avdesh
 import React, { useState, useEffect } from "react";
 import { api } from "../lib/axios";
 import AsyncButton from "../components/AsyncButton";
+import { useAuth } from "../context/AuthContext";
 
 export default function SettingsSecurity() {
+  const { user, checkAuth } = useAuth();
   const [passwords, setPasswords] = useState({
     currentPassword: "",
     newPassword: "",
@@ -44,12 +46,17 @@ export default function SettingsSecurity() {
         currentPassword: passwords.currentPassword,
         newPassword: passwords.newPassword,
       });
-      setPasswordMessage("Password updated successfully");
+      setPasswordMessage(user?.hasPassword ? "Password updated successfully" : "Password set successfully");
       setPasswords({
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
       });
+      if (checkAuth) {
+        await checkAuth(); // Refresh user context to update hasPassword flag
+      } else {
+        window.location.reload();
+      }
     } catch (error) {
       setPasswordMessage(
         error.response?.data?.message || "Failed to update password",
@@ -83,7 +90,7 @@ export default function SettingsSecurity() {
                 key
               </span>
               <h2 className="text-headline-md font-headline-md text-on-surface">
-                Change Password
+                {user?.hasPassword ? "Change Password" : "Set Password"}
               </h2>
             </div>
             {passwordMessage && (
@@ -97,23 +104,25 @@ export default function SettingsSecurity() {
               className="flex flex-col gap-4"
               onSubmit={(e) => e.preventDefault()}
             >
-              <div className="flex flex-col gap-1">
-                <label className="text-label-sm font-label-sm text-on-surface-variant">
-                  Current Password
-                </label>
-                <input
-                  value={passwords.currentPassword}
-                  onChange={(e) =>
-                    setPasswords({
-                      ...passwords,
-                      currentPassword: e.target.value,
-                    })
-                  }
-                  required
-                  className="bg-surface-dim border border-outline-variant/30 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all rounded-lg px-4 py-2 text-body-md font-body-md font-code-sm"
-                  type="password"
-                />
-              </div>
+              {user?.hasPassword && (
+                <div className="flex flex-col gap-1">
+                  <label className="text-label-sm font-label-sm text-on-surface-variant">
+                    Current Password
+                  </label>
+                  <input
+                    value={passwords.currentPassword}
+                    onChange={(e) =>
+                      setPasswords({
+                        ...passwords,
+                        currentPassword: e.target.value,
+                      })
+                    }
+                    required
+                    className="bg-surface-dim border border-outline-variant/30 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all rounded-lg px-4 py-2 text-body-md font-body-md font-code-sm"
+                    type="password"
+                  />
+                </div>
+              )}
               <div className="flex flex-col gap-1">
                 <label className="text-label-sm font-label-sm text-on-surface-variant">
                   New Password
@@ -151,7 +160,7 @@ export default function SettingsSecurity() {
                   className="w-full bg-primary-container text-on-primary-container hover:bg-primary hover:text-white rounded-lg py-2 px-4 text-label-md font-label-md font-semibold transition-colors shadow-sm active:scale-95 border border-primary-fixed/20 cursor-pointer"
                   type="submit"
                 >
-                  Update Password
+                  {user?.hasPassword ? "Update Password" : "Set Password"}
                 </AsyncButton>
               </div>
             </form>

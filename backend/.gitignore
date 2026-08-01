@@ -42,3 +42,4 @@ replay_pid*
 .project
 .classpath
 .settings/
+.env

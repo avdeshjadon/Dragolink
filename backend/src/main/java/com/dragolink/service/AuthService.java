@@ -13,8 +13,15 @@ import com.dragolink.dto.RegisterRequest;
 import com.dragolink.dto.UserDto;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.dragolink.dto.GoogleAuthRequest;
+import com.dragolink.dto.SendOtpRequest;
+import com.dragolink.dto.VerifyOtpRequest;
+
 public interface AuthService {
     AuthResponse register(RegisterRequest request);
     AuthResponse login(LoginRequest request);
+    AuthResponse googleLogin(GoogleAuthRequest request);
+    void sendOtp(SendOtpRequest request);
+    boolean verifyOtp(VerifyOtpRequest request);
     UserDto getMe(UserDetails userDetails);
 }

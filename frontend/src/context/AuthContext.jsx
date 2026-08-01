@@ -45,13 +45,23 @@ export function AuthProvider({ children }) {
     setUser(data.user);
   };
 
+  const googleLogin = async (userData) => {
+    const { data } = await api.post("/auth/google", userData);
+    localStorage.setItem("token", data.token);
+    setUser(data.user);
+  };
+
+  const sendOtp = async (data) => {
+    return await api.post("/auth/send-otp", data);
+  };
+
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, register, googleLogin, sendOtp, logout, loading, checkAuth }}>
       {!loading && children}
     </AuthContext.Provider>
   );
