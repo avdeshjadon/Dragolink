@@ -86,8 +86,8 @@ export default function TopNavbar() {
                 <div className="w-5 h-5 rounded-md bg-primary-container text-on-primary-container flex items-center justify-center text-xs font-bold">
                   {activeWorkspace.name.charAt(0).toUpperCase()}
                 </div>
-                <span className="text-label-md font-medium text-on-surface truncate max-w-[120px]">
-                  {activeWorkspace.name}
+                <span className="text-label-md font-medium text-on-surface truncate max-w-[180px]">
+                  {activeWorkspace.name} ({activeWorkspace.role})
                 </span>
                 <span className="material-symbols-outlined text-[16px] text-on-surface-variant">
                   unfold_more

@@ -67,4 +67,10 @@ public class TeamController {
     public ResponseEntity<List<TeamMemberDto>> getWorkspaces(@AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(teamService.getWorkspaces(userDetails));
     }
+
+    @PostMapping("/request-upgrade")
+    public ResponseEntity<Void> requestRoleUpgrade(@RequestBody java.util.Map<String, String> request, @AuthenticationPrincipal UserDetails userDetails) {
+        teamService.requestRoleUpgrade(request.get("requestedRole"), request.get("reason"), userDetails);
+        return ResponseEntity.ok().build();
+    }
 }

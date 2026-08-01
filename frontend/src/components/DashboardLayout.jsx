@@ -12,6 +12,7 @@ import MotionPage from "./motion/MotionPage";
 import { api } from "../lib/axios";
 import { useAuth } from "../context/AuthContext";
 import TopNavbar from "./TopNavbar";
+import RoleUpgradeModal from "./RoleUpgradeModal";
 
 export default function DashboardLayout() {
   const { logout } = useAuth();
@@ -19,6 +20,7 @@ export default function DashboardLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [navigation, setNavigation] = useState([]);
   const [pendingInvitations, setPendingInvitations] = useState([]);
+  const [showRoleModal, setShowRoleModal] = useState(false);
 
   useEffect(() => {
     api
@@ -299,6 +301,7 @@ export default function DashboardLayout() {
           </MotionPage>
         </div>
       </main>
+      <RoleUpgradeModal />
     </div>
   );
 }

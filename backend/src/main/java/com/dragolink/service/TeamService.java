@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import com.dragolink.entity.Notification;
+import com.dragolink.repository.NotificationRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +27,31 @@ public class TeamService {
 
     private final TeamMemberRepository teamMemberRepository;
     private final UserRepository userRepository;
+    private final WorkspaceService workspaceService;
+    private final NotificationRepository notificationRepository;
+
+    public void requestRoleUpgrade(String requestedRole, String reason, UserDetails userDetails) {
+        User loggedInUser = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+                
+        User owner = workspaceService.getEffectiveWorkspaceOwner(userDetails);
+        
+        if (owner.getId().equals(loggedInUser.getId())) {
+            throw new RuntimeException("You are already the owner of this workspace");
+        }
+        
+        String safeReason = (reason != null && !reason.trim().isEmpty()) ? reason.trim() : "No reason provided.";
+        String requested = (requestedRole != null && !requestedRole.trim().isEmpty()) ? requestedRole.trim().toUpperCase() : "MEMBER";
+        
+        Notification notification = Notification.builder()
+                .user(owner)
+                .type("info")
+                .title("Role Upgrade Request")
+                .message(loggedInUser.getName() + " requested a promotion to " + requested + " in your workspace. Reason: " + safeReason)
+                .build();
+                
+        notificationRepository.save(notification);
+    }
 
     public List<TeamMemberDto> getTeamMembers(UserDetails userDetails) {
         User user = userRepository.findByEmail(userDetails.getUsername())
