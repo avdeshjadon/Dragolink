@@ -19,4 +19,5 @@ import java.util.Optional;
 public interface ApiKeyRepository extends JpaRepository<ApiKey, Long> {
     List<ApiKey> findByUserOrderByCreatedAtDesc(User user);
     Optional<ApiKey> findByIdAndUser(Long id, User user);
+    Optional<ApiKey> findByKeyHash(String keyHash);
 }

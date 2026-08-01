@@ -214,32 +214,6 @@ export default function DashboardLayout() {
   return (
     <div className="antialiased min-h-screen bg-background flex flex-col">
       <TopNavbar />
-      
-      {pendingInvitations.length > 0 && (
-        <div className="bg-primary/10 border-b border-primary/20 p-3 px-4 md:px-6 lg:px-10 flex flex-col sm:flex-row items-center justify-between gap-4 sticky top-[73px] z-30">
-          <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-primary text-xl">group_add</span>
-            <span className="text-label-md font-medium text-on-surface">
-              You have {pendingInvitations.length} pending team invitation(s).
-            </span>
-          </div>
-          <div className="flex gap-2 w-full sm:w-auto">
-            <button
-              onClick={() => handleAcceptInvitation(pendingInvitations[0].id)}
-              className="flex-1 sm:flex-none px-4 py-1.5 bg-primary text-white text-label-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
-            >
-              Accept {pendingInvitations[0].name ? `from ${pendingInvitations[0].name}` : ''}
-            </button>
-            <button
-              onClick={() => handleDeclineInvitation(pendingInvitations[0].id)}
-              className="flex-1 sm:flex-none px-4 py-1.5 bg-surface text-on-surface-variant border border-outline-variant/30 text-label-sm font-medium rounded-lg hover:bg-surface-container transition-colors"
-            >
-              Decline
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Desktop Sidebar - Completely Separated & Fixed */}
       <aside className="hidden md:flex flex-col w-64 fixed top-[65px] bottom-0 left-0 z-40 border-r border-outline-variant/10 bg-surface-container-low">
         <SidebarContent />
@@ -283,6 +257,31 @@ export default function DashboardLayout() {
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col relative w-full md:pl-64">
+        {pendingInvitations.length > 0 && (
+          <div className="bg-primary/10 border-b border-primary/20 p-3 px-4 md:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-primary text-xl">group_add</span>
+              <span className="text-label-md font-medium text-on-surface">
+                You have {pendingInvitations.length} pending team invitation(s).
+              </span>
+            </div>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <button
+                onClick={() => handleAcceptInvitation(pendingInvitations[0].id)}
+                className="flex-1 sm:flex-none px-4 py-1.5 bg-primary text-white text-label-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+              >
+                Accept {pendingInvitations[0].name ? `from ${pendingInvitations[0].name}` : ''}
+              </button>
+              <button
+                onClick={() => handleDeclineInvitation(pendingInvitations[0].id)}
+                className="flex-1 sm:flex-none px-4 py-1.5 bg-surface text-on-surface-variant border border-outline-variant/30 text-label-sm font-medium rounded-lg hover:bg-surface-container transition-colors"
+              >
+                Decline
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Mobile Menu Toggle Button */}
         <div className="md:hidden px-4 py-3 border-b border-outline-variant/10 flex items-center bg-surface-container-lowest">
           <button

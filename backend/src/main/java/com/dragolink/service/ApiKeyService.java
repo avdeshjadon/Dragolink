@@ -91,4 +91,16 @@ public class ApiKeyService {
             throw new RuntimeException("Failed to hash API key", e);
         }
     }
+
+    @Transactional
+    public User validateApiKey(String rawKey) {
+        String keyHash = hashKey(rawKey);
+        ApiKey apiKey = apiKeyRepository.findByKeyHash(keyHash)
+                .orElseThrow(() -> new RuntimeException("Invalid API key"));
+        
+        apiKey.setLastUsedAt(java.time.LocalDateTime.now());
+        apiKeyRepository.save(apiKey);
+        
+        return apiKey.getUser();
+    }
 }
