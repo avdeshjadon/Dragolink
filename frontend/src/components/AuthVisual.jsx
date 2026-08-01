@@ -51,9 +51,6 @@ export default function AuthVisual({ title, subtitle }) {
         />
 
         {/* Removed black hole center based on user request */}
-
-        {/* Ambient grid or noise for texture */}
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
       </div>
 
       {/* Content overlay */}
