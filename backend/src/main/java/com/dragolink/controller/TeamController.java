@@ -73,4 +73,16 @@ public class TeamController {
         teamService.requestRoleUpgrade(request.get("requestedRole"), request.get("reason"), userDetails);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/upgrade/{id}/accept")
+    public ResponseEntity<Void> acceptUpgradeRequest(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        teamService.acceptUpgradeRequest(id, userDetails);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/upgrade/{id}/deny")
+    public ResponseEntity<Void> denyUpgradeRequest(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        teamService.denyUpgradeRequest(id, userDetails);
+        return ResponseEntity.ok().build();
+    }
 }

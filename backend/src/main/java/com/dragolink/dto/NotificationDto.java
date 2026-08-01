@@ -16,4 +16,6 @@ public class NotificationDto {
     private String message;
     private String time;
     private boolean read;
+    private Long referenceId;
+    private String actionType;
 }

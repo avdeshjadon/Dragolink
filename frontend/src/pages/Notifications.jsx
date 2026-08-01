@@ -55,6 +55,24 @@ export default function Notifications() {
     }
   };
 
+  const handleAcceptUpgrade = async (memberId, notificationId) => {
+    try {
+      await api.post(`/team/upgrade/${memberId}/accept`);
+      setNotifications(prev => prev.map(n => n.id === notificationId ? { ...n, read: true, actionType: null } : n));
+    } catch (error) {
+      console.error("Failed to accept upgrade", error);
+    }
+  };
+
+  const handleDenyUpgrade = async (memberId, notificationId) => {
+    try {
+      await api.post(`/team/upgrade/${memberId}/deny`);
+      setNotifications(prev => prev.map(n => n.id === notificationId ? { ...n, read: true, actionType: null } : n));
+    } catch (error) {
+      console.error("Failed to deny upgrade", error);
+    }
+  };
+
   const markAllAsRead = async () => {
     try {
       await api.patch("/notifications/read-all");
@@ -212,6 +230,24 @@ export default function Notifications() {
                       <p className="text-on-surface-variant text-base leading-relaxed mb-2">
                         {notification.message}
                       </p>
+                      
+                      {notification.actionType === "UPGRADE_REQUEST" && !notification.read && (
+                        <div className="flex gap-2 w-full sm:w-auto mt-3 mb-2">
+                          <AsyncButton
+                            onClick={() => handleAcceptUpgrade(notification.referenceId, notification.id)}
+                            className="px-4 py-1.5 bg-primary text-white text-label-sm font-medium rounded-lg hover:bg-primary/90 transition-colors shadow-sm"
+                          >
+                            Accept
+                          </AsyncButton>
+                          <AsyncButton
+                            onClick={() => handleDenyUpgrade(notification.referenceId, notification.id)}
+                            className="px-4 py-1.5 bg-surface text-on-surface-variant border border-outline-variant/30 text-label-sm font-medium rounded-lg hover:bg-surface-container transition-colors"
+                          >
+                            Deny
+                          </AsyncButton>
+                        </div>
+                      )}
+                      
                       <span className="text-xs font-medium text-on-surface-variant/70">
                         {notification.time}
                       </span>

@@ -41,6 +41,12 @@ public class TeamMember {
     @Column(nullable = false, length = 20)
     private String status; // INVITED, ACTIVE
 
+    @Column(name = "upgrade_requested_role", length = 20)
+    private String upgradeRequestedRole;
+
+    @Column(name = "upgrade_reason", length = 500)
+    private String upgradeReason;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 

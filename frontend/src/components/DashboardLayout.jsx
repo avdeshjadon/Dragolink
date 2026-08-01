@@ -20,6 +20,7 @@ export default function DashboardLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [navigation, setNavigation] = useState([]);
   const [pendingInvitations, setPendingInvitations] = useState([]);
+  const [pendingUpgrades, setPendingUpgrades] = useState([]);
   const [showRoleModal, setShowRoleModal] = useState(false);
 
   useEffect(() => {
@@ -38,6 +39,14 @@ export default function DashboardLayout() {
     api.get("/team/invitations")
       .then(res => setPendingInvitations(res.data))
       .catch(err => console.error("Failed to fetch invitations", err));
+      
+    // Fetch team to find pending upgrades
+    api.get("/team")
+      .then(res => {
+        const upgrades = res.data.filter(member => member.upgradeRequestedRole);
+        setPendingUpgrades(upgrades);
+      })
+      .catch(err => console.error("Failed to fetch team", err));
   }, []);
 
   const handleAcceptInvitation = async (id) => {
@@ -56,6 +65,24 @@ export default function DashboardLayout() {
       setPendingInvitations(prev => prev.filter(inv => inv.id !== id));
     } catch (error) {
       console.error("Failed to decline invitation", error);
+    }
+  };
+
+  const handleAcceptUpgrade = async (id) => {
+    try {
+      await api.post(`/team/upgrade/${id}/accept`);
+      setPendingUpgrades(prev => prev.filter(member => member.id !== id));
+    } catch (error) {
+      console.error("Failed to accept upgrade", error);
+    }
+  };
+
+  const handleDenyUpgrade = async (id) => {
+    try {
+      await api.post(`/team/upgrade/${id}/deny`);
+      setPendingUpgrades(prev => prev.filter(member => member.id !== id));
+    } catch (error) {
+      console.error("Failed to deny upgrade", error);
     }
   };
 
@@ -279,6 +306,31 @@ export default function DashboardLayout() {
                 className="flex-1 sm:flex-none px-4 py-1.5 bg-surface text-on-surface-variant border border-outline-variant/30 text-label-sm font-medium rounded-lg hover:bg-surface-container transition-colors"
               >
                 Decline
+              </button>
+            </div>
+          </div>
+        )}
+
+        {pendingUpgrades.length > 0 && (
+          <div className="bg-secondary/10 border-b border-secondary/20 p-3 px-4 md:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-secondary text-xl">upgrade</span>
+              <span className="text-label-md font-medium text-on-surface">
+                {pendingUpgrades[0].email} requested a promotion to {pendingUpgrades[0].upgradeRequestedRole}.
+              </span>
+            </div>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <button
+                onClick={() => handleAcceptUpgrade(pendingUpgrades[0].id)}
+                className="flex-1 sm:flex-none px-4 py-1.5 bg-secondary text-white text-label-sm font-medium rounded-lg hover:bg-secondary/90 transition-colors"
+              >
+                Accept
+              </button>
+              <button
+                onClick={() => handleDenyUpgrade(pendingUpgrades[0].id)}
+                className="flex-1 sm:flex-none px-4 py-1.5 bg-surface text-on-surface-variant border border-outline-variant/30 text-label-sm font-medium rounded-lg hover:bg-surface-container transition-colors"
+              >
+                Deny
               </button>
             </div>
           </div>

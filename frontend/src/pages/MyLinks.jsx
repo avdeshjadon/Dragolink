@@ -119,7 +119,10 @@ export default function MyLinks() {
       toast.success("Link deleted successfully!");
     } catch (err) {
       console.error("Failed to delete link", err);
-      toast.error(err.response?.data?.message || "Failed to delete link");
+      const msg = err.response?.data?.message;
+      if (msg !== "VIEWER_ACCESS_DENIED_SILENT") {
+        toast.error(msg || "Failed to delete link");
+      }
     }
   };
 
@@ -132,9 +135,10 @@ export default function MyLinks() {
       );
     } catch (err) {
       console.error("Failed to toggle link status", err);
-      toast.error(
-        err.response?.data?.message || "Failed to update link status",
-      );
+      const msg = err.response?.data?.message;
+      if (msg !== "VIEWER_ACCESS_DENIED_SILENT") {
+        toast.error(msg || "Failed to update link status");
+      }
     }
   };
 

@@ -149,7 +149,10 @@ export default function CreateLink() {
       toast.success("Link created successfully!");
       navigate("/links");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to create link");
+      const msg = err.response?.data?.message;
+      if (msg !== "VIEWER_ACCESS_DENIED_SILENT") {
+        toast.error(msg || "Failed to create link");
+      }
       console.error(err);
     }
   };

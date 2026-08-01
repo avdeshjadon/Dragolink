@@ -25,4 +25,6 @@ public class TeamMemberDto {
     private String name; // from User if active
     private String profileImage;
     private LocalDateTime createdAt;
+    private String upgradeRequestedRole;
+    private String upgradeReason;
 }

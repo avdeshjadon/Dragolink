@@ -153,7 +153,10 @@ export default function EditLink() {
       navigate("/links");
     } catch (err) {
       console.error("Failed to update link", err);
-      toast.error(err.response?.data?.message || "Failed to update link");
+      const msg = err.response?.data?.message;
+      if (msg !== "VIEWER_ACCESS_DENIED_SILENT") {
+        toast.error(msg || "Failed to update link");
+      }
     } finally {
       setIsEditingLink(false);
     }

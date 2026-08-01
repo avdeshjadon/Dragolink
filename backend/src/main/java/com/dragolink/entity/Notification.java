@@ -34,6 +34,12 @@ public class Notification {
     @Column(name = "is_read", nullable = false)
     private boolean isRead = false;
 
+    @Column(name = "reference_id")
+    private Long referenceId;
+
+    @Column(name = "action_type", length = 50)
+    private String actionType;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 

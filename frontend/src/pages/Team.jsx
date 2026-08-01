@@ -64,6 +64,26 @@ export default function Team() {
     }
   };
 
+  const acceptUpgrade = async (id, e) => {
+    if (e) e.stopPropagation();
+    try {
+      await api.post(`/team/upgrade/${id}/accept`);
+      fetchMembers();
+    } catch (error) {
+      console.error("Failed to accept upgrade", error);
+    }
+  };
+
+  const denyUpgrade = async (id, e) => {
+    if (e) e.stopPropagation();
+    try {
+      await api.post(`/team/upgrade/${id}/deny`);
+      fetchMembers();
+    } catch (error) {
+      console.error("Failed to deny upgrade", error);
+    }
+  };
+
   useEffect(() => {
     fetchMembers();
   }, []);
@@ -153,7 +173,7 @@ export default function Team() {
                 .map((member) => (
                   <div
                     key={member.id}
-                    className="bg-surface-container border border-outline-variant/10 rounded-lg p-4 flex items-center justify-between hover:border-primary/30 hover:bg-surface-container-high transition-all duration-200 group"
+                    className="bg-surface-container border border-outline-variant/10 rounded-lg p-4 flex flex-col md:flex-row items-start md:items-center justify-between hover:border-primary/30 hover:bg-surface-container-high transition-all duration-200 group gap-4"
                   >
                     <div className="flex items-center gap-4">
                       {member.profileImage ? (
@@ -171,14 +191,34 @@ export default function Team() {
                         </div>
                       )}
                       <div>
-                        <p className="text-label-md font-label-md text-on-background">
-                          {member.name || "Unknown User"}
-                        </p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-label-md font-label-md text-on-background">
+                            {member.name || "Unknown User"}
+                          </p>
+                          {member.upgradeRequestedRole && (
+                            <span className="bg-secondary/20 text-secondary text-[10px] px-2 py-0.5 rounded-full font-bold">
+                              UPGRADE PENDING
+                            </span>
+                          )}
+                        </div>
                         <p className="text-label-sm font-label-sm text-on-surface-variant font-code-sm">
                           {member.email}
                         </p>
                       </div>
                     </div>
+                    
+                    {member.upgradeRequestedRole && (
+                      <div className="bg-secondary/10 px-4 py-2 rounded-lg flex items-center gap-3 border border-secondary/20 w-full md:w-auto">
+                        <span className="text-label-sm font-medium text-secondary">
+                          Requests: {member.upgradeRequestedRole}
+                        </span>
+                        <div className="flex gap-2">
+                          <AsyncButton onClick={(e) => acceptUpgrade(member.id, e)} className="px-2 py-1 bg-secondary text-white rounded text-[11px] font-bold">Accept</AsyncButton>
+                          <AsyncButton onClick={(e) => denyUpgrade(member.id, e)} className="px-2 py-1 bg-surface text-on-surface-variant border border-outline-variant/30 rounded text-[11px] font-bold">Deny</AsyncButton>
+                        </div>
+                      </div>
+                    )}
+                    
                     <div className="flex items-center gap-6">
                       <select
                         value={member.role}

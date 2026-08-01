@@ -69,6 +69,8 @@ public class NotificationService {
                 .message(notification.getMessage())
                 .time(getTimeAgo(notification.getCreatedAt()))
                 .read(notification.isRead())
+                .referenceId(notification.getReferenceId())
+                .actionType(notification.getActionType())
                 .build();
     }
 

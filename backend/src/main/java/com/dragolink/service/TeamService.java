@@ -40,17 +40,79 @@ public class TeamService {
             throw new RuntimeException("You are already the owner of this workspace");
         }
         
+        TeamMember member = teamMemberRepository.findByOwnerAndEmail(owner, loggedInUser.getEmail())
+                .orElseThrow(() -> new RuntimeException("You are not part of this workspace"));
+        
         String safeReason = (reason != null && !reason.trim().isEmpty()) ? reason.trim() : "No reason provided.";
         String requested = (requestedRole != null && !requestedRole.trim().isEmpty()) ? requestedRole.trim().toUpperCase() : "MEMBER";
+        
+        member.setUpgradeRequestedRole(requested);
+        member.setUpgradeReason(safeReason);
+        teamMemberRepository.save(member);
         
         Notification notification = Notification.builder()
                 .user(owner)
                 .type("info")
                 .title("Role Upgrade Request")
                 .message(loggedInUser.getName() + " requested a promotion to " + requested + " in your workspace. Reason: " + safeReason)
+                .actionType("UPGRADE_REQUEST")
+                .referenceId(member.getId())
                 .build();
                 
         notificationRepository.save(notification);
+    }
+    
+    public void acceptUpgradeRequest(Long memberId, UserDetails userDetails) {
+        User owner = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+                
+        TeamMember member = teamMemberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Team member not found"));
+                
+        if (!member.getOwner().getId().equals(owner.getId())) {
+            throw new RuntimeException("Unauthorized");
+        }
+        
+        if (member.getUpgradeRequestedRole() != null) {
+            member.setRole(member.getUpgradeRequestedRole());
+            member.setUpgradeRequestedRole(null);
+            member.setUpgradeReason(null);
+            teamMemberRepository.save(member);
+            
+            // Mark notification as read
+            notificationRepository.findByUserOrderByCreatedAtDesc(owner).stream()
+                .filter(n -> "UPGRADE_REQUEST".equals(n.getActionType()) && memberId.equals(n.getReferenceId()))
+                .forEach(n -> {
+                    n.setRead(true);
+                    notificationRepository.save(n);
+                });
+        }
+    }
+    
+    public void denyUpgradeRequest(Long memberId, UserDetails userDetails) {
+        User owner = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+                
+        TeamMember member = teamMemberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Team member not found"));
+                
+        if (!member.getOwner().getId().equals(owner.getId())) {
+            throw new RuntimeException("Unauthorized");
+        }
+        
+        if (member.getUpgradeRequestedRole() != null) {
+            member.setUpgradeRequestedRole(null);
+            member.setUpgradeReason(null);
+            teamMemberRepository.save(member);
+            
+            // Mark notification as read
+            notificationRepository.findByUserOrderByCreatedAtDesc(owner).stream()
+                .filter(n -> "UPGRADE_REQUEST".equals(n.getActionType()) && memberId.equals(n.getReferenceId()))
+                .forEach(n -> {
+                    n.setRead(true);
+                    notificationRepository.save(n);
+                });
+        }
     }
 
     public List<TeamMemberDto> getTeamMembers(UserDetails userDetails) {
@@ -65,6 +127,8 @@ public class TeamService {
                             .role(member.getRole())
                             .status(member.getStatus())
                             .createdAt(member.getCreatedAt())
+                            .upgradeRequestedRole(member.getUpgradeRequestedRole())
+                            .upgradeReason(member.getUpgradeReason())
                             .build();
                             
                     if (member.getMember() != null) {
