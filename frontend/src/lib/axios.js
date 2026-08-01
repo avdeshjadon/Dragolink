@@ -8,6 +8,15 @@ via any medium, is strictly prohibited without prior written consent from Avdesh
 import axios from "axios";
 import toast from "react-hot-toast";
 
+// Suppress duplicate toasts for Viewer Access Denied
+const originalToastError = toast.error;
+toast.error = (message, options) => {
+  if (message && typeof message === 'string' && message.includes("VIEWER_ACCESS_DENIED")) {
+    return;
+  }
+  return originalToastError(message, options);
+};
+
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
@@ -30,6 +39,8 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 403) {
       if (error.response.data && error.response.data.message && error.response.data.message.includes("VIEWER_ACCESS_DENIED")) {
         window.dispatchEvent(new CustomEvent("viewer-access-denied"));
+        // Force the local catch blocks to pass this string to toast.error, which we ignore above
+        error.response.data.message = "VIEWER_ACCESS_DENIED_SILENT";
       }
     }
     return Promise.reject(error);

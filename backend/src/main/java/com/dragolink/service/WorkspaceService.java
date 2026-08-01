@@ -53,8 +53,11 @@ public class WorkspaceService {
             }
 
             String method = request.getMethod();
+            String uri = request.getRequestURI();
             boolean isWriteRequest = method.equals("POST") || method.equals("PUT") || method.equals("PATCH") || method.equals("DELETE");
-            if (isWriteRequest && "VIEWER".equalsIgnoreCase(member.getRole())) {
+            boolean isUpgradeRequest = uri != null && uri.endsWith("/request-upgrade");
+            
+            if (isWriteRequest && !isUpgradeRequest && "VIEWER".equalsIgnoreCase(member.getRole())) {
                 throw new AccessDeniedException("VIEWER_ACCESS_DENIED: Viewers cannot perform this action");
             }
 
