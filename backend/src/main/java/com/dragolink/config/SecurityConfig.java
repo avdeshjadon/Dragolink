@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/me").permitAll()
+                        .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/me", "/api/auth/google", "/api/auth/send-otp", "/api/auth/verify-otp").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/{shortCode}").permitAll() // Public redirect
