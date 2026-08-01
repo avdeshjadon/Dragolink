@@ -42,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         if (!otpService.verifyOtp(request.getEmail(), request.getOtp())) {
-            throw new RuntimeException("Invalid or expired OTP");
+            throw new BadRequestException("Invalid or expired OTP");
         }
 
         var user = User.builder()

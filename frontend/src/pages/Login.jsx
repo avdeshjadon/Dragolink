@@ -13,7 +13,7 @@ import { Lock, Mail } from "lucide-react";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 import { auth, googleProvider } from "../lib/firebase";
-import { signInWithPopup } from "firebase/auth";
+import { signInWithRedirect } from "firebase/auth";
 import AuthVisual from "../components/AuthVisual";
 
 export default function Login() {
@@ -144,13 +144,7 @@ export default function Login() {
               onClick={async () => {
                 try {
                   setError("");
-                  const result = await signInWithPopup(auth, googleProvider);
-                  const user = result.user;
-                  await googleLogin({
-                    email: user.email,
-                    name: user.displayName || user.email.split("@")[0]
-                  });
-                  navigate("/dashboard");
+                  await signInWithRedirect(auth, googleProvider);
                 } catch (err) {
                   setError("Google sign-in failed. Please try again.");
                 }
