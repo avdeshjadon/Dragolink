@@ -1,6 +1,11 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import {
+  initializeAuth,
+  GoogleAuthProvider,
+  browserLocalPersistence,
+  browserPopupRedirectResolver,
+} from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyA803bLf9zroda2a7dQK_uWeFiPKsc_k7E",
@@ -14,7 +19,16 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
-const auth = getAuth(app);
+
+// Use initializeAuth instead of getAuth to set persistence at creation time.
+// getAuth() defaults to IndexedDB which crashes with "Database is closing/hidden"
+// when browser hides the parent tab during popup auth.
+// browserLocalPersistence uses localStorage — no connection issues.
+const auth = initializeAuth(app, {
+  persistence: browserLocalPersistence,
+  popupRedirectResolver: browserPopupRedirectResolver,
+});
+
 const googleProvider = new GoogleAuthProvider();
 
 export { app, analytics, auth, googleProvider };
