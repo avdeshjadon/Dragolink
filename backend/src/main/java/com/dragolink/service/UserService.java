@@ -49,6 +49,9 @@ public class UserService {
             }
         } else if (user.isHasPassword()) {
             // Standard password check if no OTP is provided and user has a password
+            if (request.getCurrentPassword() == null || request.getCurrentPassword().trim().isEmpty()) {
+                throw new RuntimeException("Current password is required");
+            }
             if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
                 throw new RuntimeException("Current password is incorrect");
             }

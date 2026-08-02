@@ -9,6 +9,8 @@ import React, { useState, useEffect } from "react";
 import { api } from "../lib/axios";
 import AsyncButton from "../components/AsyncButton";
 import { useAuth } from "../context/AuthContext";
+import { KeyRound, ShieldCheck, MonitorSmartphone, AlertCircle, CheckCircle2, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function SettingsSecurity() {
   const { user, checkAuth } = useAuth();
@@ -18,6 +20,7 @@ export default function SettingsSecurity() {
     confirmPassword: "",
   });
   const [passwordMessage, setPasswordMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
   const [logs, setLogs] = useState([]);
   const [logsLoading, setLogsLoading] = useState(true);
 
@@ -38,6 +41,7 @@ export default function SettingsSecurity() {
   const handlePasswordChange = async () => {
     if (passwords.newPassword !== passwords.confirmPassword) {
       setPasswordMessage("New passwords do not match");
+      setIsSuccess(false);
       return;
     }
     setPasswordMessage("");
@@ -47,13 +51,14 @@ export default function SettingsSecurity() {
         newPassword: passwords.newPassword,
       });
       setPasswordMessage(user?.hasPassword ? "Password updated successfully" : "Password set successfully");
+      setIsSuccess(true);
       setPasswords({
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
       });
       if (checkAuth) {
-        await checkAuth(); // Refresh user context to update hasPassword flag
+        await checkAuth();
       } else {
         window.location.reload();
       }
@@ -61,234 +66,211 @@ export default function SettingsSecurity() {
       setPasswordMessage(
         error.response?.data?.message || "Failed to update password",
       );
+      setIsSuccess(false);
     }
   };
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-10 max-w-7xl mx-auto w-full pb-10">
       {/* Page Header */}
-      <div className="mb-2 flex items-center justify-between">
-        <div>
-          <h1 className="text-headline-lg font-headline-lg text-on-surface tracking-tight mb-1">
-            Security Settings
-          </h1>
-          <p className="text-body-md font-body-md text-on-surface-variant">
-            Manage your account security, authentication methods, and active
-            sessions.
-          </p>
-        </div>
+      <div className="mb-4">
+        <h1 className="text-3xl font-extrabold text-brand-dark tracking-tight mb-2">
+          Security Settings
+        </h1>
+        <p className="text-base text-text-secondary">
+          Manage your account security, authentication methods, and active sessions.
+        </p>
       </div>
 
       {/* Layout Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Column: Passwords & 2FA */}
-        <div className="lg:col-span-4 flex flex-col gap-6">
+        <div className="lg:col-span-5 flex flex-col gap-8">
+          
           {/* Change Password Card */}
-          <div className="bg-surface-container-low border border-outline-variant/10 shadow-sm rounded-xl p-6 hover:shadow-md transition-all duration-300">
-            <div className="flex items-center gap-2 mb-4 pb-2 border-b border-outline-variant/10">
-              <span className="material-symbols-outlined text-primary">
-                key
-              </span>
-              <h2 className="text-headline-md font-headline-md text-on-surface">
-                {user?.hasPassword ? "Change Password" : "Set Password"}
-              </h2>
-            </div>
-            {passwordMessage && (
-              <div
-                className={`mb-4 p-3 rounded text-sm ${passwordMessage.includes("success") ? "bg-primary/20 text-primary" : "bg-error/20 text-error"}`}
-              >
-                {passwordMessage}
+          <div className="bg-surface-light border border-outline-variant/15 shadow-sm rounded-2xl overflow-hidden">
+            <div className="p-6 border-b border-outline-variant/10 bg-surface-dim/30">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-brand/10 text-brand rounded-lg">
+                  <KeyRound size={20} />
+                </div>
+                <h2 className="text-lg font-bold text-text-primary">
+                  {user?.hasPassword ? "Change Password" : "Create New Password"}
+                </h2>
               </div>
-            )}
-            <form
-              className="flex flex-col gap-4"
-              onSubmit={(e) => e.preventDefault()}
-            >
-              {user?.hasPassword && (
-                <div className="flex flex-col gap-1">
-                  <label className="text-label-sm font-label-sm text-on-surface-variant">
-                    Current Password
+              <p className="text-sm text-text-secondary mt-2">
+                {user?.hasPassword 
+                  ? "Update your password to keep your account secure." 
+                  : "You haven't created a password yet. Create a new password below."}
+              </p>
+            </div>
+
+            <div className="p-6">
+              <AnimatePresence>
+                {passwordMessage && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10, height: 0 }}
+                    animate={{ opacity: 1, y: 0, height: "auto" }}
+                    exit={{ opacity: 0, y: -10, height: 0 }}
+                    className={`mb-6 p-4 rounded-xl flex items-start gap-3 border ${
+                      isSuccess 
+                        ? "bg-green-50 border-green-200 text-green-800" 
+                        : "bg-red-50 border-red-200 text-red-800"
+                    }`}
+                  >
+                    {isSuccess ? <CheckCircle2 size={18} className="mt-0.5" /> : <AlertCircle size={18} className="mt-0.5" />}
+                    <div className="flex-1 text-sm font-medium">
+                      {passwordMessage}
+                    </div>
+                    <button onClick={() => setPasswordMessage("")} className="opacity-70 hover:opacity-100 transition-opacity">
+                      <X size={16} />
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <form className="flex flex-col gap-5" onSubmit={(e) => e.preventDefault()}>
+                {user?.hasPassword && (
+                  <div className="space-y-1.5">
+                    <label className="block text-sm font-semibold text-text-primary">
+                      Current Password
+                    </label>
+                    <input
+                      value={passwords.currentPassword}
+                      onChange={(e) => setPasswords({ ...passwords, currentPassword: e.target.value })}
+                      required
+                      placeholder="Enter current password"
+                      className="w-full bg-surface-dim border border-outline-variant/30 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all rounded-xl px-4 py-2.5 text-sm font-medium"
+                      type="password"
+                    />
+                  </div>
+                )}
+                <div className="space-y-1.5">
+                  <label className="block text-sm font-semibold text-text-primary">
+                    New Password
                   </label>
                   <input
-                    value={passwords.currentPassword}
-                    onChange={(e) =>
-                      setPasswords({
-                        ...passwords,
-                        currentPassword: e.target.value,
-                      })
-                    }
+                    value={passwords.newPassword}
+                    onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })}
                     required
-                    className="bg-surface-dim border border-outline-variant/30 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all rounded-lg px-4 py-2 text-body-md font-body-md font-code-sm"
+                    placeholder="Enter new password"
+                    className="w-full bg-surface-dim border border-outline-variant/30 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all rounded-xl px-4 py-2.5 text-sm font-medium"
                     type="password"
                   />
                 </div>
-              )}
-              <div className="flex flex-col gap-1">
-                <label className="text-label-sm font-label-sm text-on-surface-variant">
-                  New Password
-                </label>
-                <input
-                  value={passwords.newPassword}
-                  onChange={(e) =>
-                    setPasswords({ ...passwords, newPassword: e.target.value })
-                  }
-                  required
-                  className="bg-surface-dim border border-outline-variant/30 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all rounded-lg px-4 py-2 text-body-md font-body-md font-code-sm"
-                  type="password"
-                />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-label-sm font-label-sm text-on-surface-variant">
-                  Confirm New Password
-                </label>
-                <input
-                  value={passwords.confirmPassword}
-                  onChange={(e) =>
-                    setPasswords({
-                      ...passwords,
-                      confirmPassword: e.target.value,
-                    })
-                  }
-                  required
-                  className="bg-surface-dim border border-outline-variant/30 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all rounded-lg px-4 py-2 text-body-md font-body-md font-code-sm"
-                  type="password"
-                />
-              </div>
-              <div className="mt-2">
-                <AsyncButton
-                  onClick={handlePasswordChange}
-                  className="w-full bg-primary-container text-on-primary-container hover:bg-primary hover:text-white rounded-lg py-2 px-4 text-label-md font-label-md font-semibold transition-colors shadow-sm active:scale-95 border border-primary-fixed/20 cursor-pointer"
-                  type="submit"
-                >
-                  {user?.hasPassword ? "Update Password" : "Set Password"}
-                </AsyncButton>
-              </div>
-            </form>
+                <div className="space-y-1.5">
+                  <label className="block text-sm font-semibold text-text-primary">
+                    Confirm New Password
+                  </label>
+                  <input
+                    value={passwords.confirmPassword}
+                    onChange={(e) => setPasswords({ ...passwords, confirmPassword: e.target.value })}
+                    required
+                    placeholder="Confirm new password"
+                    className="w-full bg-surface-dim border border-outline-variant/30 focus:border-brand focus:ring-2 focus:ring-brand/20 outline-none transition-all rounded-xl px-4 py-2.5 text-sm font-medium"
+                    type="password"
+                  />
+                </div>
+                <div className="mt-4">
+                  <AsyncButton
+                    onClick={handlePasswordChange}
+                    className="w-full bg-brand hover:bg-brand-dark text-white rounded-xl py-3 px-4 text-sm font-bold transition-all shadow-md hover:shadow-lg active:scale-[0.98]"
+                    type="submit"
+                  >
+                    {user?.hasPassword ? "Update Password" : "Create Password"}
+                  </AsyncButton>
+                </div>
+              </form>
+            </div>
           </div>
 
           {/* Two-Factor Authentication Card */}
-          <div className="bg-surface-container-low border border-outline-variant/10 shadow-sm rounded-xl p-6 hover:shadow-md transition-all duration-300">
-            <div className="flex items-center justify-between mb-4 pb-2 border-b border-outline-variant/10">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary">
-                  shield_locked
-                </span>
-                <h2 className="text-headline-md font-headline-md text-on-surface">
+          <div className="bg-surface-light border border-outline-variant/15 shadow-sm rounded-2xl p-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-brand/5 rounded-bl-full -z-10"></div>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-slate-100 text-slate-600 rounded-lg">
+                  <ShieldCheck size={20} />
+                </div>
+                <h2 className="text-lg font-bold text-text-primary">
                   Two-Factor Auth
                 </h2>
               </div>
-              <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-surface-container-highest border border-outline-variant/20 text-label-sm font-label-sm text-on-surface-variant">
-                <span className="w-2 h-2 rounded-full bg-outline"></span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-xs font-semibold text-slate-600">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
                 Inactive
               </span>
             </div>
-            <p className="text-body-md font-body-md text-on-surface-variant mb-4">
-              Add an extra layer of security to your account by requiring a code
-              from your authenticator app upon login.
+            <p className="text-sm text-text-secondary mb-6 leading-relaxed">
+              Add an extra layer of security to your account. We'll ask for a code from your authenticator app when you log in.
             </p>
             <button
-              className="w-full border border-primary text-primary rounded-lg py-2 px-4 text-label-md font-label-md font-semibold hover:bg-primary/10 transition-colors flex items-center justify-center gap-2 active:scale-95"
+              className="w-full border-2 border-brand text-brand rounded-xl py-2.5 px-4 text-sm font-bold hover:bg-brand/5 transition-colors flex items-center justify-center gap-2 active:scale-[0.98]"
               type="button"
             >
-              <span className="material-symbols-outlined text-[18px]">
-                add_circle
-              </span>
               Enable 2FA
             </button>
           </div>
         </div>
 
         {/* Right Column: Active Sessions */}
-        <div className="lg:col-span-8">
-          <div className="bg-surface-container-low border border-outline-variant/10 shadow-sm rounded-xl hover:shadow-md transition-all duration-300 h-full flex flex-col">
-            <div className="p-6 border-b border-outline-variant/10 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary">
-                  devices
-                </span>
-                <h2 className="text-headline-md font-headline-md text-on-surface">
+        <div className="lg:col-span-7">
+          <div className="bg-surface-light border border-outline-variant/15 shadow-sm rounded-2xl h-full flex flex-col overflow-hidden">
+            <div className="p-6 border-b border-outline-variant/10 flex items-center justify-between bg-surface-dim/30">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                  <MonitorSmartphone size={20} />
+                </div>
+                <h2 className="text-lg font-bold text-text-primary">
                   Active Sessions
                 </h2>
               </div>
-              <button className="text-error hover:text-error-container text-label-sm font-label-sm transition-colors uppercase tracking-wider font-semibold">
-                Revoke All
+              <button className="text-red-600 hover:bg-red-50 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors tracking-wide">
+                REVOKE ALL
               </button>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-outline-variant/10 bg-surface-container-lowest/50">
-                    <th className="py-3 px-6 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider font-medium">
-                      Event
-                    </th>
-                    <th className="py-3 px-6 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider font-medium">
-                      IP Address
-                    </th>
-                    <th className="py-3 px-6 text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider font-medium">
-                      Device & Location
-                    </th>
-                    <th className="py-3 px-6 text-right text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider font-medium">
-                      Time
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-outline-variant/5">
-                  {logsLoading ? (
-                    <tr>
-                      <td
-                        colSpan="4"
-                        className="py-8 text-center text-on-surface-variant"
-                      >
-                        Loading security logs...
-                      </td>
-                    </tr>
-                  ) : logs.length > 0 ? (
-                    logs.map((log) => (
-                      <tr
-                        key={log.id}
-                        className="hover:bg-surface-container-high/30 transition-colors group"
-                      >
-                        <td className="py-4 px-6">
-                          <div className="text-body-md font-body-md font-medium text-on-surface">
+            
+            <div className="flex-1 overflow-x-auto">
+              {logsLoading ? (
+                <div className="p-10 flex flex-col items-center justify-center text-text-secondary h-full">
+                  <div className="w-6 h-6 border-2 border-brand border-t-transparent rounded-full animate-spin mb-3"></div>
+                  <p className="text-sm">Loading security logs...</p>
+                </div>
+              ) : logs.length > 0 ? (
+                <ul className="divide-y divide-outline-variant/10">
+                  {logs.map((log) => (
+                    <li key={log.id} className="p-5 hover:bg-surface-dim/30 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="flex items-start gap-4">
+                        <div className="p-2 bg-surface-dim rounded-full mt-1">
+                          <MonitorSmartphone size={16} className="text-text-secondary" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-text-primary mb-0.5">
+                            {log.device || "Unknown Device"}
+                          </p>
+                          <p className="text-xs font-medium text-text-secondary mb-1">
+                            {log.location || "Unknown Location"} • {log.ipAddress || "Unknown IP"}
+                          </p>
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-brand/10 text-brand uppercase tracking-wider">
                             {log.eventType}
-                          </div>
-                        </td>
-                        <td className="py-4 px-6">
-                          <span className="text-code-sm font-code-sm text-on-surface-variant">
-                            {log.ipAddress || "Unknown"}
                           </span>
-                        </td>
-                        <td className="py-4 px-6">
-                          <div className="flex items-center gap-4">
-                            <div>
-                              <div className="text-body-md font-body-md font-medium text-on-surface">
-                                {log.device || "Unknown Device"}
-                              </div>
-                              <div className="text-label-sm font-label-sm text-on-surface-variant mt-0.5">
-                                {log.location || "Unknown Location"}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="py-4 px-6 text-right">
-                          <span className="text-body-md font-body-md text-on-surface-variant">
-                            {new Date(log.createdAt).toLocaleString()}
-                          </span>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan="4"
-                        className="py-8 text-center text-on-surface-variant"
-                      >
-                        No security logs found.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                        </div>
+                      </div>
+                      <div className="text-left sm:text-right">
+                        <span className="text-xs font-medium text-text-secondary bg-surface-dim px-2 py-1 rounded-md">
+                          {new Date(log.createdAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="p-12 flex flex-col items-center justify-center text-text-secondary h-full text-center">
+                  <MonitorSmartphone size={40} className="mb-4 opacity-20" />
+                  <p className="text-sm font-medium text-text-primary mb-1">No active sessions</p>
+                  <p className="text-xs">You don't have any recent security logs to display.</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -296,3 +278,4 @@ export default function SettingsSecurity() {
     </div>
   );
 }
+
