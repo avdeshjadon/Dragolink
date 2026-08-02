@@ -13,7 +13,7 @@ import { User, Lock, Mail } from "lucide-react";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 import { auth, googleProvider } from "../lib/firebase";
-import { signInWithRedirect } from "firebase/auth";
+import { signInWithPopup } from "firebase/auth";
 import AuthVisual from "../components/AuthVisual";
 
 export default function Register() {
@@ -23,7 +23,7 @@ export default function Register() {
   const [error, setError] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
-  const { user, register, sendOtp } = useAuth();
+  const { user, register, sendOtp, googleLogin } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -197,8 +197,15 @@ export default function Register() {
               onClick={async () => {
                 try {
                   setError("");
-                  await signInWithRedirect(auth, googleProvider);
+                  const result = await signInWithPopup(auth, googleProvider);
+                  const firebaseUser = result.user;
+                  await googleLogin({
+                    email: firebaseUser.email,
+                    name: firebaseUser.displayName || firebaseUser.email.split("@")[0],
+                  });
+                  navigate("/dashboard");
                 } catch (err) {
+                  console.error("Google sign-in error:", err);
                   setError("Google sign-in failed. Please try again.");
                 }
               }}

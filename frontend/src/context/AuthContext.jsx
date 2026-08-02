@@ -7,8 +7,6 @@ via any medium, is strictly prohibited without prior written consent from Avdesh
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { api } from "../lib/axios";
-import { auth } from "../lib/firebase";
-import { getRedirectResult } from "firebase/auth";
 
 const AuthContext = createContext();
 
@@ -21,30 +19,6 @@ export function AuthProvider({ children }) {
   }, []);
 
   const checkAuth = async () => {
-    try {
-      // 1. First, check if we just returned from a Google OAuth redirect
-      const redirectResult = await getRedirectResult(auth);
-      if (redirectResult && redirectResult.user) {
-        const firebaseUser = redirectResult.user;
-        try {
-          const { data } = await api.post("/auth/google", {
-            email: firebaseUser.email,
-            name: firebaseUser.displayName || firebaseUser.email.split("@")[0]
-          });
-          localStorage.setItem("token", data.token);
-          setUser(data.user);
-        } catch (backendError) {
-          console.error("Backend Google Auth Error:", backendError);
-          alert("Google Login successful, but Backend server failed to process it. Please restart/deploy your backend server.");
-        }
-        setLoading(false);
-        return; // Successfully authenticated via redirect
-      }
-    } catch (error) {
-      console.error("Firebase redirect result error:", error);
-    }
-
-    // 2. Normal JWT token check if not from redirect
     const token = localStorage.getItem("token");
     if (token) {
       try {
