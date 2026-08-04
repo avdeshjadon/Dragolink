@@ -171,6 +171,8 @@ function AnimatedRoutes() {
         >
           <Route path="/settings/profile" element={<SettingsProfile />} />
           <Route path="/settings/security" element={<SettingsSecurity />} />
+          <Route path="/settings/api-keys" element={<APIKeys />} />
+          <Route path="/settings/team" element={<Team />} />
         </Route>
       </Routes>
     </AnimatePresence>

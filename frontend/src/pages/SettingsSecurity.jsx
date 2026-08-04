@@ -22,6 +22,15 @@ export default function SettingsSecurity() {
   const [passwordMessage, setPasswordMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
 
+  React.useEffect(() => {
+    if (passwordMessage) {
+      const timer = setTimeout(() => {
+        setPasswordMessage("");
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [passwordMessage]);
+
   const handlePasswordChange = async () => {
     if (passwords.newPassword !== passwords.confirmPassword) {
       setPasswordMessage("New passwords do not match");
@@ -72,9 +81,6 @@ export default function SettingsSecurity() {
         <div className="bg-surface-light border border-outline-variant/15 shadow-sm rounded-2xl overflow-hidden">
           <div className="p-6 border-b border-outline-variant/10 bg-surface-dim/30">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-brand/10 text-brand rounded-lg">
-                <KeyRound size={20} />
-              </div>
               <h2 className="text-lg font-bold text-text-primary">
                 {user?.hasPassword ? "Change Password" : "Create New Password"}
               </h2>

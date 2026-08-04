@@ -44,7 +44,7 @@ export default function SettingsLayout() {
                   to={item.url}
                   className={`flex items-center gap-3 font-label-md text-label-md rounded-lg px-4 py-3 transition-colors duration-200 ${
                     isActive
-                      ? "bg-surface-container text-primary border-l-2 border-primary"
+                      ? "bg-surface-container text-primary"
                       : "text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
                   }`}
                 >
