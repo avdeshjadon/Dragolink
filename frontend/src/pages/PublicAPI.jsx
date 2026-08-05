@@ -117,11 +117,7 @@ export default function PublicAPI() {
                   Generate API Key
                 </Button>
               </Link>
-              <a
-                href="https://docs.dragolink.com"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <Link to="/docs">
                 <Button
                   size="lg"
                   variant="outline"
@@ -129,7 +125,7 @@ export default function PublicAPI() {
                 >
                   Read the Docs
                 </Button>
-              </a>
+              </Link>
             </div>
           </motion.div>
 

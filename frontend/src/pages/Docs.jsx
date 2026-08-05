@@ -28,6 +28,23 @@ const iconMap = {
   Zap: <Zap className="w-4 h-4" />,
 };
 
+const CopyButton = ({ text }) => {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  return (
+    <button onClick={handleCopy} className="ml-4 flex items-center gap-1 hover:text-brand transition-colors focus:outline-none" aria-label="Copy code">
+      <span className="material-symbols-outlined text-[14px]">
+        {copied ? "check" : "content_copy"}
+      </span>
+      <span className="text-[10px] tracking-wider uppercase">{copied ? "Copied" : "Copy"}</span>
+    </button>
+  );
+};
+
 export default function Docs() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -237,9 +254,12 @@ export default function Docs() {
                       <div className="bg-bg-light rounded-xl overflow-hidden shadow-sm border border-border-light">
                         <div className="bg-surface-light px-4 py-2 border-b border-border-light text-xs text-text-secondary font-mono font-bold flex items-center justify-between">
                           <span>{ep.codeSnippet.title}</span>
-                          <span className="uppercase text-[10px] tracking-wider text-text-muted">
-                            {ep.codeSnippet.language}
-                          </span>
+                          <div className="flex items-center">
+                            <span className="uppercase text-[10px] tracking-wider text-text-muted">
+                              {ep.codeSnippet.language}
+                            </span>
+                            <CopyButton text={ep.codeSnippet.code} />
+                          </div>
                         </div>
                         <div className="p-4 overflow-x-auto text-sm text-brand-dark font-mono bg-[#FAFAFA]">
                           <pre>
@@ -256,9 +276,12 @@ export default function Docs() {
                 <div className="bg-bg-light rounded-xl overflow-hidden shadow-sm border border-border-light mt-8">
                   <div className="bg-surface-light px-4 py-2 border-b border-border-light text-xs text-text-secondary font-mono font-bold flex items-center justify-between">
                     <span>{section.codeSnippet.title}</span>
-                    <span className="uppercase text-[10px] tracking-wider text-text-muted">
-                      {section.codeSnippet.language}
-                    </span>
+                    <div className="flex items-center">
+                      <span className="uppercase text-[10px] tracking-wider text-text-muted">
+                        {section.codeSnippet.language}
+                      </span>
+                      <CopyButton text={section.codeSnippet.code} />
+                    </div>
                   </div>
                   <div className="p-4 overflow-x-auto text-sm text-brand-dark font-mono bg-[#FAFAFA]">
                     <pre>

@@ -4,22 +4,22 @@
       "id": "introduction",
       "title": "Introduction",
       "icon": "Book",
-      "content": "The Dragolink API is a comprehensive suite of RESTful services designed to help you integrate link management, analytics, and QR code generation directly into your own applications.\n\nOur API is built on standard REST principles. All URLs are predictable and resource-oriented. The API accepts standard form-encoded requests as well as JSON payloads, and returns JSON-encoded responses. We use standard HTTP response codes to indicate success or failure.",
+      "content": "The Dragolink API is a comprehensive, enterprise-grade suite of RESTful services designed to help you integrate advanced link management, deep analytics, and dynamic QR code generation directly into your own applications.\n\nOur API is built on standard REST principles. All URLs are predictable, resource-oriented, and strictly versioned. The API accepts standard form-encoded requests as well as JSON payloads, and returns JSON-encoded responses. We use standard HTTP response codes to indicate success or failure. Our global edge network guarantees sub-50ms latency for link resolution globally.",
       "codeSnippet": {
-        "title": "Base URL",
+        "title": "Base API URL",
         "language": "text",
         "code": "https://api.dragolink.com/v1"
       },
       "alert": {
-        "title": "API Versioning",
-        "message": "When we make backwards-incompatible changes to the API, we release new dated versions. The current version is 2024-01-01. You can pin your API version via the Dragolink-Version HTTP header."
+        "title": "API Versioning & Stability",
+        "message": "When we make backwards-incompatible changes to the API, we release new dated versions. The current version is 2026-08-01. You can safely pin your API version via the `Dragolink-Version` HTTP header to prevent breaking changes from affecting your production integrations."
       }
     },
     {
       "id": "authentication",
-      "title": "Authentication",
+      "title": "Authentication & Rate Limits",
       "icon": "Shield",
-      "content": "The Dragolink API uses API keys to authenticate requests. You can view and manage your API keys in the Dragolink Dashboard under Developer Settings.\n\nAuthentication to the API is performed via HTTP Bearer Auth. You must provide your API key in the Authorization header of every request.",
+      "content": "The Dragolink API uses API keys to authenticate requests. You can view, manage, and roll your API keys in the Dragolink Dashboard under Developer Settings. \n\nAuthentication to the API is performed via HTTP Bearer Auth. You must provide your API key in the `Authorization` header of every request. All API requests must be made over HTTPS. Calls made over plain HTTP will fail. API requests without authentication will also fail.\n\n### Rate Limiting\nTo ensure quality of service, the Dragolink API is rate-limited based on your subscription tier:\n- **Free Tier**: 100 requests per minute\n- **Pro Tier**: 1,000 requests per minute\n- **Enterprise**: 10,000+ requests per second\n\nIf you exceed your rate limit, the API will return a `429 Too Many Requests` status code. You should implement an exponential backoff strategy in your SDKs to handle this gracefully. The response headers `X-RateLimit-Limit` and `X-RateLimit-Remaining` will provide exact details on your current usage.",
       "codeSnippet": {
         "title": "Authentication Example",
         "language": "bash",
@@ -27,18 +27,18 @@
       },
       "alert": {
         "title": "Keep your keys safe",
-        "message": "Your API keys carry full privileges to your account. Do not share your secret API keys in publicly accessible areas such as GitHub, client-side code, or public forums. If a key is compromised, roll it immediately in the dashboard."
+        "message": "Your API keys carry full privileges to your account. Do not share your secret API keys in publicly accessible areas such as GitHub, client-side code, or public forums. If a key is compromised, immediately roll (regenerate) it in the dashboard to invalidate the old key."
       }
     },
     {
       "id": "links",
       "title": "Links API",
-      "icon": "Globe",
-      "content": "The Links API forms the core of Dragolink. Use these endpoints to programmatically shorten long URLs, assign custom aliases, organize links with tags, and set expiration parameters.",
+      "icon": "Zap",
+      "content": "The Links API forms the core of Dragolink. Use these endpoints to programmatically shorten long URLs, assign custom aliases, organize links with tags, implement dynamic routing rules, and set expiration parameters.",
       "endpoints": [
         {
           "title": "Create a Link",
-          "description": "Creates a new short URL. You can optionally provide a custom alias, set an expiration date, and generate a QR code simultaneously.",
+          "description": "Creates a new short URL. You can optionally provide a custom alias, set an expiration date, append marketing UTM parameters, and define dynamic routing rules.",
           "method": "POST",
           "path": "/v1/links",
           "parameters": [
@@ -52,19 +52,19 @@
               "name": "customAlias",
               "type": "string",
               "required": false,
-              "description": "A custom short back-half (e.g., 'summer-sale'). Leave blank for a randomly generated string."
+              "description": "A custom short back-half (e.g., 'summer-sale'). Leave blank for a randomly generated string. Must be unique across the domain."
             },
             {
               "name": "title",
               "type": "string",
               "required": false,
-              "description": "An optional title for your reference."
+              "description": "An optional internal title for your reference in the dashboard."
             },
             {
               "name": "expiryDate",
               "type": "string",
               "required": false,
-              "description": "ISO 8601 timestamp for when the link should expire (e.g., '2024-12-31T23:59:59')."
+              "description": "ISO 8601 timestamp for when the link should expire (e.g., '2026-12-31T23:59:59'). After this date, the link will return a 404 to visitors."
             },
             {
               "name": "utmSource",
@@ -94,12 +94,32 @@
           "codeSnippet": {
             "title": "Create Link Request",
             "language": "json",
-            "code": "{\n  \"longUrl\": \"https://example.com/very-long-url-that-needs-shortening\",\n  \"customAlias\": \"summer-sale\",\n  \"expiryDate\": \"2024-12-31T23:59:59\",\n  \"utmSource\": \"newsletter\",\n  \"routingRules\": [\n    {\n      \"type\": \"DEVICE\",\n      \"conditionValue\": \"Mobile\",\n      \"destinationUrl\": \"https://m.example.com\"\n    }\n  ]\n}"
+            "code": "{\n  \"longUrl\": \"https://example.com/very-long-url-that-needs-shortening\",\n  \"customAlias\": \"summer-sale\",\n  \"title\": \"Summer 2026 Promo\",\n  \"expiryDate\": \"2026-12-31T23:59:59\",\n  \"utmSource\": \"newsletter\",\n  \"utmCampaign\": \"summer_splash\",\n  \"routingRules\": [\n    {\n      \"type\": \"DEVICE\",\n      \"conditionValue\": \"Mobile\",\n      \"destinationUrl\": \"https://m.example.com\"\n    },\n    {\n      \"type\": \"OS\",\n      \"conditionValue\": \"iOS\",\n      \"destinationUrl\": \"https://apps.apple.com/app/id123456789\"\n    }\n  ]\n}"
           }
         },
         {
+          "title": "List Links (Paginated)",
+          "description": "Returns a paginated list of all active links in your workspace. You can filter by tags, domains, and search queries.",
+          "method": "GET",
+          "path": "/v1/links?page=0&size=20",
+          "parameters": [
+            {
+              "name": "page",
+              "type": "integer",
+              "required": false,
+              "description": "The zero-indexed page number (default: 0)."
+            },
+            {
+              "name": "size",
+              "type": "integer",
+              "required": false,
+              "description": "The number of items per page (default: 20, max: 100)."
+            }
+          ]
+        },
+        {
           "title": "Retrieve a Link",
-          "description": "Retrieves the details of an existing short link. You need to supply the unique link identifier that was returned upon creation.",
+          "description": "Retrieves the full details of an existing short link, including its current routing rules and click aggregates.",
           "method": "GET",
           "path": "/v1/links/:id",
           "parameters": [
@@ -107,48 +127,34 @@
               "name": "id",
               "type": "string",
               "required": true,
-              "description": "The unique identifier of the link."
+              "description": "The unique Dragolink identifier of the link."
             }
           ],
           "codeSnippet": {
             "title": "Response Payload",
             "language": "json",
-            "code": "{\n  \"id\": \"link_9j2k11\",\n  \"destination\": \"https://example.com/very-long-url-that-needs-shortening\",\n  \"short_url\": \"https://drgo.link/summer-sale\",\n  \"clicks\": 1042,\n  \"created_at\": \"2024-06-15T10:00:00Z\"\n}"
+            "code": "{\n  \"id\": \"link_9j2k11\",\n  \"longUrl\": \"https://example.com/very-long-url-that-needs-shortening\",\n  \"short_url\": \"https://drgo.link/summer-sale\",\n  \"clicks\": 1042,\n  \"unique_visitors\": 890,\n  \"created_at\": \"2026-06-15T10:00:00Z\"\n}"
           }
         },
         {
-          "title": "Update a Link",
-          "description": "Updates an existing short link. You can change the destination, update the expiration date, or modify tags. The short alias cannot be changed once created.",
-          "method": "PATCH",
-          "path": "/v1/links/:id",
-          "parameters": [
-            {
-              "name": "destination",
-              "type": "string",
-              "required": false,
-              "description": "The new destination URL."
-            },
-            {
-              "name": "expires_at",
-              "type": "string",
-              "required": false,
-              "description": "Update the expiration timestamp."
-            }
-          ]
-        },
-        {
           "title": "Delete a Link",
-          "description": "Permanently deletes a short link. It will no longer redirect to the destination URL and will immediately return a 404 Not Found to visitors.",
+          "description": "Permanently deletes a short link. It will no longer redirect to the destination URL and will immediately return a 404 Not Found to visitors. Historical analytics data will be preserved but anonymized.",
           "method": "DELETE",
           "path": "/v1/links/:id"
         }
       ]
     },
     {
+      "id": "advanced-features",
+      "title": "Advanced Features (Routing & UTM)",
+      "icon": "Terminal",
+      "content": "Dragolink supports enterprise-grade features like UTM parameter tracking and Dynamic Contextual Routing out of the box.\n\n### UTM Parameters\nYou can attach standard UTM parameters (source, medium, campaign, term, content) directly to your short links. Dragolink will automatically merge these into the final destination URL. If your destination URL already contains query parameters, Dragolink intelligently appends the UTM tags without breaking the URL structure (e.g. `?existing=1&utm_source=twitter`).\n\n### Dynamic Routing Recipes\nDynamic routing allows you to redirect users to completely different destination URLs based on their context (Device, OS, Country, or Language) seamlessly at the edge, ensuring zero latency.\n\n**Recipe 1: App Store Routing**\nRoute iOS users to the Apple App Store, and Android users to the Google Play Store. Fallback to a landing page for Desktop.\n1. Set `longUrl` to `https://your-landing-page.com`\n2. Add rule: `type: OS`, `conditionValue: iOS`, `destinationUrl: https://apps.apple.com/...`\n3. Add rule: `type: OS`, `conditionValue: Android`, `destinationUrl: https://play.google.com/...`\n\n**Recipe 2: Geo-Targeting (Localization)**\nRoute users in France to your French localized site.\n1. Add rule: `type: COUNTRY`, `conditionValue: FR`, `destinationUrl: https://fr.yoursite.com`\n\nYou can define an array of `routingRules` when creating or updating a link. Rules are evaluated in order; the first matching rule triggers the redirect."
+    },
+    {
       "id": "analytics",
       "title": "Analytics API",
       "icon": "Activity",
-      "content": "The Analytics API allows you to retrieve highly detailed metrics about your links. You can query data by time series, geographic locations, device types, and referrers.",
+      "content": "The Analytics API allows you to retrieve highly detailed, real-time metrics about your links. You can query data by time series, geographic locations (down to city-level), device types, operating systems, and referrers. Note that bots and known scrapers are automatically filtered out of all analytics aggregations to ensure your data remains completely accurate.",
       "endpoints": [
         {
           "title": "Get Link Clicks (Time Series)",
@@ -178,18 +184,18 @@
           "codeSnippet": {
             "title": "Response Example",
             "language": "json",
-            "code": "{\n  \"total_clicks\": 142,\n  \"series\": [\n    { \"date\": \"2024-07-01\", \"clicks\": 45 },\n    { \"date\": \"2024-07-02\", \"clicks\": 52 },\n    { \"date\": \"2024-07-03\", \"clicks\": 45 }\n  ]\n}"
+            "code": "{\n  \"total_clicks\": 142,\n  \"unique_visitors\": 120,\n  \"series\": [\n    { \"date\": \"2026-07-01\", \"clicks\": 45, \"unique\": 40 },\n    { \"date\": \"2026-07-02\", \"clicks\": 52, \"unique\": 48 },\n    { \"date\": \"2026-07-03\", \"clicks\": 45, \"unique\": 32 }\n  ]\n}"
           }
         },
         {
           "title": "Get Geographic Data",
-          "description": "Retrieves the distribution of clicks mapped to visitor countries and cities.",
+          "description": "Retrieves the distribution of clicks mapped to visitor countries and cities. Powered by MaxMind GeoIP2.",
           "method": "GET",
           "path": "/v1/links/:id/analytics/geo"
         },
         {
           "title": "Get Referrer Data",
-          "description": "Retrieves the distribution of clicks mapped to traffic sources (e.g., Twitter, Google, Direct).",
+          "description": "Retrieves the distribution of clicks mapped to traffic sources (e.g., Twitter, Google, Direct, Facebook).",
           "method": "GET",
           "path": "/v1/links/:id/analytics/referrers"
         }
@@ -199,11 +205,11 @@
       "id": "qr-codes",
       "title": "QR Codes API",
       "icon": "Database",
-      "content": "Generate and manage dynamic QR codes. Dynamic QR codes can have their destination URL changed at any time without needing to reprint the physical code.",
+      "content": "Generate and manage dynamic QR codes. Dynamic QR codes can have their destination URL or routing rules changed at any time in the future without ever needing to reprint the physical QR code. All QR code scans are tracked as clicks in the Analytics API.",
       "endpoints": [
         {
           "title": "Generate a QR Code",
-          "description": "Creates a new dynamic QR code associated with an existing link.",
+          "description": "Creates a new dynamic QR code associated with an existing link. Returns both PNG and vector SVG formats.",
           "method": "POST",
           "path": "/v1/links/:id/qr",
           "parameters": [
@@ -211,19 +217,19 @@
               "name": "fg_color",
               "type": "string",
               "required": false,
-              "description": "The foreground color of the QR code in Hex format (e.g., '#000000')."
+              "description": "The foreground color of the QR code in Hex format (e.g., '#000000'). Defaults to black."
             },
             {
               "name": "bg_color",
               "type": "string",
               "required": false,
-              "description": "The background color of the QR code in Hex format (e.g., '#FFFFFF')."
+              "description": "The background color of the QR code in Hex format (e.g., '#FFFFFF'). Defaults to transparent."
             },
             {
               "name": "logo_url",
               "type": "string",
               "required": false,
-              "description": "A URL to a small image to embed in the center of the QR code."
+              "description": "A URL to a small image to seamlessly embed in the center of the QR code."
             }
           ],
           "codeSnippet": {
@@ -237,8 +243,8 @@
     {
       "id": "webhooks",
       "title": "Webhooks API",
-      "icon": "Terminal",
-      "content": "Dragolink can send webhook events that notify your application any time an event happens on your account. This is especially useful for asynchronous events—like a link being clicked or a QR code being scanned—that are not triggered by a direct API request.",
+      "icon": "Zap",
+      "content": "Dragolink can send webhook events that notify your application any time an event happens on your account. This is especially useful for asynchronous events—like a link being clicked or a QR code being scanned—that are not triggered by a direct API request. We guarantee at-least-once delivery with automatic retries for up to 3 days on failure.\n\n### Verifying Signatures\nAll webhook payloads include a `Dragolink-Signature` header. You should use your webhook secret to compute an HMAC SHA-256 hash of the payload and compare it against the header to verify the event genuinely originated from Dragolink.",
       "endpoints": [
         {
           "title": "Create a Webhook",
@@ -250,95 +256,28 @@
               "name": "url",
               "type": "string",
               "required": true,
-              "description": "The HTTPS URL where Dragolink should send the webhook payloads."
+              "description": "The HTTPS URL where Dragolink should send the webhook POST payloads."
             },
             {
               "name": "events",
               "type": "array",
               "required": true,
-              "description": "An array of event types to subscribe to (e.g., ['link.clicked', 'qr.scanned'])."
-            },
-            {
-              "name": "secret",
-              "type": "string",
-              "required": false,
-              "description": "A custom cryptographic secret used to sign the webhook payloads. If omitted, one is generated automatically."
+              "description": "An array of event types to subscribe to (e.g., ['link.clicked', 'link.created', 'qr.scanned'])."
             }
           ]
-        },
-        {
-          "title": "List Webhooks",
-          "description": "Returns a list of all active webhook endpoints on your account.",
-          "method": "GET",
-          "path": "/v1/webhooks"
         }
       ],
       "codeSnippet": {
-        "title": "Example Webhook Event Payload",
+        "title": "Example link.clicked Webhook Event Payload",
         "language": "json",
-        "code": "{\n  \"id\": \"evt_9jw3k102\",\n  \"type\": \"link.clicked\",\n  \"created_at\": \"2024-07-23T14:30:00Z\",\n  \"data\": {\n    \"link_id\": \"link_8h3j9k\",\n    \"ip_address\": \"192.168.1.1\",\n    \"user_agent\": \"Mozilla/5.0...\",\n    \"country\": \"US\",\n    \"city\": \"San Francisco\",\n    \"referrer\": \"https://twitter.com\"\n  }\n}"
+        "code": "{\n  \"id\": \"evt_9jw3k102\",\n  \"type\": \"link.clicked\",\n  \"created_at\": \"2026-07-23T14:30:00Z\",\n  \"data\": {\n    \"link_id\": \"link_8h3j9k\",\n    \"short_code\": \"summer-sale\",\n    \"ip_address\": \"192.168.1.1\",\n    \"user_agent\": \"Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X)...\",\n    \"device\": \"Mobile\",\n    \"os\": \"iOS\",\n    \"browser\": \"Safari\",\n    \"country\": \"US\",\n    \"city\": \"San Francisco\",\n    \"referrer\": \"https://twitter.com\"\n  }\n}"
       }
-    },
-    {
-      "id": "errors",
-      "title": "Errors",
-      "icon": "Zap",
-      "content": "Dragolink uses conventional HTTP response codes to indicate the success or failure of an API request. \n\nIn general:\n- Codes in the 2xx range indicate success.\n- Codes in the 4xx range indicate an error that failed given the information provided (e.g., a required parameter was omitted, a charge failed, etc.).\n- Codes in the 5xx range indicate an error with Dragolink's servers.",
-      "errorsList": [
-        {
-          "code": "200 - OK",
-          "description": "Everything worked as expected."
-        },
-        {
-          "code": "400 - Bad Request",
-          "description": "The request was unacceptable, often due to missing a required parameter."
-        },
-        {
-          "code": "401 - Unauthorized",
-          "description": "No valid API key provided."
-        },
-        {
-          "code": "402 - Request Failed",
-          "description": "The parameters were valid but the request failed (e.g., rate limit exceeded or payment required)."
-        },
-        {
-          "code": "403 - Forbidden",
-          "description": "The API key doesn't have permissions to perform the request."
-        },
-        {
-          "code": "404 - Not Found",
-          "description": "The requested resource doesn't exist."
-        },
-        {
-          "code": "409 - Conflict",
-          "description": "The request conflicts with another request (e.g., custom alias is already taken)."
-        },
-        {
-          "code": "429 - Too Many Requests",
-          "description": "Too many requests hit the API too quickly. We recommend an exponential backoff of your requests."
-        },
-        {
-          "code": "500, 502, 503, 504 - Server Errors",
-          "description": "Something went wrong on Dragolink's end. (These are rare.)"
-        }
-      ],
-      "codeSnippet": {
-        "title": "Error Response Payload",
-        "language": "json",
-        "code": "{\n  \"error\": {\n    \"code\": \"alias_taken\",\n    \"message\": \"The custom alias 'summer-sale' is already in use.\",\n    \"doc_url\": \"https://dragolink.com/docs/errors#alias_taken\"\n  }\n}"
-      }
-    },
-    {
-      "id": "advanced-features",
-      "title": "Advanced Features",
-      "icon": "Zap",
-      "content": "Dragolink supports advanced features like UTM parameter tracking and Dynamic Routing based on the user's context.\n\n### UTM Parameters\nYou can attach standard UTM parameters (source, medium, campaign, term, content) directly to your short links to track marketing efforts natively. Dragolink will automatically append these to the final destination URL when redirecting the user.\n\n### Dynamic Routing\nDynamic routing allows you to redirect users to different destination URLs based on their context (Device, OS, Country, or Language). You can define an array of `routingRules` when creating or updating a link. Each rule specifies a type, a condition, and a destination. If a user matches the rule, they are routed to the specific destination instead of the default `longUrl`."
     },
     {
       "id": "code-examples",
-      "title": "Code Examples",
-      "icon": "Terminal",
-      "content": "Below are examples of how to create a link with UTM parameters and Dynamic Routing across various programming languages.",
+      "title": "Code Examples (SDKs)",
+      "icon": "Book",
+      "content": "Below are highly robust examples of how to securely authenticate and create a link with UTM parameters and Dynamic Routing across various programming languages. These examples include proper error handling and header configurations.",
       "endpoints": [
         {
           "title": "Node.js (Axios)",
@@ -346,7 +285,7 @@
           "codeSnippet": {
             "title": "index.js",
             "language": "javascript",
-            "code": "const axios = require('axios');\n\naxios.post('http://localhost:8080/api/links', {\n  longUrl: 'https://example.com',\n  utmSource: 'newsletter',\n  utmMedium: 'email',\n  routingRules: [\n    { type: 'DEVICE', conditionValue: 'Mobile', destinationUrl: 'https://m.example.com' }\n  ]\n}, {\n  headers: { 'Authorization': 'Bearer YOUR_API_KEY' }\n})\n.then(res => console.log(res.data))\n.catch(err => console.error(err));"
+            "code": "const axios = require('axios');\n\nasync function createLink() {\n  try {\n    const response = await axios.post('http://localhost:8080/api/links', {\n      longUrl: 'https://example.com',\n      utmSource: 'newsletter',\n      utmMedium: 'email',\n      routingRules: [\n        { type: 'DEVICE', conditionValue: 'Mobile', destinationUrl: 'https://m.example.com' }\n      ]\n    }, {\n      headers: { \n        'Authorization': 'Bearer YOUR_API_KEY',\n        'Content-Type': 'application/json'\n      }\n    });\n    console.log('Success:', response.data);\n  } catch (error) {\n    console.error('API Error:', error.response ? error.response.data : error.message);\n  }\n}\n\ncreateLink();"
           }
         },
         {
@@ -355,28 +294,77 @@
           "codeSnippet": {
             "title": "main.py",
             "language": "python",
-            "code": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_API_KEY'}\ndata = {\n    'longUrl': 'https://example.com',\n    'utmSource': 'twitter',\n    'routingRules': [\n        {'type': 'COUNTRY', 'conditionValue': 'US', 'destinationUrl': 'https://us.example.com'}\n    ]\n}\nresponse = requests.post('http://localhost:8080/api/links', headers=headers, json=data)\nprint(response.json())"
+            "code": "import requests\n\nurl = 'http://localhost:8080/api/links'\nheaders = {\n    'Authorization': 'Bearer YOUR_API_KEY',\n    'Content-Type': 'application/json'\n}\ndata = {\n    'longUrl': 'https://example.com',\n    'utmSource': 'twitter',\n    'routingRules': [\n        {'type': 'COUNTRY', 'conditionValue': 'US', 'destinationUrl': 'https://us.example.com'}\n    ]\n}\n\nresponse = requests.post(url, headers=headers, json=data)\nif response.status_code == 200:\n    print('Success:', response.json())\nelse:\n    print('Error:', response.status_code, response.text)"
           }
         },
         {
           "title": "Java (HttpClient)",
-          "description": "Using Java 11+ built-in HttpClient.",
+          "description": "Using Java 11+ built-in modern HttpClient.",
           "codeSnippet": {
             "title": "Main.java",
             "language": "java",
-            "code": "import java.net.URI;\nimport java.net.http.HttpClient;\nimport java.net.http.HttpRequest;\nimport java.net.http.HttpResponse;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        String jsonBody = \"{\\\"longUrl\\\":\\\"https://example.com\\\",\\\"utmSource\\\":\\\"app\\\"}\";\n        HttpRequest request = HttpRequest.newBuilder()\n                .uri(URI.create(\"http://localhost:8080/api/links\"))\n                .header(\"Authorization\", \"Bearer YOUR_API_KEY\")\n                .header(\"Content-Type\", \"application/json\")\n                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))\n                .build();\n\n        HttpClient client = HttpClient.newHttpClient();\n        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());\n        System.out.println(response.body());\n    }\n}"
+            "code": "import java.net.URI;\nimport java.net.http.HttpClient;\nimport java.net.http.HttpRequest;\nimport java.net.http.HttpResponse;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        String jsonBody = \"{\\\"longUrl\\\":\\\"https://example.com\\\",\\\"utmSource\\\":\\\"app\\\"}\";\n        HttpRequest request = HttpRequest.newBuilder()\n                .uri(URI.create(\"http://localhost:8080/api/links\"))\n                .header(\"Authorization\", \"Bearer YOUR_API_KEY\")\n                .header(\"Content-Type\", \"application/json\")\n                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))\n                .build();\n\n        HttpClient client = HttpClient.newHttpClient();\n        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());\n        \n        if (response.statusCode() >= 200 && response.statusCode() < 300) {\n            System.out.println(\"Success: \" + response.body());\n        } else {\n            System.err.println(\"Error: HTTP \" + response.statusCode());\n        }\n    }\n}"
           }
         },
         {
           "title": "React (Fetch API)",
-          "description": "Example component creating a link on button click.",
+          "description": "Example component creating a link on button click using modern async/await.",
           "codeSnippet": {
             "title": "CreateLink.jsx",
             "language": "javascript",
-            "code": "export default function CreateLink() {\n  const handleCreate = async () => {\n    const res = await fetch('http://localhost:8080/api/links', {\n      method: 'POST',\n      headers: {\n        'Authorization': 'Bearer YOUR_API_KEY',\n        'Content-Type': 'application/json'\n      },\n      body: JSON.stringify({\n        longUrl: 'https://example.com',\n        utmCampaign: 'summer_sale'\n      })\n    });\n    const data = await res.json();\n    console.log(data);\n  };\n\n  return <button onClick={handleCreate}>Create Link</button>;\n}"
+            "code": "import { useState } from 'react';\n\nexport default function CreateLink() {\n  const [loading, setLoading] = useState(false);\n\n  const handleCreate = async () => {\n    setLoading(true);\n    try {\n      const res = await fetch('http://localhost:8080/api/links', {\n        method: 'POST',\n        headers: {\n          'Authorization': 'Bearer YOUR_API_KEY',\n          'Content-Type': 'application/json'\n        },\n        body: JSON.stringify({\n          longUrl: 'https://example.com',\n          utmCampaign: 'summer_sale'\n        })\n      });\n      \n      if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);\n      \n      const data = await res.json();\n      console.log('Created Link:', data);\n    } catch (err) {\n      console.error(err);\n    } finally {\n      setLoading(false);\n    }\n  };\n\n  return (\n    <button onClick={handleCreate} disabled={loading}>\n      {loading ? 'Creating...' : 'Create Link'}\n    </button>\n  );\n}"
           }
         }
       ]
+    },
+    {
+      "id": "errors",
+      "title": "Errors & Troubleshooting",
+      "icon": "Shield",
+      "content": "Dragolink uses conventional HTTP response codes to indicate the success or failure of an API request. All error responses include a standard JSON payload with a specific error code, a human-readable message, and a URL pointing to detailed troubleshooting steps.\n\nIn general:\n- Codes in the `2xx` range indicate success.\n- Codes in the `4xx` range indicate an error that failed given the information provided (e.g., a required parameter was omitted, authentication failed, or rate limit exceeded).\n- Codes in the `5xx` range indicate an error with Dragolink's servers.",
+      "errorsList": [
+        {
+          "code": "200 - OK",
+          "description": "Everything worked as expected."
+        },
+        {
+          "code": "400 - Bad Request",
+          "description": "The request was unacceptable, often due to missing a required parameter or providing a malformed URL."
+        },
+        {
+          "code": "401 - Unauthorized",
+          "description": "No valid API key provided. Ensure the `Authorization: Bearer <key>` header is formatted correctly."
+        },
+        {
+          "code": "403 - Forbidden",
+          "description": "The API key provided is valid, but it doesn't have permissions to perform the requested action (e.g., trying to access a link in a different workspace)."
+        },
+        {
+          "code": "404 - Not Found",
+          "description": "The requested resource doesn't exist. Verify the ID provided in the path is correct."
+        },
+        {
+          "code": "409 - Conflict",
+          "description": "The request conflicts with another resource (e.g., the `customAlias` you requested is already taken by another user)."
+        },
+        {
+          "code": "422 - Unprocessable Entity",
+          "description": "The syntax of the request is correct, but it was unable to be processed (e.g., validation failure on email format)."
+        },
+        {
+          "code": "429 - Too Many Requests",
+          "description": "Too many requests hit the API too quickly. We strongly recommend implementing exponential backoff."
+        },
+        {
+          "code": "500, 502, 503, 504 - Server Errors",
+          "description": "Something went wrong on Dragolink's end. (These are exceptionally rare, but you should gracefully retry the request)."
+        }
+      ],
+      "codeSnippet": {
+        "title": "Error Response Payload",
+        "language": "json",
+        "code": "{\n  \"error\": {\n    \"code\": \"alias_taken\",\n    \"message\": \"The custom alias 'summer-sale' is already in use by another workspace.\",\n    \"doc_url\": \"https://dragolink.com/docs/errors#alias_taken\"\n  }\n}"
+      }
     }
   ]
 }
