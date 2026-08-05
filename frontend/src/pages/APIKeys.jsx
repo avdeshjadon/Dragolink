@@ -63,7 +63,16 @@ export default function APIKeys() {
             applications and workflows.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          <a
+            href="/docs"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-4 py-2 bg-surface-variant text-on-surface border border-outline-variant/30 rounded-lg text-label-md font-label-md hover:bg-surface-variant/80 transition-colors shadow-sm"
+          >
+            <span className="material-symbols-outlined text-[18px]">menu_book</span>
+            Documentation
+          </a>
           <button
             onClick={() => setIsModalOpen(true)}
             className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-label-md font-label-md hover:bg-primary/90 transition-colors shadow-sm"
@@ -202,11 +211,12 @@ export default function APIKeys() {
                         onClick={() =>
                           navigator.clipboard.writeText(generatedKey)
                         }
-                        className="bg-primary text-on-primary px-4 rounded-r-lg hover:bg-primary/90 transition-colors flex items-center gap-2"
+                        className="bg-primary text-on-primary px-4 rounded-r-lg hover:bg-primary/90 transition-colors flex items-center gap-2 font-medium"
                       >
                         <span className="material-symbols-outlined text-[18px]">
                           content_copy
                         </span>
+                        Copy
                       </button>
                     </div>
                   </div>
