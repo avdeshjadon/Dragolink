@@ -32,6 +32,7 @@ public class ApiKeyService {
 
     private final ApiKeyRepository apiKeyRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     public List<ApiKeyDto> getApiKeys(UserDetails userDetails) {
         User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
@@ -57,6 +58,8 @@ public class ApiKeyService {
                 .build();
                 
         apiKey = apiKeyRepository.save(apiKey);
+
+        notificationService.createNotification(user, "api_key", "New API Key Generated", "An API key named '" + apiKey.getName() + "' was generated.");
 
         return ApiKeyResponseDto.builder()
                 .keyDetails(mapToDto(apiKey))

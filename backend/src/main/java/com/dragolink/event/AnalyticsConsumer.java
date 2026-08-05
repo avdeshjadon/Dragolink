@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+import com.dragolink.service.NotificationService;
 import com.dragolink.service.UserAgentParserService;
 
 @Component
@@ -32,6 +33,7 @@ public class AnalyticsConsumer {
     private final ShortLinkRepository shortLinkRepository;
     private final ObjectMapper objectMapper;
     private final UserAgentParserService userAgentParserService;
+    private final NotificationService notificationService;
 
     @KafkaListener(topics = "link-click-events", groupId = "dragolink-group")
     @org.springframework.transaction.annotation.Transactional
@@ -111,6 +113,16 @@ public class AnalyticsConsumer {
                     
             clickAnalyticsRepository.save(analytics);
             shortLinkRepository.incrementClickCount(linkId);
+
+            if (!analytics.isBot()) {
+                String location = (!"Unknown".equals(city) && !"Unknown".equals(country)) ? city + ", " + country : (ip != null ? ip : "Unknown");
+                notificationService.createNotification(
+                    link.getUser(), 
+                    "link_click", 
+                    "New Link Click", 
+                    "Someone from " + location + " clicked on your link '" + (link.getCustomAlias() != null ? link.getCustomAlias() : link.getShortCode()) + "'."
+                );
+            }
 
         } catch (Exception e) {
             log.error("Error processing click event", e);

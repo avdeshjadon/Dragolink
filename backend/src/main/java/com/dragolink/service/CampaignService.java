@@ -31,6 +31,7 @@ public class CampaignService {
     private final ShortLinkRepository shortLinkRepository;
     private final UserRepository userRepository;
     private final WorkspaceService workspaceService;
+    private final NotificationService notificationService;
 
     public List<CampaignDto> getCampaigns(UserDetails userDetails) {
         User user = workspaceService.getEffectiveWorkspaceOwner(userDetails);
@@ -50,6 +51,9 @@ public class CampaignService {
                 .build();
                 
         campaign = campaignRepository.save(campaign);
+        
+        notificationService.createNotification(user, "campaign", "Campaign Launched", "Campaign '" + campaign.getName() + "' was successfully created.");
+        
         return mapToDto(campaign);
     }
 

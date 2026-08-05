@@ -29,6 +29,7 @@ public class TeamService {
     private final UserRepository userRepository;
     private final WorkspaceService workspaceService;
     private final NotificationRepository notificationRepository;
+    private final NotificationService notificationService;
 
     private void verifyTeamManagementAccess(User loggedInUser, User owner) {
         if (owner.getId().equals(loggedInUser.getId())) {
@@ -212,6 +213,8 @@ public class TeamService {
                 .build();
 
         teamMember = teamMemberRepository.save(teamMember);
+
+        notificationService.createNotification(owner, "team", "Team Member Invited", "You invited " + email + " to your workspace.");
 
         TeamMemberDto dto = TeamMemberDto.builder()
                 .id(teamMember.getId())

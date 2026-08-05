@@ -44,6 +44,7 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
     private final CampaignRepository campaignRepository;
     private final StringRedisTemplate redisTemplate;
     private final WorkspaceService workspaceService;
+    private final NotificationService notificationService;
 
     private static final String CACHE_PREFIX = "shortlink:";
 
@@ -117,6 +118,8 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
         String shortCode = Base62Util.encode(shortLink.getId());
         shortLink.setShortCode(shortCode);
         shortLink = shortLinkRepository.save(shortLink);
+
+        notificationService.createNotification(user, "link_created", "Short Link Created", "Successfully created short link for '" + request.getLongUrl() + "'.");
 
         return mapToResponse(shortLink);
     }
