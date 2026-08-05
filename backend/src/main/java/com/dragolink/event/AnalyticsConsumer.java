@@ -114,7 +114,7 @@ public class AnalyticsConsumer {
             clickAnalyticsRepository.save(analytics);
             shortLinkRepository.incrementClickCount(linkId);
 
-            if (!analytics.isBot()) {
+            if (!Boolean.TRUE.equals(analytics.getIsBot())) {
                 String location = (!"Unknown".equals(city) && !"Unknown".equals(country)) ? city + ", " + country : (ip != null ? ip : "Unknown");
                 notificationService.createNotification(
                     link.getUser(), 
