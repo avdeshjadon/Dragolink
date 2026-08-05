@@ -210,7 +210,11 @@ export default function APIKeys() {
                       </button>
                     </div>
                   </div>
-                  <div className="pt-4 flex justify-end">
+                  <div className="pt-4 flex justify-between items-center">
+                    <a href="/docs" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm font-medium flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[18px]">menu_book</span>
+                      Read documentation on how to use API
+                    </a>
                     <button
                       onClick={() => {
                         setIsModalOpen(false);

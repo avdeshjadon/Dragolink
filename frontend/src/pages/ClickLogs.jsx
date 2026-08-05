@@ -23,6 +23,7 @@ export default function ClickLogs() {
   const [isClearAllLogsModalOpen, setIsClearAllLogsModalOpen] = useState(false);
   const [isDeletingLog, setIsDeletingLog] = useState(false);
   const [linkDetails, setLinkDetails] = useState(null);
+  const [activeTab, setActiveTab] = useState("human");
 
   useEffect(() => {
     fetchClickLogs();
@@ -110,6 +111,11 @@ export default function ClickLogs() {
     window.URL.revokeObjectURL(url);
   };
 
+  const filteredLogs = clickLogs.filter((log) => {
+    if (activeTab === "all") return true;
+    return activeTab === "bot" ? log.isBot : !log.isBot;
+  });
+
   return (
     <div className="min-h-screen bg-surface flex flex-col font-sans selection:bg-primary/20">
       <Toaster
@@ -189,11 +195,32 @@ export default function ClickLogs() {
           }
         />
 
+        <div className="flex gap-2 mb-6 border-b border-outline-variant/30 pb-2">
+          <button 
+            onClick={() => setActiveTab("all")}
+            className={`px-4 py-2 rounded-lg font-label-md transition-colors ${activeTab === 'all' ? 'bg-secondary/10 text-secondary' : 'text-on-surface-variant hover:bg-surface-container'}`}
+          >
+            All Logs
+          </button>
+          <button 
+            onClick={() => setActiveTab("human")}
+            className={`px-4 py-2 rounded-lg font-label-md transition-colors ${activeTab === 'human' ? 'bg-primary/10 text-primary' : 'text-on-surface-variant hover:bg-surface-container'}`}
+          >
+            Real Visitors
+          </button>
+          <button 
+            onClick={() => setActiveTab("bot")}
+            className={`px-4 py-2 rounded-lg font-label-md transition-colors ${activeTab === 'bot' ? 'bg-error/10 text-error' : 'text-on-surface-variant hover:bg-surface-container'}`}
+          >
+            Bots
+          </button>
+        </div>
+
         {isClickLogLoading ? (
           <div className="flex justify-center items-center h-64">
             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
           </div>
-        ) : clickLogs.length === 0 ? (
+        ) : filteredLogs.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 text-on-surface-variant bg-surface-container-lowest border border-outline-variant/30 rounded-3xl">
             <span className="material-symbols-outlined text-[48px] mb-4 opacity-50">
               analytics
@@ -203,7 +230,7 @@ export default function ClickLogs() {
         ) : (
           <div className="flex flex-col gap-4">
             <AnimatePresence>
-              {clickLogs.map((log, idx) => {
+              {filteredLogs.map((log, idx) => {
                 const isExpanded = expandedLogId === (log.id || idx);
                 const isDeleting =
                   isDeletingLog && deleteLogModalId === (log.id || idx);

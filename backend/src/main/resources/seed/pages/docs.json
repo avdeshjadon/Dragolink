@@ -43,46 +43,58 @@
           "path": "/v1/links",
           "parameters": [
             {
-              "name": "destination",
+              "name": "longUrl",
               "type": "string",
               "required": true,
               "description": "The long URL that you want to shorten. Must be a valid URL starting with http:// or https://."
             },
             {
-              "name": "domain_id",
-              "type": "string",
-              "required": false,
-              "description": "The ID of the custom domain to use for the short link. If omitted, the default dragolink.com domain is used."
-            },
-            {
-              "name": "alias",
+              "name": "customAlias",
               "type": "string",
               "required": false,
               "description": "A custom short back-half (e.g., 'summer-sale'). Leave blank for a randomly generated string."
             },
             {
-              "name": "expires_at",
+              "name": "title",
               "type": "string",
               "required": false,
-              "description": "ISO 8601 timestamp for when the link should expire (e.g., '2024-12-31T23:59:59Z')."
+              "description": "An optional title for your reference."
             },
             {
-              "name": "password",
+              "name": "expiryDate",
               "type": "string",
               "required": false,
-              "description": "Protect the destination URL with a password."
+              "description": "ISO 8601 timestamp for when the link should expire (e.g., '2024-12-31T23:59:59')."
             },
             {
-              "name": "tags",
+              "name": "utmSource",
+              "type": "string",
+              "required": false,
+              "description": "Identifies which site sent the traffic, e.g. google, newsletter."
+            },
+            {
+              "name": "utmMedium",
+              "type": "string",
+              "required": false,
+              "description": "Identifies what type of link was used, e.g. cpc, email."
+            },
+            {
+              "name": "utmCampaign",
+              "type": "string",
+              "required": false,
+              "description": "Identifies a specific product promotion or strategic campaign."
+            },
+            {
+              "name": "routingRules",
               "type": "array",
               "required": false,
-              "description": "An array of string tags used to organize and filter links."
+              "description": "Array of rules for dynamic routing: {type: 'DEVICE'|'COUNTRY'|'OS', conditionValue: string, destinationUrl: string}."
             }
           ],
           "codeSnippet": {
             "title": "Create Link Request",
             "language": "json",
-            "code": "{\n  \"destination\": \"https://example.com/very-long-url-that-needs-shortening\",\n  \"domain_id\": \"dom_82hfk12\",\n  \"alias\": \"summer-sale\",\n  \"expires_at\": \"2024-12-31T23:59:59Z\",\n  \"tags\": [\"social\", \"campaign-a\"]\n}"
+            "code": "{\n  \"longUrl\": \"https://example.com/very-long-url-that-needs-shortening\",\n  \"customAlias\": \"summer-sale\",\n  \"expiryDate\": \"2024-12-31T23:59:59\",\n  \"utmSource\": \"newsletter\",\n  \"routingRules\": [\n    {\n      \"type\": \"DEVICE\",\n      \"conditionValue\": \"Mobile\",\n      \"destinationUrl\": \"https://m.example.com\"\n    }\n  ]\n}"
           }
         },
         {
@@ -315,6 +327,56 @@
         "language": "json",
         "code": "{\n  \"error\": {\n    \"code\": \"alias_taken\",\n    \"message\": \"The custom alias 'summer-sale' is already in use.\",\n    \"doc_url\": \"https://dragolink.com/docs/errors#alias_taken\"\n  }\n}"
       }
+    },
+    {
+      "id": "advanced-features",
+      "title": "Advanced Features",
+      "icon": "Zap",
+      "content": "Dragolink supports advanced features like UTM parameter tracking and Dynamic Routing based on the user's context.\n\n### UTM Parameters\nYou can attach standard UTM parameters (source, medium, campaign, term, content) directly to your short links to track marketing efforts natively. Dragolink will automatically append these to the final destination URL when redirecting the user.\n\n### Dynamic Routing\nDynamic routing allows you to redirect users to different destination URLs based on their context (Device, OS, Country, or Language). You can define an array of `routingRules` when creating or updating a link. Each rule specifies a type, a condition, and a destination. If a user matches the rule, they are routed to the specific destination instead of the default `longUrl`."
+    },
+    {
+      "id": "code-examples",
+      "title": "Code Examples",
+      "icon": "Terminal",
+      "content": "Below are examples of how to create a link with UTM parameters and Dynamic Routing across various programming languages.",
+      "endpoints": [
+        {
+          "title": "Node.js (Axios)",
+          "description": "Install axios using `npm install axios` and run the script.",
+          "codeSnippet": {
+            "title": "index.js",
+            "language": "javascript",
+            "code": "const axios = require('axios');\n\naxios.post('http://localhost:8080/api/links', {\n  longUrl: 'https://example.com',\n  utmSource: 'newsletter',\n  utmMedium: 'email',\n  routingRules: [\n    { type: 'DEVICE', conditionValue: 'Mobile', destinationUrl: 'https://m.example.com' }\n  ]\n}, {\n  headers: { 'Authorization': 'Bearer YOUR_API_KEY' }\n})\n.then(res => console.log(res.data))\n.catch(err => console.error(err));"
+          }
+        },
+        {
+          "title": "Python (Requests)",
+          "description": "Install requests using `pip install requests`.",
+          "codeSnippet": {
+            "title": "main.py",
+            "language": "python",
+            "code": "import requests\n\nheaders = {'Authorization': 'Bearer YOUR_API_KEY'}\ndata = {\n    'longUrl': 'https://example.com',\n    'utmSource': 'twitter',\n    'routingRules': [\n        {'type': 'COUNTRY', 'conditionValue': 'US', 'destinationUrl': 'https://us.example.com'}\n    ]\n}\nresponse = requests.post('http://localhost:8080/api/links', headers=headers, json=data)\nprint(response.json())"
+          }
+        },
+        {
+          "title": "Java (HttpClient)",
+          "description": "Using Java 11+ built-in HttpClient.",
+          "codeSnippet": {
+            "title": "Main.java",
+            "language": "java",
+            "code": "import java.net.URI;\nimport java.net.http.HttpClient;\nimport java.net.http.HttpRequest;\nimport java.net.http.HttpResponse;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        String jsonBody = \"{\\\"longUrl\\\":\\\"https://example.com\\\",\\\"utmSource\\\":\\\"app\\\"}\";\n        HttpRequest request = HttpRequest.newBuilder()\n                .uri(URI.create(\"http://localhost:8080/api/links\"))\n                .header(\"Authorization\", \"Bearer YOUR_API_KEY\")\n                .header(\"Content-Type\", \"application/json\")\n                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))\n                .build();\n\n        HttpClient client = HttpClient.newHttpClient();\n        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());\n        System.out.println(response.body());\n    }\n}"
+          }
+        },
+        {
+          "title": "React (Fetch API)",
+          "description": "Example component creating a link on button click.",
+          "codeSnippet": {
+            "title": "CreateLink.jsx",
+            "language": "javascript",
+            "code": "export default function CreateLink() {\n  const handleCreate = async () => {\n    const res = await fetch('http://localhost:8080/api/links', {\n      method: 'POST',\n      headers: {\n        'Authorization': 'Bearer YOUR_API_KEY',\n        'Content-Type': 'application/json'\n      },\n      body: JSON.stringify({\n        longUrl: 'https://example.com',\n        utmCampaign: 'summer_sale'\n      })\n    });\n    const data = await res.json();\n    console.log(data);\n  };\n\n  return <button onClick={handleCreate}>Create Link</button>;\n}"
+          }
+        }
+      ]
     }
   ]
 }
