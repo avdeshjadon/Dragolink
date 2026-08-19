@@ -59,7 +59,7 @@ export default function About() {
     );
   }
 
-  const { hero, stats, values, team, story, milestones } = data;
+  const { hero, stats, values, story, milestones } = data;
 
   return (
     <div className="bg-bg-light min-h-screen font-sans pb-32 text-brand-dark overflow-hidden">
@@ -204,44 +204,38 @@ export default function About() {
         </div>
       </section>
 
-      {/* Leadership Team */}
+      {/* Creator Section */}
       <section className="py-24 bg-brand-dark text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
-            <h2 className="text-4xl font-extrabold mb-4">Leadership Team</h2>
+            <h2 className="text-4xl font-extrabold mb-4">The Creator</h2>
             <p className="text-xl text-white/70 max-w-2xl mx-auto">
-              The people behind the product.
+              The sole developer behind the product.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
-            {team.map((member, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                className="text-center group"
-              >
-                <div className="relative w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden border-4 border-white/10 group-hover:border-brand-emerald transition-colors">
-                  <img
-                    src={member.imageUrl}
-                    alt={member.name}
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                  />
-                </div>
-                <h3 className="text-2xl font-bold mb-1">{member.name}</h3>
-                <p className="text-brand-emerald font-medium mb-4">
-                  {member.role}
-                </p>
-                <a
-                  href={member.linkedin}
-                  className="inline-flex text-white/50 hover:text-white transition-colors"
-                >
-                  <Link className="w-5 h-5" />
-                </a>
-              </motion.div>
-            ))}
+          <div className="flex justify-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="text-center max-w-md group"
+            >
+              <div className="relative w-56 h-56 mx-auto mb-6 rounded-full overflow-hidden border-4 border-white/10 group-hover:border-brand-emerald transition-colors">
+                <img
+                  src="/images/avdeshjadon.jpeg"
+                  alt="Avdesh Jadon"
+                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                />
+              </div>
+              <h3 className="text-3xl font-bold mb-2">Avdesh Jadon</h3>
+              <p className="text-brand-emerald font-medium mb-4 text-lg">
+                Founder & Full Stack Developer
+              </p>
+              <p className="text-white/80 leading-relaxed mb-6">
+                Avdesh Jadon is a B.Tech 4th year student who independently designed, developed, and handles every aspect of this project. A solo force driving the platform from vision to reality.
+              </p>
+            </motion.div>
           </div>
         </div>
       </section>
