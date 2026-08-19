@@ -7,8 +7,10 @@ via any medium, is strictly prohibited without prior written consent from Avdesh
 
 import { useState, useEffect } from "react";
 import { api } from "../lib/axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
+import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
 import {
   Link as LinkIcon,
   BarChart3,
@@ -53,8 +55,44 @@ import { Input } from "../components/ui/Input";
 
 export default function Landing() {
   const [url, setUrl] = useState("");
-
   const [pageData, setPageData] = useState(null);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [isShortening, setIsShortening] = useState(false);
+
+  const handleShorten = async () => {
+    if (!url.trim()) {
+      toast.error("Please enter a URL");
+      return;
+    }
+    
+    if (!user) {
+      toast.error("Please login to shorten links");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      setIsShortening(true);
+      const payload = {
+        longUrl: url,
+        trackIp: true,
+        trackBrowser: true,
+        trackOs: true,
+        trackDevice: true,
+        trackReferrer: true,
+      };
+      
+      await api.post("/links", payload);
+      toast.success("Link shortened successfully!");
+      setUrl("");
+      navigate("/links");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to shorten link");
+    } finally {
+      setIsShortening(false);
+    }
+  };
 
   useEffect(() => {
     const fetchPageData = async () => {
@@ -148,8 +186,8 @@ export default function Landing() {
                 onChange={(e) => setUrl(e.target.value)}
               />
             </div>
-            <Button size="lg" className="h-12 px-8 shrink-0">
-              Shorten
+            <Button size="lg" className="h-12 px-8 shrink-0" onClick={handleShorten} disabled={isShortening}>
+              {isShortening ? "Shortening..." : "Shorten"}
             </Button>
           </motion.div>
         </div>
