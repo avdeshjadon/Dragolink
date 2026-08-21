@@ -438,7 +438,7 @@ export default function MyLinks() {
                 {/* Status Badge */}
                 <div className="hidden sm:block relative w-fit">
                   {link.suspended ? (
-                    <div className="inline-flex items-center px-4 py-1 rounded-full text-label-sm font-bold bg-red-100 text-red-700 border border-red-200">
+                    <div className="inline-flex items-center px-4 py-1 rounded-full text-label-sm font-bold bg-red-100 text-red-700 border border-red-200 whitespace-nowrap">
                       Suspended by dragolink
                     </div>
                   ) : (
