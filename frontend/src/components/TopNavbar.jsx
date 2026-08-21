@@ -71,7 +71,7 @@ export default function TopNavbar() {
             <img
               src="/dragolink.svg"
               alt="Dragolink Logo"
-              className="h-8 w-8"
+              className="h-10 w-10"
             />
             <span className="hidden sm:inline">DRAGOLINK</span>
           </Link>
