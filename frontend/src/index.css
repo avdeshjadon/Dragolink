@@ -85,6 +85,29 @@ via any medium, is strictly prohibited without prior written consent from Avdesh
   --font-body-lg: "Inter";
   --font-body-md: "Inter";
   --font-headline-lg: "Geist";
+
+  /* Adjusted Typography Sizes (More compact scale) */
+  --text-label-sm: 0.625rem; /* 10px */
+  --text-label-md: 0.75rem; /* 12px */
+  --text-label-lg: 0.875rem; /* 14px */
+  
+  --text-body-sm: 0.75rem; /* 12px */
+  --text-body-md: 0.875rem; /* 14px */
+  --text-body-lg: 1rem; /* 16px */
+  
+  --text-title-sm: 0.875rem; /* 14px */
+  --text-title-md: 1rem; /* 16px */
+  --text-title-lg: 1.125rem; /* 18px */
+  
+  --text-headline-sm: 1.125rem; /* 18px */
+  --text-headline-md: 1.25rem; /* 20px */
+  --text-headline-lg: 1.5rem; /* 24px */
+  
+  --text-display-sm: 1.5rem; /* 24px */
+  --text-display-md: 1.875rem; /* 30px */
+  --text-display-lg: 2.25rem; /* 36px */
+  
+  --text-code-sm: 0.875rem; /* 14px */
 }
 
 @layer base {
