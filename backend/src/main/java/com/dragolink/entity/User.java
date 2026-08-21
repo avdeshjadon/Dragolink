@@ -63,6 +63,9 @@ public class User implements UserDetails {
     @Builder.Default
     private String authProvider = "LOCAL";
 
+    @Column(name = "suspension_reason", columnDefinition = "TEXT")
+    private String suspensionReason;
+
     @Column(name = "has_password", nullable = false)
     @Builder.Default
     private boolean hasPassword = true;

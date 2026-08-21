@@ -41,6 +41,8 @@ api.interceptors.response.use(
         window.dispatchEvent(new CustomEvent("viewer-access-denied"));
         // Force the local catch blocks to pass this string to toast.error, which we ignore above
         error.response.data.message = "VIEWER_ACCESS_DENIED_SILENT";
+      } else if (error.response.data && error.response.data.error === "ACCOUNT_SUSPENDED") {
+        window.dispatchEvent(new CustomEvent("account-suspended", { detail: error.response.data.message }));
       }
     }
     return Promise.reject(error);

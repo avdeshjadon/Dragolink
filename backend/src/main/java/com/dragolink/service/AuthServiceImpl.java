@@ -133,6 +133,8 @@ public class AuthServiceImpl implements AuthService {
                 .email(user.getEmail())
                 .role(user.getRole())
                 .hasPassword(user.isHasPassword())
+                .isActive(user.isActive())
+                .suspensionReason(user.getSuspensionReason())
                 .build();
     }
 }

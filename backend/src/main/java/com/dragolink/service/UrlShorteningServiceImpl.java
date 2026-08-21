@@ -253,6 +253,12 @@ public class UrlShorteningServiceImpl implements UrlShorteningService {
                 .trackOs(link.isTrackOs())
                 .trackDevice(link.isTrackDevice())
                 .trackReferrer(link.isTrackReferrer())
+                .suspended(link.isSuspended())
+                .utmSource(link.getUtmSource())
+                .utmMedium(link.getUtmMedium())
+                .utmCampaign(link.getUtmCampaign())
+                .utmTerm(link.getUtmTerm())
+                .utmContent(link.getUtmContent())
                 .build();
     }
 

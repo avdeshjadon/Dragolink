@@ -56,6 +56,9 @@ public class RedirectServiceImpl implements RedirectService {
                     .orElseGet(() -> shortLinkRepository.findByShortCode(shortCode)
                             .orElseThrow(() -> new ResourceNotFoundException("Link not found")));
 
+            if (link.isSuspended()) {
+                throw new BadRequestException("Link has been suspended by dragolink");
+            }
             if (!link.isActive()) {
                 throw new BadRequestException("Link is disabled");
             }

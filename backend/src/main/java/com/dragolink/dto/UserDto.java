@@ -19,4 +19,6 @@ public class UserDto {
     private String email;
     private Role role;
     private boolean hasPassword;
+    private boolean isActive;
+    private String suspensionReason;
 }

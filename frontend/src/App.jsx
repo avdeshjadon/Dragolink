@@ -64,6 +64,7 @@ import SettingsLayout from "./components/SettingsLayout";
 import PublicNavbar from "./components/PublicNavbar";
 import PublicFooter from "./components/PublicFooter";
 import ScrollToTop from "./components/ScrollToTop";
+import SuspendedPopup from "./components/SuspendedPopup";
 
 // Redirect component for external admin routes
 const AdminRedirect = () => {
@@ -183,6 +184,7 @@ function App() {
       <Toaster position="top-right" />
       <BrowserRouter>
         <ScrollToTop />
+        <SuspendedPopup />
         <AnimatedRoutes />
       </BrowserRouter>
     </SmoothScroll>

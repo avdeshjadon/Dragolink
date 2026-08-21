@@ -437,29 +437,37 @@ export default function MyLinks() {
 
                 {/* Status Badge */}
                 <div className="hidden sm:block relative w-fit">
-                  <select
-                    value={link.active ? "active" : "inactive"}
-                    onChange={(e) => {
-                      const newStatus = e.target.value === "active";
-                      if (newStatus !== link.active) {
-                        handleToggleActive(link.id, link.active);
-                      }
-                    }}
-                    className={`appearance-none inline-flex items-center pl-6 pr-7 py-1 rounded-full text-label-sm font-label-sm cursor-pointer outline-none transition-colors border shadow-sm ${
-                      link.active 
-                        ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]" 
-                        : "bg-surface-container-high text-on-surface-variant border-outline-variant/30 hover:bg-surface-container-highest"
-                    }`}
-                  >
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                  </select>
-                  {/* Status dot */}
-                  <div className={`w-1.5 h-1.5 rounded-full absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none ${link.active ? "bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)]" : "bg-on-surface-variant/50"}`}></div>
-                  {/* Custom arrow for select */}
-                  <span className={`material-symbols-outlined text-[14px] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none ${link.active ? "text-emerald-600" : "text-on-surface-variant"}`}>
-                    expand_more
-                  </span>
+                  {link.suspended ? (
+                    <div className="inline-flex items-center px-4 py-1 rounded-full text-label-sm font-bold bg-red-100 text-red-700 border border-red-200">
+                      Suspended by dragolink
+                    </div>
+                  ) : (
+                    <>
+                      <select
+                        value={link.active ? "active" : "inactive"}
+                        onChange={(e) => {
+                          const newStatus = e.target.value === "active";
+                          if (newStatus !== link.active) {
+                            handleToggleActive(link.id, link.active);
+                          }
+                        }}
+                        className={`appearance-none inline-flex items-center pl-6 pr-7 py-1 rounded-full text-label-sm font-label-sm cursor-pointer outline-none transition-colors border shadow-sm ${
+                          link.active 
+                            ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]" 
+                            : "bg-surface-container-high text-on-surface-variant border-outline-variant/30 hover:bg-surface-container-highest"
+                        }`}
+                      >
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                      </select>
+                      {/* Status dot */}
+                      <div className={`w-1.5 h-1.5 rounded-full absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none ${link.active ? "bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)]" : "bg-on-surface-variant/50"}`}></div>
+                      {/* Custom arrow for select */}
+                      <span className={`material-symbols-outlined text-[14px] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none ${link.active ? "text-emerald-600" : "text-on-surface-variant"}`}>
+                        expand_more
+                      </span>
+                    </>
+                  )}
                 </div>
 
                 {/* Actions */}

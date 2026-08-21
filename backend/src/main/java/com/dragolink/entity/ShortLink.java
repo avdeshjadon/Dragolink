@@ -58,6 +58,10 @@ public class ShortLink {
     @Column(name = "expiry_date")
     private LocalDateTime expiryDate;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean suspended = false;
+
     @Column(name = "click_count", nullable = false)
     @Builder.Default
     private long clickCount = 0;

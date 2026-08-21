@@ -31,7 +31,13 @@ public class ShortLinkResponse {
     private boolean trackOs;
     private boolean trackDevice;
     private boolean trackReferrer;
+    private boolean suspended;
     
+    private String utmSource;
+    private String utmMedium;
+    private String utmCampaign;
+    private String utmTerm;
+    private String utmContent;
     public String getShortUrl(String baseUrl) {
         return baseUrl + (customAlias != null ? customAlias : shortCode);
     }
