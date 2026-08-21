@@ -42,7 +42,6 @@ import APIKeys from "./pages/APIKeys";
 import MyApplications from "./pages/MyApplications";
 import Notifications from "./pages/Notifications";
 import PublicQRCodes from "./pages/PublicQRCodes";
-import PublicIntegrations from "./pages/PublicIntegrations";
 import PublicAPI from "./pages/PublicAPI";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
@@ -109,7 +108,6 @@ function AnimatedRoutes() {
           <Route path="/public-analytics" element={<PublicAnalytics />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/qr-codes" element={<PublicQRCodes />} />
-          <Route path="/integrations" element={<PublicIntegrations />} />
           <Route path="/api" element={<PublicAPI />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:id" element={<BlogPost />} />

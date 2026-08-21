@@ -27,10 +27,10 @@ public class NavigationSeeder implements Seeder {
             NavigationLink.builder().position("PUBLIC_FOOTER").label("Features").url("/features").category("Product").sortOrder(2).isExternal(false).build(),
             NavigationLink.builder().position("PUBLIC_FOOTER").label("Pricing").url("/pricing").category("Product").sortOrder(3).isExternal(false).build(),
             NavigationLink.builder().position("PUBLIC_FOOTER").label("QR Codes").url("/qr-codes").category("Product").sortOrder(4).isExternal(false).build(),
-            NavigationLink.builder().position("PUBLIC_FOOTER").label("Integrations").url("/integrations").category("Product").sortOrder(5).isExternal(false).build(),
             
             NavigationLink.builder().position("PUBLIC_FOOTER").label("API Docs").url("/api").category("Resources").sortOrder(1).isExternal(false).build(),
-            NavigationLink.builder().position("PUBLIC_FOOTER").label("Documentation").url("/docs").category("Resources").sortOrder(2).isExternal(false).build(),
+            NavigationLink.builder().position("PUBLIC_FOOTER").label("Blog").url("/blog").category("Resources").sortOrder(2).isExternal(false).build(),
+            NavigationLink.builder().position("PUBLIC_FOOTER").label("Documentation").url("/docs").category("Resources").sortOrder(3).isExternal(false).build(),
             NavigationLink.builder().position("PUBLIC_FOOTER").label("Guides").url("/guides").category("Resources").sortOrder(3).isExternal(false).build(),
             NavigationLink.builder().position("PUBLIC_FOOTER").label("Help Center").url("/help").category("Resources").sortOrder(4).isExternal(false).build(),
 

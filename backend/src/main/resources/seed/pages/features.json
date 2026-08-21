@@ -84,28 +84,7 @@
       ]
     }
   ],
-  "integrations": {
-    "title": "Connects with the tools you already use",
-    "subtitle": "Wire Dragolink into your existing stack in minutes, no custom code required.",
-    "items": [
-      {
-        "label": "Slack",
-        "icon": "MessageSquare"
-      },
-      {
-        "label": "Webhooks",
-        "icon": "WebhookIcon"
-      },
-      {
-        "label": "Zapier",
-        "icon": "Network"
-      },
-      {
-        "label": "Chrome extension",
-        "icon": "Layout"
-      }
-    ]
-  },
+
   "comparison": {
     "without": [
       "Untrusted, generic short links",

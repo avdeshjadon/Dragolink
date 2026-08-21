@@ -38,4 +38,10 @@ public interface ClickAnalyticsRepository extends JpaRepository<ClickAnalytics, 
 
     @Query("SELECT c.country AS country, COUNT(c) AS count FROM ClickAnalytics c WHERE c.shortLink.user.id = :userId AND (c.isBot IS NULL OR c.isBot = false) GROUP BY c.country")
     List<Map<String, Object>> countClicksByCountry(@Param("userId") Long userId);
+
+    @Query("SELECT COUNT(DISTINCT c.country) FROM ClickAnalytics c WHERE c.country IS NOT NULL AND c.country != ''")
+    long countDistinctCountries();
+
+    @Query("SELECT COUNT(c) FROM ClickAnalytics c WHERE c.qrScan = true")
+    long countQrScans();
 }

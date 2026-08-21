@@ -16,18 +16,15 @@
     { "title": "Relentless Reliability", "description": "When your campaign goes viral, our infrastructure scales instantly.", "icon": "Activity" }
   ],
   "team": [
-    { "name": "Alex Chen", "role": "Co-Founder & CEO", "imageUrl": "https://i.pravatar.cc/150?u=alex", "linkedin": "#" },
-    { "name": "Sarah Jenkins", "role": "Co-Founder & CTO", "imageUrl": "https://i.pravatar.cc/150?u=sarah", "linkedin": "#" },
-    { "name": "Marcus Johnson", "role": "VP of Engineering", "imageUrl": "https://i.pravatar.cc/150?u=marcus", "linkedin": "#" },
-    { "name": "Elena Rodriguez", "role": "Head of Product", "imageUrl": "https://i.pravatar.cc/150?u=elena", "linkedin": "#" }
+    { "name": "Avdesh Jadon", "role": "Founder & Full Stack Developer", "imageUrl": "/images/avdeshjadon.jpeg", "linkedin": "#" }
   ],
   "story": {
     "title": "How it all started",
-    "content": "In 2020, we realized that the humble hyperlink hadn't evolved in two decades. While the rest of the web became intelligent, responsive, and secure, links remained static strings of text. We built Dragolink to change that.\n\nToday, a link is the most critical intersection between your brand and your audience. We believe that every click should be protected by enterprise-grade security, tracked with microscopic precision, and routed intelligently. Our team of distributed engineers works around the clock to ensure our infrastructure can handle billions of redirects with zero latency."
+    "content": "In 2026, I realized that the humble hyperlink hadn't evolved in two decades. While the rest of the web became intelligent, responsive, and secure, links remained static strings of text. I built Dragolink to change that, single-handedly designing, developing, and deploying every aspect of the platform.\n\nToday, a link is the most critical intersection between your brand and your audience. I believe that every click should be protected by enterprise-grade security, tracked with microscopic precision, and routed intelligently. As a solo force, I work relentlessly to ensure our infrastructure can handle millions of redirects with zero latency, bringing this vision to reality."
   },
   "milestones": [
-    { "year": "2020", "title": "The Inception", "description": "Dragolink was founded in a small garage in San Francisco with a mission to secure the web." },
-    { "year": "2021", "title": "Series A", "description": "Raised $15M led by top-tier venture capitalists to scale our engineering team." },
-    { "year": "2022", "title": "Global Scale", "description": "Hit the milestone of 2 billion links processed monthly with 99.99% uptime." }
+    { "year": "2026", "title": "The Inception", "description": "Dragolink was founded with a mission to secure and elevate the web." },
+    { "year": "2026", "title": "First Launch", "description": "Successfully launched the MVP independently, acquiring the first set of early adopters." },
+    { "year": "2026", "title": "Global Scale", "description": "Scaled the infrastructure to handle millions of links processed monthly with 99.99% uptime." }
   ]
 }

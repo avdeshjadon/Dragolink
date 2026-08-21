@@ -170,40 +170,7 @@ export default function Features() {
           </div>
         ))}
 
-        {/* Integrations */}
-        {integrations && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            className="bg-white rounded-3xl border border-outline-variant/30 shadow-sm p-10 mb-24"
-          >
-            <div className="text-center max-w-2xl mx-auto mb-10">
-              <h2 className="text-2xl font-bold text-brand-dark mb-2 tracking-tight">
-                {integrations.title}
-              </h2>
-              <p className="text-text-secondary font-medium">
-                {integrations.subtitle}
-              </p>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-              {integrations.items.map((item, i) => {
-                const IconComp = iconMap[item.icon] || LinkIcon;
-                return (
-                  <div
-                    key={i}
-                    className="flex flex-col items-center gap-3 p-6 rounded-2xl border border-outline-variant/30 hover:border-brand-emerald/40 transition-colors"
-                  >
-                    <IconComp className="w-7 h-7 text-brand" />
-                    <span className="font-semibold text-text-primary text-sm">
-                      {item.label}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </motion.div>
-        )}
+        {/* Integrations removed by request */}
 
         {/* Comparison callout */}
         {comparison && (

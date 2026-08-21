@@ -24,23 +24,29 @@ const iconMap = { Shield, Eye, Activity, Globe, Zap, Heart, Users, Target };
 
 export default function About() {
   const [data, setData] = useState(null);
+  const [realStats, setRealStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api
-      .get("/public/pages/about")
-      .then((res) => {
-        try {
-          setData(JSON.parse(res.data.htmlContent));
-        } catch (e) {
-          console.error("Failed to parse About CMS data:", e);
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
+    const fetchData = async () => {
+      try {
+        const res = await api.get("/public/pages/about");
+        setData(JSON.parse(res.data.htmlContent));
+      } catch (e) {
+        console.error("Failed to parse About CMS data:", e);
+      }
+      
+      try {
+        const statsRes = await api.get('/public/platform-stats');
+        setRealStats(statsRes.data);
+      } catch (e) {
+        console.error("Failed to fetch real platform stats", e);
+      }
+
+      setLoading(false);
+    };
+    
+    fetchData();
   }, []);
 
   if (loading) {
@@ -59,7 +65,14 @@ export default function About() {
     );
   }
 
-  const { hero, stats, values, story, milestones } = data;
+  const { hero, values, story, milestones, team } = data;
+  
+  const statsToDisplay = realStats ? [
+    { val: `${(realStats.totalClicks / 1000000000).toFixed(0)}B+`, label: 'Links clicked monthly' },
+    { val: `${realStats.countriesServed}+`, label: 'Countries served' },
+    { val: `${realStats.uptime}%`, label: 'Uptime SLA' },
+    { val: realStats.supportStatus, label: 'Global support' }
+  ] : data.stats || [];
 
   return (
     <div className="bg-bg-light min-h-screen font-sans pb-32 text-brand-dark overflow-hidden">
@@ -91,7 +104,7 @@ export default function About() {
       <section className="py-24 bg-surface-light border-b border-border-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, idx) => (
+            {statsToDisplay.map((stat, idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 20 }}
@@ -205,40 +218,43 @@ export default function About() {
       </section>
 
       {/* Creator Section */}
-      <section className="py-24 bg-brand-dark text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl font-extrabold mb-4">The Creator</h2>
-            <p className="text-xl text-white/70 max-w-2xl mx-auto">
-              The sole developer behind the product.
-            </p>
-          </div>
+      {team && team.length > 0 && (
+        <section className="py-24 bg-brand-dark text-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-20">
+              <h2 className="text-4xl font-extrabold mb-4">The Creator</h2>
+              <p className="text-xl text-white/70 max-w-2xl mx-auto">
+                The sole developer behind the product.
+              </p>
+            </div>
 
-          <div className="flex justify-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="text-center max-w-md group"
-            >
-              <div className="relative w-56 h-56 mx-auto mb-6 rounded-full overflow-hidden border-4 border-white/10 group-hover:border-brand-emerald transition-colors">
-                <img
-                  src="/images/avdeshjadon.jpeg"
-                  alt="Avdesh Jadon"
-                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                />
-              </div>
-              <h3 className="text-3xl font-bold mb-2">Avdesh Jadon</h3>
-              <p className="text-brand-emerald font-medium mb-4 text-lg">
-                Founder & Full Stack Developer
-              </p>
-              <p className="text-white/80 leading-relaxed mb-6">
-                Avdesh Jadon is a B.Tech 4th year student who independently designed, developed, and handles every aspect of this project. A solo force driving the platform from vision to reality.
-              </p>
-            </motion.div>
+            <div className="flex justify-center">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                className="text-center max-w-md group"
+              >
+                <div className="relative w-56 h-56 mx-auto mb-6 rounded-full overflow-hidden border-4 border-white/10 group-hover:border-brand-emerald transition-colors">
+                  <img
+                    src={team[0].imageUrl}
+                    alt={team[0].name}
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                  />
+                </div>
+                <h3 className="text-3xl font-bold mb-2">{team[0].name}</h3>
+                <p className="text-brand-emerald font-medium mb-4 text-lg">
+                  {team[0].role}
+                </p>
+                {/* Fallback description if CMS doesn't have a description field in team */}
+                <p className="text-white/80 leading-relaxed mb-6">
+                  {team[0].description || "Avdesh Jadon is a B.Tech 4th year student who independently designed, developed, and handles every aspect of this project. A solo force driving the platform from vision to reality."}
+                </p>
+              </motion.div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }

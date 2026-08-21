@@ -251,19 +251,26 @@ function AnimatedQR() {
 
 export default function PublicQRCodes() {
   const [data, setData] = useState(null);
+  const [realStats, setRealStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api
-      .get("/public/pages/qr-codes")
-      .then((res) => {
+    const fetchData = async () => {
+      try {
+        const res = await api.get("/public/pages/qr-codes");
         setData(JSON.parse(res.data.htmlContent));
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
+      } catch (e) {
+        console.error(e);
+      }
+      try {
+        const statsRes = await api.get('/public/qr-stats');
+        setRealStats(statsRes.data);
+      } catch (e) {
+        console.error("Failed to fetch real QR stats", e);
+      }
+      setLoading(false);
+    };
+    fetchData();
   }, []);
 
   if (loading) {
@@ -282,7 +289,14 @@ export default function PublicQRCodes() {
     );
   }
 
-  const { hero, stats, featuresInfo, features, useCasesInfo, useCases } = data;
+  const { hero, featuresInfo, features, useCasesInfo, useCases } = data;
+  
+  const statsToDisplay = realStats ? [
+    { value: `${(realStats.qrScansTracked / 1000000).toFixed(0)}M+`, label: 'QR Scans Tracked' },
+    { value: realStats.higherScanRates, label: 'Higher Scan Rates' },
+    { value: realStats.editableAnytime, label: 'Editable Anytime' },
+    { value: realStats.brokenLinks, label: 'Broken Links' }
+  ] : data.stats || [];
 
   return (
     <div className="bg-bg-light min-h-screen font-sans">
@@ -350,7 +364,7 @@ export default function PublicQRCodes() {
       {/* Stats Bar */}
       <section className="bg-surface-light border-y border-border-light py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          {stats.map((stat, i) => (
+          {statsToDisplay.map((stat, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 10 }}
